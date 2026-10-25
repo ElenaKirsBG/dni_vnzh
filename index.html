@@ -6,15 +6,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Дни ВНЖ">
-<meta name="application-name" content="Дни ВНЖ">
+<meta name="apple-mobile-web-app-title" content="Мой ВНЖ">
+<meta name="application-name" content="Мой ВНЖ">
 <meta name="theme-color" content="#f5f4f1">
 <meta name="author" content="Елена Кирсанова">
 <meta name="copyright" content="© Елена Кирсанова. Все права защищены.">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/icon-180.png">
-<link rel="icon" type="image/png" href="icons/icon-192.png">
-<title>Дни ВНЖ — учёт пребывания</title>
+<link id="appleIcon" rel="apple-touch-icon" href="icons/icon-180.png">
+<link id="favIcon" rel="icon" type="image/png" href="icons/icon-192.png">
+<script>try{var k=localStorage.getItem('dni-icon');if(k){document.getElementById('appleIcon').href='icons/icon-'+k+'-180.png';document.getElementById('favIcon').href='icons/icon-'+k+'-192.png'}}catch(e){}</script>
+<title>Мой ВНЖ — дни, поездки и документы семьи</title>
 <style>
 :root{--bg:#f5f4f1;--card:#fff;--card2:#faf9f7;--text:#1e2227;--muted:#6c7178;--line:#e5e2dc;--accent:#3d6b8a;--home:#3e8b5c;--abroad:#c2554f;--travel:#d08a2b;--plan:#5b7fc7;--fs:17px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--r:16px;--shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04)}
 :root[data-theme=graphite]{--bg:#141619;--card:#1e2125;--card2:#252a2f;--text:#e9e7e3;--muted:#9aa0a8;--line:#30353b;--accent:#7eb1d1;--home:#5fb381;--abroad:#e07a73;--travel:#e3a94f;--plan:#8ea8ef;--shadow:none}
@@ -171,11 +172,30 @@ table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 #print .ph img{width:100%;border:1px solid #ccc}
 #print .meta{color:#444;font-size:9.5pt}
 @media (min-width:700px){.thumbs{grid-template-columns:repeat(4,1fr)}}
+
+:root{--zone:#7a64b8}:root[data-theme=graphite]{--zone:#a996e6}:root[data-theme=indigo]{--zone:#b7a6ff}
+.cal .d.zone{background:color-mix(in srgb,var(--zone) 24%,var(--card))}
+.hid{display:none!important}
+.pbar{display:flex;gap:6px;overflow-x:auto;margin:0 0 12px;padding-bottom:2px;scrollbar-width:none}.pbar::-webkit-scrollbar{display:none}
+.pchip,.pchk span{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 12px 6px 9px;font-size:.86em;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;color:var(--text);cursor:pointer}
+.pchip i,.pchk span i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pchip.on,.pchk input:checked+span{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,var(--card));font-weight:650}
+.pchip.add{color:var(--accent);padding-left:12px}
+.pchk input{display:none}
+.sw input{display:none}.sw i{display:block;width:32px;height:32px;border-radius:50%;border:3px solid transparent;cursor:pointer}.sw input:checked+i{border-color:var(--text)}
+.th.land{aspect-ratio:1.58/1}
+.alertbox{border-radius:var(--r);padding:12px 14px;margin-bottom:12px;background:color-mix(in srgb,var(--abroad) 10%,var(--card));border:1px solid color-mix(in srgb,var(--abroad) 35%,transparent)}
+.alertbox h2{font-size:1em;margin:0 0 6px;color:var(--abroad)}
+.alertbox .al{font-size:.88em;padding:5px 0;border-top:1px solid color-mix(in srgb,var(--abroad) 18%,transparent)}.alertbox .al:first-of-type{border-top:0}
+.alertbox .al.info{color:var(--muted)}
+nav#tabs button{position:relative}.tbadge{position:absolute;top:3px;left:calc(50% + 6px);min-width:17px;height:17px;border-radius:9px;background:var(--abroad);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.icons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.icons button{border:2px solid var(--line);background:var(--card);border-radius:16px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:.72em}
+.icons button.on{border-color:var(--accent)}.icons img{width:56px;height:56px;border-radius:13px;display:block}
 </style>
 </head>
 <body>
 <div id="lock"></div>
-<header id="top"><div id="backWrap"></div><h1 id="title">Дни ВНЖ</h1><div id="topR"></div></header>
+<header id="top"><div id="backWrap"></div><h1 id="title">Мой ВНЖ</h1><div id="topR"></div></header>
 <main id="view"></main>
 <nav id="tabs"></nav>
 <div id="sheetWrap"><div id="sheet"></div></div>
@@ -185,7 +205,7 @@ table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
 <script>
 'use strict';
 /* © Елена Кирсанова. Все права защищены. Копирование, изменение и распространение кода без письменного разрешения правообладателя запрещены. */
-const APP='Дни ВНЖ',VER='1.0',OWNER='Елена Кирсанова';
+const APP='Мой ВНЖ',VER='2.1',OWNER='Елена Кирсанова';
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -205,13 +225,55 @@ const fdLong=s=>{if(!s)return '—';const[y,m,d]=s.split('-').map(Number);return
 
 const SCHENGEN=['Австрия','Бельгия','Болгария','Венгрия','Германия','Греция','Дания','Исландия','Испания','Италия','Латвия','Литва','Лихтенштейн','Люксембург','Мальта','Нидерланды','Норвегия','Польша','Португалия','Румыния','Словакия','Словения','Финляндия','Франция','Хорватия','Чехия','Швейцария','Швеция','Эстония'];
 const COUNTRIES=[...SCHENGEN,'Россия','Турция','Сербия','Северная Македония','Черногория','Албания','Босния и Герцеговина','Грузия','Армения','Азербайджан','Казахстан','Узбекистан','Кыргызстан','Беларусь','Украина','Молдова','Кипр','Великобритания','Ирландия','ОАЭ','Египет','Израиль','Таиланд','Вьетнам','Индонезия','США','Канада'];
-const TRANSPORT={plane:['✈️','Самолёт'],bus:['🚌','Автобус'],train:['🚆','Поезд'],car:['🚗','Автомобиль'],ferry:['⛴️','Паром'],walk:['🚶','Пешком / граница'],other:['🧭','Другое']};
-const DOCTYPES=['Билет','Посадочный талон','Штамп в паспорте','Чек / квитанция','Выписка из банка','Договор аренды','Коммунальные счета','Медицинский документ','Страховка','Карта ВНЖ','Паспорт','Справка','Фото с геометкой','Другое'];
-const DEFCATS=[['fee','Госпошлины'],['card','Карта ВНЖ'],['visa','Виза D'],['ins','Медстраховка'],['nota','Нотариус и переводы'],['apost','Апостиль и справки'],['rent','Аренда для ВНЖ'],['legal','Адвокат / посредник'],['bank','Банк и выписки'],['travel','Дорога и билеты'],['photo','Фото и копии'],['other','Прочее']];
+const TRANSPORT={plane:['✈️','Самолёт'],bus:['🚌','Автобус'],train:['🚆','Поезд'],car:['🚗','Автомобиль'],ferry:['⛴️','Паром'],walk:['🚶','Пешком'],other:['🧭','Другое']};
+const DOCTYPES=['Билет','Посадочный талон','Штамп в паспорте','Чек / квитанция','Выписка из банка','Договор аренды','Коммунальные счета','Медицинский документ','Страховка','Справка','Фото с геометкой','Другое'];
+const IDKINDS={vnzh1:'Карта ВНЖ — первая',vnzh:'Карта ВНЖ — продление',pmzh:'Карта ПМЖ',passport:'Загранпаспорт',inpass:'Внутренний паспорт',dl_ru:'Водительские права РФ',dl_bg:'Водительские права зарубежные (болгарские и др.)',dl_int:'Международное водительское удостоверение',ins:'Медицинская страховка',visa:'Виза D',other:'Другой документ'};
+const IDGROUPS=[['Вид на жительство',['vnzh1','vnzh','pmzh','visa']],['Паспорта',['passport','inpass']],['Водительские права',['dl_ru','dl_bg','dl_int']],['Прочее',['ins','other']]];
+const RESKINDS=['vnzh1','vnzh','pmzh'];
+const DEFCATS=[['fee','Госпошлины'],['card','Карта ВНЖ'],['visa','Виза D'],['ins','Медстраховка'],['nota','Нотариус и переводы'],['apost','Апостиль и справки'],['rent','Аренда для ВНЖ'],['legal','Адвокат / посредник'],['bank','Банк и выписки'],['travel','Дорога и билеты'],['dl','Водительские права'],['photo','Фото и копии'],['other','Прочее']];
 const CUR={EUR:'€',BGN:'лв',RUB:'₽',USD:'$',GBP:'£',UAH:'₴',KZT:'₸',BYN:'Br',TRY:'₺',RSD:'дин',GEL:'₾',AMD:'֏',CHF:'CHF',PLN:'zł',CZK:'Kč'};
 const BGN_RATE=1.95583;
+const PCOL=['#3d6b8a','#a35f67','#5a7d5e','#b07a2e','#6c5ba7','#2f7c8a','#8a4f7d','#5d6b78'];
+const RELS=['Я','Супруг(а)','Ребёнок','Мама','Папа','Родственник','Другое'];
 const FONTS={system:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif',serif:'"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif',round:'ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",sans-serif',mono:'ui-monospace,"SF Mono",Menlo,Consolas,monospace'};
 const THEMES={auto:['Авто','linear-gradient(90deg,#f5f4f1 50%,#141619 50%)'],pearl:['Жемчуг','#f5f4f1'],graphite:['Графит','#1e2125'],indigo:['Ночь','#1a1d3a'],sage:['Шалфей','#dfe7d9'],powder:['Пудра','#f1dfdb'],sepia:['Сепия','#eadbc2'],sea:['Море','#d4e7ea']};
+
+/* Пункты пропуска. home:true — показываются всегда; остальные — если страна отмечена в настройках «Страны поездок». */
+const CROSSDIRS=[
+ {n:'Аэропорты Болгарии',c:['Болгария'],t:['✈️ Аэропорт Варна (VAR)','✈️ Аэропорт Бургас (BOJ)','✈️ Аэропорт София (SOF)','✈️ Аэропорт Пловдив (PDV)','✈️ Аэропорт Горна-Оряховица (GOZ)']},
+ {n:'Морские порты Болгарии',c:['Болгария'],t:['⚓ Порт Варна','⚓ Порт Бургас','⚓ Порт Балчик','⚓ Порт Несебыр']},
+ {n:'Болгария — Турция',c:['Болгария','Турция'],t:['🚗 Капитан Андреево — Капыкуле (Эдирне)','🚗 Лесово — Хамзабейли','🚗 Малко-Тырново — Дерекёй','🚆 Свиленград — Капыкуле (ж/д)']},
+ {n:'Болгария — Греция',c:['Болгария','Греция'],t:['🚗 Кулата — Промахонас','🚗 Илинден — Эксохи','🚗 Златоград — Термес','🚗 Маказа — Нимфея','🚗 Ивайловград — Кипринос','🚗 Капитан Петко Войвода — Орменион','🚆 Кулата — Промахонас (ж/д)']},
+ {n:'Болгария — Румыния',c:['Болгария','Румыния'],t:['🌉 Русе — Джурджу (Дунайский мост)','🌉 Видин — Калафат (Дунайский мост 2)','🚗 Дуранкулак — Вама-Веке','🚗 Кардам — Негру-Водэ','🚗 Силистра — Кэлэраши','⛴️ Оряхово — Бекет (паром)','⛴️ Никопол — Турну-Мэгуреле (паром)','⛴️ Свиштов — Зимнича (паром)','🚆 Русе — Джурджу (ж/д)']},
+ {n:'Болгария — Сербия',c:['Болгария','Сербия'],t:['🚗 Калотина — Градина (Димитровград)','🚗 Стрезимировци — Клисура','🚗 Олтоманци — Рибарци','🚗 Вршка-Чука — Зайечар','🚗 Брегово — Мокране','🚆 Драгоман — Димитровград (ж/д)']},
+ {n:'Болгария — Северная Македония',c:['Болгария','Северная Македония'],t:['🚗 Гюешево — Деве-Баир','🚗 Станке-Лисичково — Делчево','🚗 Златарево — Ново-Село']},
+ {n:'Аэропорты Турции',c:['Турция'],t:['✈️ Стамбул (IST)','✈️ Стамбул Сабиха Гёкчен (SAW)','✈️ Анталья (AYT)','✈️ Анкара (ESB)','✈️ Измир (ADB)','✈️ Даламан (DLM)','✈️ Бодрум (BJV)']},
+ {n:'Турция — Грузия',c:['Турция','Грузия'],t:['🚗 Сарп — Сарпи']},
+ {n:'Аэропорты России',c:['Россия'],t:['✈️ Москва Шереметьево (SVO)','✈️ Москва Внуково (VKO)','✈️ Москва Домодедово (DME)','✈️ Санкт-Петербург Пулково (LED)','✈️ Сочи (AER)','✈️ Казань (KZN)','✈️ Екатеринбург (SVX)','✈️ Минеральные Воды (MRV)','✈️ Калининград (KGD)','✈️ Новосибирск (OVB)']},
+ {n:'Россия — Грузия',c:['Россия','Грузия'],t:['🚗 Верхний Ларс — Казбеги']},
+ {n:'Россия — Латвия / Эстония',c:['Россия','Латвия','Эстония'],t:['🚗 Бурачки — Терехова','🚗 Убылинка — Гребнева','🚗 Куничина Гора — Койдула','🚗 Шумилкино — Лухамаа','🚶 Ивангород — Нарва (пешеходный)']},
+ {n:'Беларусь — Польша / Литва',c:['Беларусь','Польша','Литва'],t:['🚗 Брест — Тересполь','🚗 Козловичи — Кукурики','🚗 Брузги — Кузница','🚗 Каменный Лог — Мядининкай','🚗 Бенякони — Шальчининкай']},
+ {n:'Аэропорты Беларуси',c:['Беларусь'],t:['✈️ Минск (MSQ)']},
+ {n:'Аэропорты Греции',c:['Греция'],t:['✈️ Афины (ATH)','✈️ Салоники (SKG)']},
+ {n:'Аэропорты Румынии',c:['Румыния'],t:['✈️ Бухарест Отопени (OTP)','✈️ Констанца (CND)']},
+ {n:'Аэропорты Сербии',c:['Сербия'],t:['✈️ Белград (BEG)','✈️ Ниш (INI)']},
+ {n:'Аэропорты Грузии',c:['Грузия'],t:['✈️ Тбилиси (TBS)','✈️ Кутаиси (KUT)','✈️ Батуми (BUS)']},
+ {n:'Аэропорты Армении',c:['Армения'],t:['✈️ Ереван Звартноц (EVN)']},
+ {n:'Аэропорты ОАЭ',c:['ОАЭ'],t:['✈️ Дубай (DXB)','✈️ Абу-Даби (AUH)']},
+ {n:'Аэропорты Черногории',c:['Черногория'],t:['✈️ Подгорица (TGD)','✈️ Тиват (TIV)']},
+ {n:'Аэропорты Кипра',c:['Кипр'],t:['✈️ Ларнака (LCA)','✈️ Пафос (PFO)']},
+ {n:'Аэропорты Испании',c:['Испания'],t:['✈️ Мадрид (MAD)','✈️ Барселона (BCN)','✈️ Малага (AGP)','✈️ Аликанте (ALC)','✈️ Валенсия (VLC)']},
+ {n:'Аэропорты Португалии',c:['Португалия'],t:['✈️ Лиссабон (LIS)','✈️ Порту (OPO)','✈️ Фару (FAO)']},
+ {n:'Аэропорты Италии',c:['Италия'],t:['✈️ Рим Фьюмичино (FCO)','✈️ Милан Мальпенса (MXP)','✈️ Венеция (VCE)']},
+ {n:'Аэропорты Германии',c:['Германия'],t:['✈️ Франкфурт (FRA)','✈️ Мюнхен (MUC)','✈️ Берлин (BER)']},
+ {n:'Аэропорты Казахстана',c:['Казахстан'],t:['✈️ Алматы (ALA)','✈️ Астана (NQZ)']},
+ {n:'Армения — Грузия',c:['Армения','Грузия'],t:['🚗 Баграташен — Садахло']},
+ {n:'Аэропорты Израиля',c:['Израиль'],t:['✈️ Тель-Авив (TLV)']},
+ {n:'Аэропорты Таиланда',c:['Таиланд'],t:['✈️ Бангкок Суварнабхуми (BKK)','✈️ Пхукет (HKT)']},
+ {n:'Аэропорты Египта',c:['Египет'],t:['✈️ Хургада (HRG)','✈️ Шарм-эль-Шейх (SSH)','✈️ Каир (CAI)']}];
+const VCOUNTRIES=[...new Set(CROSSDIRS.flatMap(d=>d.c))].sort((a,b)=>a.localeCompare(b,'ru'));
+const homeCountries=()=>new Set(S.people.map(p=>(p.profile.country||'').trim()).filter(Boolean));
+const crossVisible=(d,country)=>{const hc=homeCountries();return d.c.some(x=>hc.has(x)||S.settings.visited.includes(x)||x===country)};
 
 const IC={
 home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
@@ -221,10 +283,11 @@ docs:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><pat
 money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>',
 more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
 back:'<path d="M15 18l-6-6 6-6"/>',
-plus:'<path d="M12 5v14M5 12h14"/>',
 cam:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
 plan:'<path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
 user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+family:'<circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c.8-3.5 3.2-5.5 6-5.5s5.2 2 6 5.5M14 15.5c.9-.6 1.9-1 3-1 2.4 0 4.2 1.8 5 5"/>',
+card:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8" cy="11" r="2"/><path d="M5 16c.6-1.5 1.7-2.2 3-2.2s2.4.7 3 2.2M14 10h5M14 13h4"/>',
 rules:'<path d="M4 6h16M4 12h16M4 18h10"/><path d="M18 16l2 2 3-4"/>',
 clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
 exp:'<path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/>',
@@ -235,6 +298,7 @@ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
 check:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 15h8"/>',
 law:'<path d="M12 3v18M6 7h12M4 14l2-7 2 7a2 2 0 0 1-4 0zM16 14l2-7 2 7a2 2 0 0 1-4 0zM8 21h8"/>',
 lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+border:'<path d="M4 21V4M4 4h11l-2 4 2 4H4"/><path d="M14 21h6M17 15v6"/>',
 share:'<path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>'};
 const ico=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[n]||''}</svg>`;
 
@@ -255,31 +319,58 @@ function defRules(){return[
  {id:'r4',on:true,name:'Шенген 90/180 (другие страны)',type:'zone',limit:90,period:180,anchor:'',note:'С ВНЖ одной страны Шенгена в других странах зоны — не более 90 дней в любые 180 дней.'},
  {id:'r5',on:false,name:'Налоговое резидентство: 183 дня',type:'minyear',limit:183,period:0,anchor:'',note:'Присутствие в стране не менее 183 дней в календарном году.'}]}
 function defChecklist(){return['Заявление на продление (формуляр)','Загранпаспорт и копия','Действующая карта ВНЖ','Договор аренды на год (нотариально)','Декларация собственника жилья (нотариально)','Медицинская страховка на год','Выписка из банка за 3 месяца','Документ-основание: пенсия / работа / собственность','Справка о несудимости (с апостилем)','Квитанция об оплате госпошлины','Подтверждения проживания: билеты, чеки, счета'].map(t=>({id:uid(),t,on:false}))}
-function defState(){return{v:1,
- profile:{name:'',country:'Болгария',citizenship:'',permit:'ВНЖ (продължително пребиваване)',basis:'',permitStart:'',cardFrom:'',cardTo:'',trackFrom:'',passportTo:'',insuranceTo:'',address:'',renewFrom:60,renewTo:14,pmzhYears:5},
- settings:{theme:'auto',fs:17,font:'system',accent:'',textColor:'',contrast:false,cur:'EUR',travelAs:'home',pinHash:'',rates:{},cats:DEFCATS.map(([id,n])=>({id,n})),onboarded:false},
- rules:defRules(),trips:[],docs:[],expenses:[],deadlines:[],checklist:defChecklist(),meta:{lastBackup:'',created:todayS()}}}
+function defProfile(){return{citizenship:'',country:'',permit:'ВНЖ',basis:'',permitStart:'',cardFrom:'',cardTo:'',trackFrom:'',passportTo:'',insuranceTo:'',address:'',renewFrom:60,renewTo:14,pmzhYears:5}}
+function newPerson(name,rel,i){return{id:uid(),name,relation:rel,color:PCOL[i%PCOL.length],profile:defProfile(),checklist:defChecklist()}}
+function defState(){const p=newPerson('Я','Я',0);return{v:2,people:[p],
+ settings:{active:p.id,theme:'auto',fs:17,font:'system',accent:'',textColor:'',contrast:false,cur:'EUR',travelAs:'home',pinHash:'',rates:{},cats:DEFCATS.map(([id,n])=>({id,n})),onboarded:false,visited:['Турция','Греция','Румыния','Сербия','Северная Македония','Россия'],recentCross:[],warnDays:14,notify:false},
+ rules:defRules(),trips:[],docs:[],ids:[],expenses:[],deadlines:[],meta:{lastBackup:'',created:todayS()}}}
 let S=defState();
 let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>DB.put('kv','state',S).catch(e=>toast('Ошибка сохранения: '+e)),200)}
 function saveNow(){clearTimeout(saveT);return DB.put('kv','state',S)}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow()});
 
+/* ---------- Люди ---------- */
+const act=()=>(S.people.find(p=>p.id===S.settings.active)||S.people[0]).id;
+const person=(pid=act())=>S.people.find(p=>p.id===pid)||S.people[0];
+const pn=id=>(S.people.find(p=>p.id===id)||{name:'?'}).name;
+const multi=()=>S.people.length>1;
+const latestBy=(arr,k)=>arr.filter(x=>x[k]).sort((a,b)=>a[k]<b[k]?1:-1)[0];
+function prof(pid=act()){const p=person(pid);const pr={...defProfile(),...p.profile};const ids=S.ids.filter(x=>x.personId===p.id);const res=ids.filter(x=>RESKINDS.includes(x.kind));
+ if(!pr.permitStart){const f=res.map(x=>x.issued).filter(Boolean).sort()[0];if(f)pr.permitStart=f}
+ const cur=latestBy(res,'validTo');if(cur&&(!pr.cardTo||cur.validTo>pr.cardTo)){pr.cardTo=cur.validTo;pr.cardFrom=cur.issued||pr.cardFrom;pr.cardKind=cur.kind}
+ const ps=latestBy(ids.filter(x=>x.kind==='passport'),'validTo');if(ps&&(!pr.passportTo||ps.validTo>pr.passportTo))pr.passportTo=ps.validTo;
+ const ins=latestBy(ids.filter(x=>x.kind==='ins'),'validTo');if(ins&&(!pr.insuranceTo||ins.validTo>pr.insuranceTo))pr.insuranceTo=ins.validTo;
+ return pr}
+const tripsOf=(pid=act())=>S.trips.filter(t=>(t.persons||[]).includes(pid));
+const docsOf=(pid=act())=>S.docs.filter(d=>!d.persons||!d.persons.length||d.persons.includes(pid));
+const whoDoc=d=>d.persons&&d.persons.length?d.persons.map(pn).join(', '):'вся семья';
+const homeSch=(pid=act())=>SCHENGEN.includes((prof(pid).country||'').trim());
+const LOC={'Болгария':'в Болгарии','Сербия':'в Сербии','Черногория':'в Черногории','Турция':'в Турции','Грузия':'в Грузии','Армения':'в Армении','Азербайджан':'в Азербайджане','Казахстан':'в Казахстане','Узбекистан':'в Узбекистане','Кыргызстан':'в Кыргызстане','Кипр':'на Кипре','Мальта':'на Мальте','Греция':'в Греции','Испания':'в Испании','Португалия':'в Португалии','Италия':'в Италии','Германия':'в Германии','Франция':'во Франции','Чехия':'в Чехии','Польша':'в Польше','Венгрия':'в Венгрии','Хорватия':'в Хорватии','Румыния':'в Румынии','Словакия':'в Словакии','Словения':'в Словении','Австрия':'в Австрии','Нидерланды':'в Нидерландах','Бельгия':'в Бельгии','Финляндия':'в Финляндии','Латвия':'в Латвии','Литва':'в Литве','Эстония':'в Эстонии','Беларусь':'в Беларуси','Северная Македония':'в Северной Македонии','Албания':'в Албании','Босния и Герцеговина':'в Боснии и Герцеговине','ОАЭ':'в ОАЭ','Таиланд':'в Таиланде','Израиль':'в Израиле','Вьетнам':'во Вьетнаме','Индонезия':'в Индонезии','США':'в США','Канада':'в Канаде','Великобритания':'в Великобритании','Ирландия':'в Ирландии','Швейцария':'в Швейцарии','Норвегия':'в Норвегии','Швеция':'в Швеции','Дания':'в Дании','Молдова':'в Молдове','Египет':'в Египте'};
+const countryLabel=(pid=act())=>{const c=(prof(pid).country||'').trim();return LOC[c]||(c?'в стране ВНЖ':'в стране')};
+const dot=p=>`<i style="background:${p.color}"></i>`;
+function personChecks(name,sel){return`<div class="row wrap" style="gap:6px">${S.people.map(p=>`<label class="pchk"><input type="checkbox" name="${name}" value="${p.id}" ${sel.includes(p.id)?'checked':''}><span>${dot(p)}${esc(p.name)}</span></label>`).join('')}</div>`}
+const readChecks=name=>$$(`input[name="${name}"]:checked`).map(i=>i.value);
+
 /* ---------- Подсчёт дней ---------- */
 const byDep=(a,b)=>a.dep<b.dep?-1:a.dep>b.dep?1:0;
 const byDate=(a,b)=>a.date<b.date?-1:a.date>b.date?1:0;
-function trackStart(){const p=S.profile;if(p.trackFrom)return dn(p.trackFrom);if(p.permitStart)return dn(p.permitStart);const t=S.trips.filter(x=>!x.planned).map(x=>dn(x.dep));return t.length?Math.min(...t):TD()}
+function trackStart(pid=act()){const p=prof(pid);if(p.trackFrom)return dn(p.trackFrom);if(p.permitStart)return dn(p.permitStart);const t=tripsOf(pid).filter(x=>!x.planned).map(x=>dn(x.dep));return t.length?Math.min(...t):TD()}
 function statusMap(trips,withPlan){const m=new Map(),T=TD();
  for(const t of trips){if(t.planned&&!withPlan)continue;if(!t.dep)continue;const a=dn(t.dep);const open=!t.ret;const b=open?Math.max(a,t.planned?a:T):dn(t.ret);
   for(let d=a;d<=b;d++){const tr=d===a||(!open&&d===b);const st=tr?'travel':'abroad';const prev=m.get(d);
    if(!prev||(prev.s==='travel'&&st==='abroad'))m.set(d,{s:st,t,z:!!t.schengen,p:!!t.planned})}}
  return m}
 const absent=e=>!!e&&(e.s==='abroad'||(e.s==='travel'&&S.settings.travelAs==='abroad'));
-function mapNow(withPlan){return statusMap(S.trips,withPlan)}
-function countRange(m,a,b){const r={home:0,abroad:0,travel:0,present:0,absent:0,days:Math.max(0,b-a+1)};for(let d=a;d<=b;d++){const e=m.get(d);r[e?e.s:'home']++;if(absent(e))r.absent++;else r.present++}return r}
+const mapNow=(withPlan,pid=act())=>statusMap(tripsOf(pid),withPlan);
+/* sch — дни в Шенгенской зоне (страна ВНЖ + другие страны Шенгена + дни в дороге), zone — полные дни в других странах Шенгена, non — полные дни вне Шенгена */
+function countRange(m,a,b,hs=true){const r={home:0,abroad:0,travel:0,present:0,absent:0,sch:0,zone:0,non:0,days:Math.max(0,b-a+1)};
+ for(let d=a;d<=b;d++){const e=m.get(d);r[e?e.s:'home']++;if(absent(e))r.absent++;else r.present++;
+  if(!e){if(hs)r.sch++}else if(e.s==='travel'){if(hs||e.z)r.sch++}else if(e.z){r.zone++;r.sch++}else r.non++}
+ return r}
 function tripInfo(t){const T=TD();const a=dn(t.dep),b=t.ret?dn(t.ret):Math.max(a,T);const open=!t.ret;const travel=open?1:(a===b?1:2);const full=open?Math.max(0,b-a):Math.max(0,b-a-1);const abs=S.settings.travelAs==='abroad'?full+travel:full;const docs=S.docs.filter(x=>x.tripId===t.id).length;return{a,b,open,travel,full,abs,docs,total:b-a+1}}
 
-function evalAll(m,R,o={}){
- const A=Math.min(trackStart(),R-1900);const n=R-A+1;
+function evalAll(m,R,o={}){const pid=o.pid||act();const pr=prof(pid);
+ const A=Math.min(trackStart(pid),R-1900);const n=R-A+1;
  const ab=new Uint8Array(n),Pa=new Int32Array(n+1),Pz=new Int32Array(n+1);
  for(let i=0;i<n;i++){const e=m.get(A+i);ab[i]=absent(e)?1:0;Pa[i+1]=Pa[i]+ab[i];Pz[i+1]=Pz[i]+(e&&e.z?1:0)}
  const cnt=(P,a,b)=>{a=Math.max(a,A);b=Math.min(b,R);return b<a?0:P[b-A+1]-P[a-A]};
@@ -288,34 +379,44 @@ function evalAll(m,R,o={}){
   if(r.type==='consec'){const ce=o.curEnd??R;let best=0,bEnd=0,run=0,cr=0;for(let i=0;i<n;i++){if(ab[i]){run++;if(run>best){best=run;bEnd=A+i}}else run=0;if(A+i===ce)cr=run}
    run=ce>=R?run:cr;res.cur=run;res.best=best;res.bestEnd=bEnd;res.value=o.cur?run:best;res.left=res.limit-run;res.status=st(res.value,res.limit);
    res.text=o.cur?`Отсутствие подряд: ${dd(run)} из ${res.limit}`:`Максимум подряд: ${dd(best)} из ${res.limit}`+(run?` · сейчас ${dd(run)}`:'');}
-  else if(r.type==='period'){const P=+r.period||1826,ps=S.profile.permitStart,anc=r.anchor==='start'&&ps;
+  else if(r.type==='period'){const P=+r.period||1826,ps=pr.permitStart,anc=r.anchor==='start'&&ps;
    const win=d=>{if(anc){const s0=dn(ps);const k=Math.max(0,Math.floor((d-s0)/P));return[s0+k*P,s0+k*P+P-1]}return[d-P+1,d]};
    let[a,b]=win(R);let v=cnt(Pa,a,Math.min(b,R));
    if(o.zFrom!=null){if(anc){for(let d=o.zFrom,g=0;g<20;g++){const[wa,wb]=win(d);const c=cnt(Pa,wa,Math.min(wb,R));if(c>v){v=c;a=wa;b=wb}if(wb>=R)break;d=wb+1}}
     else for(let d=o.zFrom;d<=R;d++){const c=cnt(Pa,d-P+1,d);if(c>v){v=c;a=d-P+1;b=d}}}
    res.value=v;res.from=a;res.to=b;res.left=res.limit-res.value;res.status=st(res.value,res.limit);
    res.text=`Отсутствие: ${dd(res.value)} из ${res.limit} · окно ${fdn(a)} — ${fdn(b)}`;}
-  else if(r.type==='zone'){const P=+r.period||180;const val=d=>cnt(Pz,d-P+1,d);res.value=val(Math.min(R,o.zoneAt??R));let mx=res.value,mxd=R;
-   if(o.zFrom!=null){mx=0;for(let d=o.zFrom;d<=R;d++){const v=val(d);if(v>mx){mx=v;mxd=d}}res.value=mx}
-   res.maxDay=mxd;res.left=res.limit-res.value;res.status=st(res.value,res.limit);res.text=`В зоне за ${P} дн.: ${dd(res.value)} из ${res.limit}`;}
+  else if(r.type==='zone'){const P=+r.period||180;const val=d=>cnt(Pz,d-P+1,d);res.value=val(R);let mx=res.value;
+   if(o.zFrom!=null){mx=0;for(let d=o.zFrom;d<=R;d++){const v=val(d);if(v>mx)mx=v}res.value=mx}
+   res.left=res.limit-res.value;res.status=st(res.value,res.limit);res.text=`В других странах Шенгена за ${P} дн.: ${dd(res.value)} из ${res.limit}`;}
   else if(r.type==='minyear'){const y=ds(R).slice(0,4);const a=dn(y+'-01-01'),b=dn(y+'-12-31');const end=o.fullYear?b:Math.min(b,R);
    const abs=cnt(Pa,Math.max(a,A),end);const span=end-a+1;res.value=span-abs;const rest=o.fullYear?0:b-R;
    res.status=res.value>=res.limit?'ok':(res.value+rest<res.limit?'over':'prog');res.left=res.limit-res.value;
    res.text=`В стране в ${y} г.: ${dd(res.value)} из ${res.limit}`+(res.status==='prog'?` · нужно ещё ${dd(res.left)}`:'');}
   res.pct=res.limit?Math.min(1.2,res.value/res.limit):0;return res})}
-
-function latestReturn(draft,others){
- const a=dn(draft.dep);
+function worst(rs){const o={over:3,warn:2,prog:1,ok:0};return rs.reduce((w,x)=>o[x.status]>o[w]?x.status:w,'ok')}
+function latestReturn(draft,others,pid=act()){const a=dn(draft.dep);
  const ok=ret=>{const t={...draft,ret:ds(ret),planned:true};const m=statusMap([...others,t],true);
-  const rs=evalAll(m,ret,{cur:true,curEnd:S.settings.travelAs==='abroad'?ret:ret-1,zFrom:a});
+  const rs=evalAll(m,ret,{pid,cur:true,curEnd:S.settings.travelAs==='abroad'?ret:ret-1,zFrom:a});
   return rs.every(x=>x.r.type==='minyear'||x.status!=='over')};
  if(!ok(a))return null;let lo=a,hi=a+1100;if(ok(hi))return hi;
  while(hi-lo>1){const mid=(lo+hi)>>1;if(ok(mid))lo=mid;else hi=mid}return lo}
-
-function coverage(a,b){const m=mapNow(false);const out=[];if(b<a)return out;let y=+ds(a).slice(0,4),mo=+ds(a).slice(5,7);
+function coverage(a,b,pid=act()){const m=mapNow(false,pid);const hs=homeSch(pid);const dc=docsOf(pid);const out=[];if(b<a)return out;let y=+ds(a).slice(0,4),mo=+ds(a).slice(5,7);
  for(let g=0;g<400;g++){const first=dn(`${y}-${pad(mo)}-01`);const next=mo===12?dn(`${y+1}-01-01`):dn(`${y}-${pad(mo+1)}-01`);const s=Math.max(a,first),e=Math.min(b,next-1);if(s>b)break;
-  const c=countRange(m,s,e);const key=`${y}-${pad(mo)}`;const docs=S.docs.filter(x=>x.date&&x.date.slice(0,7)===key).length;out.push({key,y,mo,...c,docs});mo++;if(mo>12){mo=1;y++}}
+  const c=countRange(m,s,e,hs);const key=`${y}-${pad(mo)}`;const docs=dc.filter(x=>x.date&&x.date.slice(0,7)===key).length;out.push({key,y,mo,...c,docs});mo++;if(mo>12){mo=1;y++}}
  return out}
+
+/* ---------- Погранпереходы ---------- */
+function crossOpts(val,country){const s=S.settings;const hc=homeCountries();const vis=CROSSDIRS.filter(d=>crossVisible(d,country));
+ const sc=d=>(d.c.includes(country)?2:0)+(d.c.some(x=>hc.has(x))?1:0);vis.sort((a,b)=>sc(b)-sc(a));
+ let done=false;const o=x=>{const sel=!done&&x===val;if(sel)done=true;return`<option ${sel?'selected':''}>${esc(x)}</option>`};
+ let h='<option value="">— не указан —</option>';const rec=[...s.recentCross];if(val&&!rec.includes(val)&&!CROSSDIRS.some(d=>d.t.includes(val)))rec.unshift(val);
+ if(rec.length)h+=`<optgroup label="Ранее внесённые">${rec.map(o).join('')}</optgroup>`;
+ for(const d of vis)h+=`<optgroup label="${esc(d.n)}">${d.t.map(o).join('')}</optgroup>`;
+ return h+'<option value="__new">✎ Ввести свой пункт пропуска…</option>'}
+const crossField=(id,label,val,country)=>`<label class="f"><span>${label}</span><select id="${id}" data-cross="${id}_t">${crossOpts(val,country)}</select><input type="text" id="${id}_t" class="hid" style="margin-top:6px" placeholder="Название пункта пропуска"></label>`;
+const readCross=id=>{const s=$('#'+id);return s.value==='__new'?$('#'+id+'_t').value.trim():s.value};
+function rememberCross(...xs){const r=S.settings.recentCross;for(const x of xs.filter(Boolean)){const i=r.indexOf(x);if(i>=0)r.splice(i,1);r.unshift(x)}S.settings.recentCross=r.slice(0,25)}
 
 /* ---------- Деньги ---------- */
 const catName=id=>(S.settings.cats.find(c=>c.id===id)||{n:'Прочее'}).n;
@@ -333,22 +434,24 @@ async function processFile(f){
  return{id:uid(),blob:f,mime:f.type||'application/octet-stream',w:0,h:0,name:f.name||'file',thumb:''}}
 async function storeFile(p){await DB.put('files',p.id,{blob:p.blob,mime:p.mime,w:p.w,h:p.h,name:p.name});if(p.thumb)await DB.put('files','t:'+p.id,p.thumb);return{id:p.id,mime:p.mime,w:p.w,h:p.h,name:p.name}}
 async function removeFile(id){await DB.del('files',id);await DB.del('files','t:'+id)}
-async function fillThumbs(root=document){for(const el of $$('[data-th]',root)){const id=el.dataset.th;el.removeAttribute('data-th');const t=await DB.get('files','t:'+id);if(t)el.src=t;else{const f=await DB.get('files',id);if(f&&f.mime==='application/pdf')el.replaceWith(Object.assign(document.createElement('div'),{className:'pdf',textContent:'PDF'}));else el.replaceWith(Object.assign(document.createElement('div'),{className:'pdf',textContent:'Файл'}))}}}
+async function fillThumbs(root=document){for(const el of $$('[data-th]',root)){const id=el.dataset.th;el.removeAttribute('data-th');const t=await DB.get('files','t:'+id);if(t)el.src=t;else el.replaceWith(Object.assign(document.createElement('div'),{className:'pdf',textContent:'PDF'}))}}
 const blobToDataURL=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b)});
 const dataURLToBlob=u=>{const[h,d]=u.split(',');const mime=(h.match(/data:([^;]+)/)||[])[1]||'application/octet-stream';const bin=atob(d);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime})};
 
 /* ---------- UI базовое ---------- */
-let route={tab:'home',sub:null};let calY,calM;let tripYear='all',docFilter={type:'',year:'',q:''},moneyYear=String(new Date().getFullYear());
+let route={tab:'home',sub:null};let calY,calM;let tripYear='all',docFilter={type:'',year:'',q:''},moneyYear=String(new Date().getFullYear()),moneyPerson='all';
 function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2600)}
 function openSheet(title,html){$('#sheet').innerHTML=`<div class="grab"></div><div class="shead"><h2>${esc(title)}</h2><button class="xbtn" data-a="close">✕</button></div>${html}`;$('#sheetWrap').classList.add('on');$('#sheet').scrollTop=0;fillThumbs($('#sheet'))}
 function closeSheet(){$('#sheetWrap').classList.remove('on');$('#sheet').innerHTML='';draft=null}
 $('#sheetWrap').addEventListener('click',e=>{if(e.target.id==='sheetWrap')closeSheet()});
 const TABS=[['home','Обзор','home'],['trips','Поездки','trips'],['cal','Календарь','cal'],['docs','Документы','docs'],['money','Расходы','money'],['more','Ещё','more']];
-function renderTabs(){$('#tabs').innerHTML=TABS.map(([k,n,i])=>`<button class="${route.tab===k?'on':''}" data-a="tab" data-id="${k}">${ico(i,'')}${n}</button>`).join('')}
-const SUBS={profile:['Профиль и ВНЖ',vProfile],rules:['Правила подсчёта',vRules],planner:['Планировщик поездки',vPlanner],deadlines:['Сроки и напоминания',vDeadlines],export:['Отчёты: Word, PDF, Excel',vExport],backup:['Резервные копии',vBackup],settings:['Настройки',vSettings],guide:['Инструкция',vGuide],ref:['Справочник мигранта',vRef],checklist:['Чек-лист продления',vChecklist],about:['О приложении и права',vAbout]};
-function render(){renderTabs();const v=$('#view');let title,html;
- if(route.sub){const[t,f]=SUBS[route.sub];title=t;html=f()}
- else{const f={home:vHome,trips:vTrips,cal:vCal,docs:vDocs,money:vMoney,more:vMore}[route.tab];title={home:APP,trips:'Поездки',cal:'Календарь',docs:'Документы',money:'Расходы на ВНЖ',more:'Ещё'}[route.tab];html=f()}
+function renderTabs(){const n=ALERTS.filter(a=>a.lvl!=='info').length;$('#tabs').innerHTML=TABS.map(([k,nm,i])=>`<button class="${route.tab===k?'on':''}" data-a="tab" data-id="${k}">${ico(i,'')}${nm}${k==='home'&&n?`<span class="tbadge">${n}</span>`:''}</button>`).join('')}
+const SUBS={profile:['Профиль и ВНЖ',vProfile],family:['Семья',vFamily],ids:['Карты ВНЖ, паспорта, права',vIds],rules:['Правила подсчёта',vRules],planner:['Планировщик поездки',vPlanner],deadlines:['Сроки и напоминания',vDeadlines],export:['Отчёты: Word, PDF, Excel',vExport],backup:['Резервные копии',vBackup],settings:['Настройки',vSettings],crossings:['Страны и погранпереходы',vCrossings],guide:['Инструкция',vGuide],ref:['Справочник мигранта',vRef],checklist:['Чек-лист продления',vChecklist],about:['О приложении и права',vAbout]};
+function personBar(){if(!S.settings.onboarded)return'';return`<div class="pbar">${S.people.map(p=>`<button class="pchip ${p.id===act()?'on':''}" data-a="pSel" data-id="${p.id}">${dot(p)}${esc(p.name)}</button>`).join('')}<button class="pchip add" data-a="personNew">+ член семьи</button></div>`}
+const PSUBS=['profile','ids','planner','deadlines','checklist'];
+function render(){ALERTS=allAlerts();renderTabs();const v=$('#view');let title,html;
+ if(route.sub){const[t,f]=SUBS[route.sub];title=t;html=(PSUBS.includes(route.sub)&&multi()?personBar():'')+f()}
+ else{const f={home:vHome,trips:vTrips,cal:vCal,docs:vDocs,money:vMoney,more:vMore}[route.tab];title={home:APP,trips:'Поездки',cal:'Календарь',docs:'Документы',money:'Расходы на ВНЖ',more:'Ещё'}[route.tab];html=(['home','trips','cal','docs'].includes(route.tab)?personBar():'')+f()}
  $('#title').textContent=title;$('#backWrap').innerHTML=route.sub?`<button class="back" data-a="back">${ico('back')}Назад</button>`:'';
  v.innerHTML=html;fillThumbs(v);window.scrollTo(0,0)}
 function go(tab,sub=null){route={tab,sub};render()}
@@ -356,41 +459,70 @@ function go(tab,sub=null){route={tab,sub};render()}
 /* ---------- Обзор ---------- */
 function ruleRow(x){const cls=x.status==='prog'?'':x.status;const lab={ok:'в норме',warn:'близко к лимиту',over:x.r.type==='minyear'?'не набрать':'превышено',prog:'в процессе'}[x.status];
  return`<div class="rule"><div class="row"><b class="sp" style="font-weight:600">${esc(x.r.name)}</b><span class="badge ${cls}">${lab}</span></div><div class="bar"><i class="${cls}" style="width:${Math.min(100,x.pct*100).toFixed(1)}%"></i></div><div class="small muted">${esc(x.text)}</div></div>`}
-function deadlineList(){const p=S.profile,T=TD(),L=[];
- const add=(name,d,sub)=>{if(d!=null&&!isNaN(d))L.push({name,d,left:d-T,sub})};
- if(p.cardTo){const e=dn(p.cardTo);add('Карта ВНЖ действует до',e);const a=e-(+p.renewFrom||60),b=e-(+p.renewTo||14);
+function deadlineList(pid=act()){const p=prof(pid),T=TD(),L=[];
+ const add=(name,d,sub)=>{if(d!=null&&!isNaN(d))L.push({name,d,left:d-T,sub,pid})};
+ if(p.cardTo){const e=dn(p.cardTo);add((p.cardKind==='pmzh'?'Карта ПМЖ':'Карта ВНЖ')+' действует до',e);if(p.cardKind!=='pmzh'){const a=e-(+p.renewFrom||60),b=e-(+p.renewTo||14);
   let sub=T<a?`окно откроется через ${dd(a-T)}`:T<=b?`окно открыто, осталось ${dd(b-T)}`:T<=e?'окно закрыто — срочно в миграцию':'карта истекла';
-  L.push({name:`Подача на продление: ${fdn(a)} — ${fdn(b)}`,d:b,left:b-T,sub,win:[a,b]})}
- if(p.permitStart){add(`${p.pmzhYears||5} лет ВНЖ — право на ПМЖ`,addY(p.permitStart,+p.pmzhYears||5),'подавать минимум за 3–4 месяца до окончания текущей карты')}
+  L.push({name:`Подача на продление: ${fdn(a)} — ${fdn(b)}`,d:b,left:b-T,sub,pid})}}
+ if(p.permitStart&&p.cardKind!=='pmzh')add(`${p.pmzhYears||5} лет ВНЖ — право на ПМЖ`,addY(p.permitStart,+p.pmzhYears||5),'подавать минимум за 3–4 месяца до окончания текущей карты');
  if(p.passportTo)add('Загранпаспорт действует до',dn(p.passportTo),'менять заранее: карта ВНЖ привязана к паспорту');
  if(p.insuranceTo)add('Медстраховка до',dn(p.insuranceTo));
- for(const x of S.deadlines)if(x.date)add(x.name,dn(x.date),x.note);
+ const kinds={};for(const x of S.ids.filter(i=>i.personId===pid&&i.validTo&&!RESKINDS.includes(i.kind)&&i.kind!=='passport'&&i.kind!=='ins'))if(!kinds[x.kind]||x.validTo>kinds[x.kind].validTo)kinds[x.kind]=x;
+ for(const x of Object.values(kinds))add(IDKINDS[x.kind]+' — до',dn(x.validTo),x.number?'№ '+x.number:'');
+ for(const x of S.deadlines)if(x.date&&(!x.personId||x.personId===pid))add(x.name+(x.personId?'':' (вся семья)'),dn(x.date),x.note);
  return L.sort((a,b)=>a.d-b.d)}
 function dlRow(x){const c=x.left<0?'over':x.left<=30?'warn':'ok';const l=x.left<0?`прошло ${dd(-x.left)}`:x.left===0?'сегодня':`через ${dd(x.left)}`;
  return`<div class="rule"><div class="row"><span class="sp">${esc(x.name)}</span><span class="badge ${c}">${l}</span></div><div class="small muted">${fdn(x.d)}${x.sub?' · '+esc(x.sub):''}</div></div>`}
-function vHome(){const p=S.profile,T=TD();
+let ALERTS=[];
+function alertsFor(pid){const T=TD(),th=+S.settings.warnDays||14,out=[],seen=new Set();const p=person(pid);const m=mapNow(false,pid);const e=m.get(T);const rs=evalAll(m,T,{pid,cur:true});
+ const push=(lvl,t,k)=>{if(k&&seen.has(k))return;if(k)seen.add(k);out.push({lvl,t,pid,name:p.name})};
+ if(e&&e.s!=='home'){const c=rs.find(x=>x.r.type==='consec');if(c&&c.left<=th)push(c.left<0?'over':'warn',c.left<0?`превышен лимит «${c.r.name}» на ${dd(-c.left)}`:`до лимита «${c.r.name}» осталось ${dd(c.left)}`,c.r.id);
+  if(!e.t.ret){const lr=latestReturn(e.t,tripsOf(pid).filter(x=>x.id!==e.t.id),pid);if(lr!=null&&lr-T<=th)push(lr<T?'over':'warn',`вернуться из поездки (${e.t.country||'за границей'}) не позже ${fdn(lr)}${lr>=T?' — через '+dd(lr-T):''}`,'lr')}}
+ for(const x of rs){if((x.r.type==='zone'||x.r.type==='period')&&x.left<=th)push(x.left<0?'over':'warn',x.left<0?`превышен лимит «${x.r.name}»: ${x.text}`:`до лимита «${x.r.name}» осталось ${dd(x.left)}`,x.r.id)}
+ for(const t of tripsOf(pid).filter(t=>t.planned&&t.ret&&dn(t.ret)>=T)){const mm=statusMap(tripsOf(pid),true);const R2=dn(t.ret);const r2=evalAll(mm,R2,{pid,cur:true,curEnd:S.settings.travelAs==='abroad'?R2:R2-1,zFrom:dn(t.dep)}).filter(x=>x.status==='over'&&x.r.type!=='minyear');
+  if(r2.length)push('over',`запланированная поездка ${t.country||''} ${fd(t.dep)} — ${fd(t.ret)} нарушит: ${r2.map(x=>'«'+x.r.name+'»').join(', ')}`)}
+ for(const x of deadlineList(pid)){if(/^Подача на продление/.test(x.name)){if(/^окно открыто/.test(x.sub))push('warn',`подача на продление: ${x.sub}`);else if(/^окно закрыто/.test(x.sub))push('over','окно подачи на продление закрылось, а карта ещё действует — срочно в миграцию');continue}if(x.left>=0&&x.left<=th)push('info',`${x.name}: ${x.left===0?'сегодня':'через '+dd(x.left)}`)}
+ for(const x of []) if(x.left>=0&&x.left<=th)push('info',`${x.name}: ${x.left===0?'сегодня':'через '+dd(x.left)}`);
+ return out}
+function allAlerts(){try{return S.settings.onboarded?S.people.flatMap(p=>alertsFor(p.id)):[]}catch(e){return[]}}
+function alertBox(){if(!ALERTS.length)return'';const ord={over:0,warn:1,info:2};const L=[...ALERTS].sort((a,b)=>ord[a.lvl]-ord[b.lvl]);
+ return`<div class="alertbox"><h2>⚠ Требует внимания</h2>${L.map(a=>`<div class="al ${a.lvl}" ${multi()?`data-a="pSel" data-id="${a.pid}"`:''}>${a.lvl==='over'?'🔴':a.lvl==='warn'?'🟠':'🔵'} ${multi()?`<b>${esc(a.name)}</b>: `:''}${esc(a.t)}</div>`).join('')}</div>`}
+async function notifyCheck(){const n=ALERTS.filter(a=>a.lvl!=='info').length;
+ try{if(navigator.setAppBadge){n?navigator.setAppBadge(n):navigator.clearAppBadge()}}catch(e){}
+ if(!S.settings.notify||!('Notification' in window)||Notification.permission!=='granted')return;
+ const key=todayS()+'|'+ALERTS.map(a=>a.pid+a.t).join(';');if(S.meta.lastNotify===key)return;S.meta.lastNotify=key;save();if(!ALERTS.length)return;
+ const body=ALERTS.slice(0,5).map(a=>(multi()?a.name+': ':'')+a.t).join('\n');const opt={body,icon:'icons/icon-192.png',badge:'icons/icon-192.png',tag:'dni-alerts',renotify:true};
+ try{const reg=navigator.serviceWorker&&await navigator.serviceWorker.getRegistration();if(reg)await reg.showNotification(APP+': требует внимания',opt);else new Notification(APP+': требует внимания',opt)}catch(e){}}
+function zoneCard(c,title,pid){return`<div class="card"><h2>${title}</h2><div class="grid2"><div class="stat"><b class="c-home">${c.present}</b><span>${countryLabel(pid)}</span></div><div class="stat"><b class="c-acc">${c.sch}</b><span>в Шенгенской зоне${homeSch(pid)?'':'*'}</span></div><div class="stat"><b class="c-abroad">${c.non}</b><span>вне Шенгена</span></div><div class="stat"><b class="c-travel">${c.travel}</b><span>в дороге</span></div></div>
+ <div class="small muted" style="margin-top:9px">За границей ${dd(c.abroad)}: в других странах Шенгена — ${c.zone}, вне Шенгена — ${c.non}.${homeSch(pid)?'':'<br>* Ваша страна ВНЖ не входит в Шенген: здесь учтены только поездки в страны зоны.'}</div></div>`}
+function vHome(){const pid=act(),pr=prof(pid),T=TD();
  if(!S.settings.onboarded)return vWelcome();
- const m=mapNow(false),e=m.get(T);const y=new Date().getFullYear();const ys=countRange(m,dn(y+'-01-01'),T);const A=trackStart();const all=countRange(m,A,T);
- const rs=evalAll(m,T,{});let hero;
- if(e&&e.s!=='home'){const t=e.t;const k=T-dn(t.dep)+1;const others=S.trips.filter(x=>x.id!==t.id);const lr=t.ret?null:latestReturn({...t},others);const c=rs.find(x=>x.r.type==='consec');
-  hero=`<div class="hero abroad"><div class="small" style="opacity:.85">Сейчас</div><div class="big">За границей · ${esc(t.country||'поездка')}</div><div class="sub">${dd(k)} в поездке с ${fd(t.dep)}${t.ret?' · возвращение '+fd(t.ret):''}</div>${c?`<div class="sub">Можно отсутствовать подряд ещё: <b>${dd(Math.max(0,c.left))}</b></div>`:''}${lr!=null?`<div class="sub">Вернуться не позже: <b>${fdn(lr)}</b></div>`:''}</div>`}
- else{let last=null;for(const t of S.trips)if(!t.planned&&t.ret&&dn(t.ret)<=T&&(!last||t.ret>last.ret))last=t;const since=last?T-dn(last.ret):T-A;
-  hero=`<div class="hero"><div class="small" style="opacity:.85">Сейчас</div><div class="big">В стране · ${esc(p.country||'')}</div><div class="sub">${last?`Без выездов ${dd(since)} (с ${fd(last.ret)})`:`Учёт ведётся с ${fdn(A)}`}</div></div>`}
+ const m=mapNow(false),e=m.get(T);const y=new Date().getFullYear();const hs=homeSch();const A=trackStart();const ys=countRange(m,Math.max(A,dn(y+'-01-01')),T,hs);const all=countRange(m,A,T,hs);
+ const rs=evalAll(m,T,{pid});let hero;const nm=multi()?esc(person().name)+' · ':'';
+ if(e&&e.s!=='home'){const t=e.t;const k=T-dn(t.dep)+1;const others=tripsOf(pid).filter(x=>x.id!==t.id);const lr=t.ret?null:latestReturn({...t},others,pid);const c=rs.find(x=>x.r.type==='consec');
+  hero=`<div class="hero abroad"><div class="small" style="opacity:.85">${nm}Сейчас</div><div class="big">За границей · ${esc(t.country||'поездка')}</div><div class="sub">${t.schengen?'Шенгенская зона':'Вне Шенгена'} · ${dd(k)} в поездке с ${fd(t.dep)}${t.ret?' · возвращение '+fd(t.ret):''}</div>${c?`<div class="sub">Можно отсутствовать подряд ещё: <b>${dd(Math.max(0,c.left))}</b></div>`:''}${lr!=null?`<div class="sub">Вернуться не позже: <b>${fdn(lr)}</b></div>`:''}</div>`}
+ else{let last=null;for(const t of tripsOf(pid))if(!t.planned&&t.ret&&dn(t.ret)<=T&&(!last||t.ret>last.ret))last=t;const since=last?T-dn(last.ret):T-A;
+  hero=`<div class="hero"><div class="small" style="opacity:.85">${nm}Сейчас</div><div class="big">В стране · ${esc(pr.country||'')}</div><div class="sub">${last?`Без выездов ${dd(since)} (с ${fd(last.ret)})`:`Учёт ведётся с ${fdn(A)}`}</div></div>`}
  const cov=coverage(Math.max(A,T-364),T);const covOk=cov.filter(x=>x.present===0||x.docs>0).length;
- const dls=deadlineList().filter(x=>x.left>=-30).slice(0,5);
- const nextPlan=S.trips.filter(t=>t.planned&&dn(t.dep)>=T).sort(byDep)[0];
- const lb=S.meta.lastBackup?T-dn(S.meta.lastBackup):null;const hasData=S.trips.length+S.docs.length+S.expenses.length>0;
- return`${hero}
+ const dls=deadlineList().filter(x=>x.left>=-30).slice(0,6);
+ const nextPlan=tripsOf(pid).filter(t=>t.planned&&dn(t.dep)>=T).sort(byDep)[0];
+ const lb=S.meta.lastBackup?T-dn(S.meta.lastBackup):null;const hasData=S.trips.length+S.docs.length+S.expenses.length+S.ids.length>0;
+ let fam='';if(multi()){fam=`<div class="card"><h2>${ico('family')}Семья сегодня</h2>${S.people.map(p=>{const mm=mapNow(false,p.id);const ee=mm.get(T);const r2=evalAll(mm,T,{pid:p.id});const w=worst(r2);const yy=countRange(mm,Math.max(trackStart(p.id),dn(y+'-01-01')),T,homeSch(p.id));
+  return`<div class="item" data-a="pSel" data-id="${p.id}" style="margin-bottom:6px"><div class="ic" style="background:${p.color};color:#fff;font-weight:700">${esc(p.name.slice(0,1))}</div><div class="tx"><div class="t1">${esc(p.name)}</div><div class="t2">${ee&&ee.s!=='home'?`<span class="c-abroad">за границей · ${esc(ee.t.country||'')}</span>`:'в стране'} · ${y}: ${yy.present} дн. в стране, ${yy.abroad} за границей</div></div><span class="badge ${w==='prog'?'':w}">${{ok:'норма',warn:'внимание',over:'превышено',prog:'норма'}[w]}</span></div>`}).join('')}</div>`}
+ return`${alertBox()}${hero}
  <div class="qa"><button data-a="tripNew">${ico('trips','')}Поездка</button><button data-a="docNew">${ico('cam','')}Документ</button><button data-a="expNew">${ico('money','')}Расход</button><button data-a="sub" data-id="planner">${ico('plan','')}Планировщик</button></div>
  ${hasData&&(lb===null||lb>14)?`<div class="warnbox">${lb===null?'Резервная копия ещё ни разу не сохранялась.':'Последняя резервная копия — '+dd(lb)+' назад.'} Фото и данные хранятся только на этом устройстве. <a href="#" data-a="sub" data-id="backup" style="color:var(--accent)">Сохранить копию</a></div>`:''}
- <div class="card"><h2>${y} год</h2><div class="grid3"><div class="stat"><b class="c-home">${ys.present}</b><span>в стране</span></div><div class="stat"><b class="c-abroad">${ys.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${ys.travel}</b><span>в дороге</span></div></div>
- <div class="small muted" style="margin-top:9px">С начала учёта (${fdn(A)}): в стране ${dd(all.present)}, отсутствие ${dd(all.absent)}, в дороге ${dd(all.travel)}.</div></div>
+ ${fam}
+ ${zoneCard(ys,`${y} год`,pid)}
+ <div class="card"><h2>С начала учёта · ${fdn(A)}</h2><div class="small">${countryLabel()}: <b>${all.present}</b> · в Шенгене всего: <b>${all.sch}</b> · вне Шенгена: <b>${all.non}</b> · в дороге: <b>${all.travel}</b> · дней отсутствия: <b>${all.absent}</b></div></div>
  <div class="card"><h2>${ico('rules')}Правила и лимиты <span class="sp"></span><button class="btn sm" data-a="sub" data-id="rules">Настроить</button></h2>${rs.length?rs.map(ruleRow).join(''):'<div class="muted small">Правила выключены.</div>'}</div>
  ${nextPlan?`<div class="card"><h2>${ico('plan')}Запланировано</h2><div class="small">${esc(nextPlan.country||'Поездка')}: ${fd(nextPlan.dep)} — ${fd(nextPlan.ret)} · через ${dd(dn(nextPlan.dep)-T)}</div></div>`:''}
- <div class="card"><h2>${ico('clock')}Сроки <span class="sp"></span><button class="btn sm" data-a="sub" data-id="deadlines">Все</button></h2>${dls.length?dls.map(dlRow).join(''):'<div class="small muted">Укажите даты карты ВНЖ, паспорта и страховки в профиле — здесь появятся обратные отсчёты.</div>'}</div>
+ <div class="card"><h2>${ico('clock')}Сроки <span class="sp"></span><button class="btn sm" data-a="sub" data-id="deadlines">Все</button></h2>${dls.length?dls.map(dlRow).join(''):'<div class="small muted">Добавьте карты ВНЖ, паспорт, права и страховку в разделе «Карты ВНЖ, паспорта, права» — здесь появятся обратные отсчёты.</div>'}
+ <button class="btn block" style="margin-top:8px" data-a="sub" data-id="ids">${ico('card')}Карты ВНЖ, паспорта, права</button></div>
  <div class="card"><h2>${ico('docs')}Доказательная база</h2><div class="small">За последние 12 месяцев подтверждено документами: <b>${covOk} из ${cov.length}</b> мес.</div><div class="bar"><i class="${covOk===cov.length?'ok':'warn'}" style="width:${cov.length?covOk/cov.length*100:0}%"></i></div><div class="small muted">Цель — хотя бы 1–2 документа на каждый месяц: чек, счёт, выписка, билет.</div></div>`}
-function vWelcome(){return`<div class="card"><h2>Добро пожаловать!</h2><p class="small">«${APP}» считает дни в стране, за границей и в дороге, хранит фото билетов и документов, следит за лимитами отсутствия, сроками продления ВНЖ и расходами. Все данные хранятся только на вашем устройстве.</p><p class="small">Для начала заполните основное — остальное можно дополнить позже в «Ещё → Профиль».</p></div>
- <div class="card"><label class="f"><span>Страна ВНЖ</span><input type="text" id="w_country" list="dlC" value="${esc(S.profile.country)}"></label>
+function vWelcome(){return`<div class="card"><h2>Добро пожаловать!</h2><p class="small">«${APP}» считает дни в стране ВНЖ, в Шенгенской зоне, за её пределами и в дороге — отдельно для каждого члена семьи. Хранит пункты пропуска, фото билетов, сканы карт ВНЖ, паспортов и прав, следит за лимитами отсутствия, сроками продления и расходами. Все данные хранятся только на вашем устройстве.</p><p class="small">Начните с себя — членов семьи можно добавить сразу после этого кнопкой «+ член семьи».</p></div>
+ <div class="card"><label class="f"><span>Ваше имя (так будет подписано в отчётах)</span><input type="text" id="w_name" placeholder="Например, Елена"></label>
+ <label class="f"><span>Страна ВНЖ</span><input type="text" id="w_country" list="dlC" placeholder="Выберите или впишите страну"></label>
  <label class="f"><span>Дата начала первого ВНЖ (для 5-летнего срока ПМЖ)</span><input type="date" id="w_start"></label>
  <label class="f"><span>Текущая карта ВНЖ действует до</span><input type="date" id="w_to"></label>
  <label class="f"><span>Вести учёт дней с даты (если пусто — с даты ВНЖ)</span><input type="date" id="w_track"></label>
@@ -398,125 +530,183 @@ function vWelcome(){return`<div class="card"><h2>Добро пожаловать
  <button class="btn pri block" data-a="welcomeSave">Начать</button></div>${dlC()}<div class="copy">© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
 const dlC=()=>`<datalist id="dlC">${COUNTRIES.map(c=>`<option value="${c}">`).join('')}</datalist>`;
 
+/* ---------- Семья ---------- */
+function vFamily(){return`<div class="note">Каждый член семьи считается отдельно: свои поездки, дни, лимиты, карты ВНЖ, права и сроки. Общую поездку достаточно внести один раз и отметить всех, кто ехал.</div>
+ ${S.people.map(p=>`<div class="item" data-a="personEdit" data-id="${p.id}"><div class="ic" style="background:${p.color};color:#fff;font-weight:700">${esc(p.name.slice(0,1))}</div><div class="tx"><div class="t1">${esc(p.name)}</div><div class="t2">${esc(p.relation||'')} · поездок: ${tripsOf(p.id).filter(t=>!t.planned).length} · документов личности: ${S.ids.filter(x=>x.personId===p.id).length}</div></div><span class="muted">›</span></div>`).join('')}
+ <button class="btn pri block" data-a="personNew">+ Добавить члена семьи</button>`}
+function personForm(p){const isNew=!p;p=p||{id:uid(),name:'',relation:'Супруг(а)',color:PCOL[S.people.length%PCOL.length]};
+ openSheet(isNew?'Новый член семьи':p.name,`<label class="f"><span>Имя</span><input type="text" id="pp_name" value="${esc(p.name)}"></label>
+ <label class="f"><span>Кем приходится</span><select id="pp_rel">${RELS.map(r=>`<option ${p.relation===r?'selected':''}>${r}</option>`).join('')}</select></label>
+ <div class="f"><span class="small muted">Цвет</span><div class="row wrap" style="margin-top:6px">${PCOL.map(c=>`<label class="sw"><input type="radio" name="pcol" value="${c}" ${p.color===c?'checked':''}><i style="background:${c}"></i></label>`).join('')}</div></div>
+ ${isNew&&S.people.length?`<label class="chk"><input type="checkbox" id="pp_copy" checked> Скопировать страну, даты ВНЖ и адрес от «${esc(person().name)}» (можно изменить потом)</label><label class="chk"><input type="checkbox" id="pp_trips"> Добавить во все поездки «${esc(person().name)}»</label>`:''}
+ <button class="btn pri block" data-a="personSave" data-id="${p.id}" data-new="${isNew?1:''}">Сохранить</button>${!isNew&&S.people.length>1?`<button class="btn danger block" style="margin-top:10px" data-a="personDel" data-id="${p.id}">Удалить</button>`:''}`)}
+
 /* ---------- Поездки ---------- */
-function tripCard(t){const i=tripInfo(t);const tr=TRANSPORT[t.transport]||TRANSPORT.other;
+function tripCard(t){const i=tripInfo(t);const tr=TRANSPORT[t.transport]||TRANSPORT.other;const ppl=(t.persons||[]).map(id=>S.people.find(p=>p.id===id)).filter(Boolean);
  return`<div class="item ${t.planned?'planned':''}" data-a="tripEdit" data-id="${t.id}"><div class="ic">${tr[0]}</div><div class="tx"><div class="t1">${esc(t.country||'Поездка')}${t.city?', '+esc(t.city):''}</div>
  <div class="t2">${fd(t.dep)} — ${t.ret?fd(t.ret):'<b class="c-abroad">ещё не вернулись</b>'}</div>
- <div class="row wrap" style="gap:5px;margin-top:5px">${t.planned?'<span class="badge plan">план</span>':''}<span class="badge">за границей ${i.full}</span><span class="badge">в дороге ${i.travel}</span>${t.schengen?'<span class="badge acc">Шенген</span>':''}${!t.planned?(i.docs?`<span class="badge ok">📎 ${i.docs}</span>`:'<span class="badge warn">нет подтверждений</span>'):''}</div></div></div>`}
-function vTrips(){const T=TD();const ts=[...S.trips].sort(byDep).reverse();const years=[...new Set(ts.map(t=>t.dep.slice(0,4)))];
+ ${t.exitCross||t.entryCross?`<div class="t2">↗ ${esc((t.exitCross||'—').replace(/^\S+\s/,''))}${t.ret||t.entryCross?` · ↙ ${esc((t.entryCross||'—').replace(/^\S+\s/,''))}`:''}</div>`:''}
+ <div class="row wrap" style="gap:5px;margin-top:5px">${multi()?ppl.map(p=>`<span class="badge" style="color:${p.color}">${esc(p.name)}</span>`).join(''):''}${t.planned?'<span class="badge plan">план</span>':''}<span class="badge">за границей ${i.full}</span><span class="badge">в дороге ${i.travel}</span><span class="badge ${t.schengen?'acc':''}">${t.schengen?'Шенген':'вне Шенгена'}</span>${!t.planned?(i.docs?`<span class="badge ok">📎 ${i.docs}</span>`:'<span class="badge warn">нет подтверждений</span>'):''}</div></div></div>`}
+function vTrips(){const T=TD();const ts=tripsOf().sort(byDep).reverse();const years=[...new Set(ts.map(t=>t.dep.slice(0,4)))];
  const list=tripYear==='all'?ts:ts.filter(t=>t.dep.slice(0,4)===tripYear||(t.ret||todayS()).slice(0,4)===tripYear);
- const m=mapNow(false);let sumHtml='';if(tripYear!=='all'){const c=countRange(m,dn(tripYear+'-01-01'),Math.min(T,dn(tripYear+'-12-31')));sumHtml=`<div class="card"><div class="grid3"><div class="stat"><b>${list.filter(t=>!t.planned).length}</b><span>поездок</span></div><div class="stat"><b class="c-abroad">${c.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${c.travel}</b><span>в дороге</span></div></div></div>`}
+ let sumHtml='';if(tripYear!=='all'){const c=countRange(mapNow(false),Math.max(trackStart(),dn(tripYear+'-01-01')),Math.min(T,dn(tripYear+'-12-31')),homeSch());sumHtml=zoneCard(c,`${tripYear}: поездок ${list.filter(t=>!t.planned).length}`)}
  let html=`<div class="chips"><button class="chip ${tripYear==='all'?'on':''}" data-a="tripYear" data-id="all">Все</button>${years.map(y=>`<button class="chip ${tripYear===y?'on':''}" data-a="tripYear" data-id="${y}">${y}</button>`).join('')}</div>${sumHtml}`;
  if(!list.length)html+=`<div class="empty">Поездок пока нет.<br>Нажмите «+», чтобы добавить выезд из страны.</div>`;
  let cy='';for(const t of list){const y=t.dep.slice(0,4);if(tripYear==='all'&&y!==cy){html+=`<div class="ygroup">${y}</div>`;cy=y}html+=tripCard(t)}
  return html+`<button class="fab" data-a="tripNew">+</button>`}
 let draft=null;
-function tripForm(t){const isNew=!t;t=t||{id:uid(),dep:todayS(),ret:'',country:'',city:'',schengen:false,transport:'plane',purpose:'',note:'',planned:false,retTransport:''};
- draft={kind:'trip',obj:{...t},isNew,files:[]};const linked=isNew?[]:S.docs.filter(d=>d.tripId===t.id);
+function tripForm(t,preset={}){const isNew=!t;t=t||{id:uid(),dep:preset.dep||todayS(),ret:'',country:'',city:'',schengen:false,transport:'plane',retTransport:'plane',exitCross:'',entryCross:'',purpose:'',note:'',planned:false,persons:[act()]};
+ draft={kind:'trip',obj:{...t,persons:[...(t.persons||[])]},isNew,files:[]};const linked=isNew?[]:S.docs.filter(d=>d.tripId===t.id);
+ const trSel=(id,v)=>`<select id="${id}">${Object.entries(TRANSPORT).map(([k,x])=>`<option value="${k}" ${v===k?'selected':''}>${x[0]} ${x[1]}</option>`).join('')}</select>`;
  openSheet(isNew?'Новая поездка':'Поездка',`
- <div class="grid2"><label class="f"><span>Выезд из страны</span><input type="date" id="f_dep" value="${t.dep}"></label><label class="f"><span>Возвращение</span><input type="date" id="f_ret" value="${t.ret||''}"></label></div>
- <label class="chk"><input type="checkbox" id="f_open" ${!t.ret&&!isNew?'checked':''}> Ещё не вернулась(-ся) — считать до сегодня</label>
- <div class="grid2"><label class="f"><span>Страна</span><input type="text" id="f_country" list="dlC" value="${esc(t.country)}" placeholder="Например, Греция"></label><label class="f"><span>Город</span><input type="text" id="f_city" value="${esc(t.city)}"></label></div>
- <label class="chk"><input type="checkbox" id="f_sch" ${t.schengen?'checked':''}> Страна Шенгенской зоны (учитывать в 90/180)</label>
- <div class="grid2"><label class="f"><span>Транспорт</span><select id="f_tr">${Object.entries(TRANSPORT).map(([k,v])=>`<option value="${k}" ${t.transport===k?'selected':''}>${v[0]} ${v[1]}</option>`).join('')}</select></label>
- <label class="f"><span>Цель</span><select id="f_pur">${['','Отдых','Работа / командировка','Семья','Лечение','Учёба','Документы / консульство','Транзит','Другое'].map(x=>`<option ${t.purpose===x?'selected':''}>${x}</option>`).join('')}</select></label></div>
+ ${multi()?`<div class="card"><h2>${ico('family')}Кто едет <span class="sp"></span><button class="btn sm" data-a="allPersons">Вся семья</button></h2>${personChecks('tp',draft.obj.persons)}</div>`:''}
+ <div class="grid2"><label class="f"><span>Страна поездки</span><input type="text" id="f_country" list="dlC" value="${esc(t.country)}" placeholder="Например, Турция"></label><label class="f"><span>Город</span><input type="text" id="f_city" value="${esc(t.city)}"></label></div>
+ <label class="chk"><input type="checkbox" id="f_sch" ${t.schengen?'checked':''}> Страна Шенгенской зоны</label>
+ <div class="card"><h2>↗ Выезд из страны</h2><div class="grid2"><label class="f"><span>Дата выезда</span><input type="date" id="f_dep" value="${t.dep}"></label><label class="f"><span>Транспорт</span>${trSel('f_tr',t.transport)}</label></div>
+ ${crossField('f_xc','Пункт пропуска при выезде',t.exitCross,t.country)}</div>
+ <div class="card"><h2>↙ Въезд обратно</h2><label class="chk"><input type="checkbox" id="f_open" ${!t.ret&&!isNew?'checked':''}> Ещё не вернулись — считать до сегодня</label>
+ <div class="grid2"><label class="f"><span>Дата въезда</span><input type="date" id="f_ret" value="${t.ret||''}"></label><label class="f"><span>Транспорт</span>${trSel('f_rtr',t.retTransport||t.transport)}</label></div>
+ ${crossField('f_ec','Пункт пропуска при въезде',t.entryCross,t.country)}</div>
+ <label class="f"><span>Цель</span><select id="f_pur">${['','Отдых','Работа / командировка','Семья','Лечение','Учёба','Документы / консульство','Транзит','Другое'].map(x=>`<option ${t.purpose===x?'selected':''}>${x}</option>`).join('')}</select></label>
  <label class="f"><span>Заметка (рейс, номер билета, где штамп)</span><textarea id="f_note">${esc(t.note)}</textarea></label>
  <label class="chk"><input type="checkbox" id="f_plan" ${t.planned?'checked':''}> Запланированная поездка (не входит в фактический подсчёт)</label>
  <div class="card" style="margin-top:6px"><h2>${ico('cam')}Билеты и подтверждения</h2>
  ${linked.length?`<div class="mini" style="margin-bottom:8px">${linked.map(d=>`<div class="th" data-a="docOpen" data-id="${d.id}">${d.files[0]?`<img data-th="${d.files[0].id}" alt="">`:'<div class="pdf">—</div>'}</div>`).join('')}</div>`:''}
  <div class="mini" id="f_new"></div>
  <label class="btn block" style="margin-top:8px">${ico('cam')}Сфотографировать / выбрать<input type="file" id="f_files" accept="image/*,application/pdf" multiple hidden></label>
- <div class="tiny muted" style="margin-top:6px">Новые фото сохранятся как документы типа «Билет» на дату выезда. Подробнее подписать их можно в разделе «Документы».</div></div>
- <div id="f_check"></div>
+ <div class="tiny muted" style="margin-top:6px">Новые фото сохранятся как документы «Билет» на дату выезда и будут отнесены ко всем участникам поездки.</div></div>
  <button class="btn pri block" data-a="tripSave">Сохранить</button>
  ${!isNew?`<div class="row" style="margin-top:10px"><button class="btn block" data-a="planFromTrip">Проверить лимиты</button><button class="btn danger block" data-a="tripDel">Удалить</button></div>`:''}${dlC()}`);
- $('#f_country').addEventListener('change',e=>{if(SCHENGEN.includes(e.target.value.trim()))$('#f_sch').checked=true});
+ $('#f_country').addEventListener('change',e=>{const c=e.target.value.trim();if(SCHENGEN.includes(c))$('#f_sch').checked=true;else if(COUNTRIES.includes(c))$('#f_sch').checked=false;
+  for(const id of ['f_xc','f_ec']){const s=$('#'+id);const v=s.value==='__new'?'':s.value;s.innerHTML=crossOpts(v,c)}});
  $('#f_open').addEventListener('change',e=>{if(e.target.checked)$('#f_ret').value=''});
+ $('#f_ret').addEventListener('change',()=>{if($('#f_ret').value)$('#f_open').checked=false});
  $('#f_files').addEventListener('change',e=>addDraftFiles(e.target.files,'#f_new'));}
 async function addDraftFiles(files,box){toast('Обработка фото…');for(const f of files){const p=await processFile(f);draft.files.push(p)}drawDraftFiles(box)}
 function drawDraftFiles(box){const el=$(box);if(!el)return;el.innerHTML=draft.files.map((p,i)=>`<div class="th">${p.thumb?`<img src="${p.thumb}" alt="">`:'<div class="pdf">PDF</div>'}<button class="x" data-a="dfDel" data-id="${i}" data-box="${box}">×</button></div>`).join('')}
-function readTrip(){const o=draft.obj;o.dep=$('#f_dep').value;o.ret=$('#f_open').checked?'':$('#f_ret').value;o.country=$('#f_country').value.trim();o.city=$('#f_city').value.trim();o.schengen=$('#f_sch').checked;o.transport=$('#f_tr').value;o.purpose=$('#f_pur').value;o.note=$('#f_note').value.trim();o.planned=$('#f_plan').checked;return o}
-async function tripSave(){const o=readTrip();if(!o.dep)return toast('Укажите дату выезда');if(o.ret&&o.ret<o.dep)return toast('Возвращение раньше выезда');if(o.planned&&!o.ret)return toast('Для плана укажите дату возвращения');
+function readTrip(){const o=draft.obj;o.dep=$('#f_dep').value;o.ret=$('#f_open').checked?'':$('#f_ret').value;o.country=$('#f_country').value.trim();o.city=$('#f_city').value.trim();o.schengen=$('#f_sch').checked;o.transport=$('#f_tr').value;o.retTransport=$('#f_rtr').value;o.exitCross=readCross('f_xc');o.entryCross=readCross('f_ec');o.purpose=$('#f_pur').value;o.note=$('#f_note').value.trim();o.planned=$('#f_plan').checked;if(multi())o.persons=readChecks('tp');else o.persons=[act()];return o}
+async function tripSave(){const o=readTrip();if(!o.persons.length)return toast('Отметьте, кто едет');if(!o.dep)return toast('Укажите дату выезда');if(o.ret&&o.ret<o.dep)return toast('Въезд раньше выезда');if(o.planned&&!o.ret)return toast('Для плана укажите дату возвращения');
  if(!o.ret&&!o.planned&&o.dep>todayS())return toast('Будущую поездку отметьте как запланированную');
+ rememberCross(o.exitCross,o.entryCross);
  const i=S.trips.findIndex(t=>t.id===o.id);if(i>=0)S.trips[i]=o;else S.trips.push(o);
- for(const p of draft.files){const meta=await storeFile(p);S.docs.push({id:uid(),type:'Билет',date:o.dep,title:`Билет: ${o.country||'поездка'}`,tripId:o.id,note:'',files:[meta]})}
+ for(const p of draft.files){const meta=await storeFile(p);S.docs.push({id:uid(),type:'Билет',date:o.dep,title:`Билет: ${o.country||'поездка'}`,tripId:o.id,persons:[...o.persons],note:'',files:[meta]})}
  save();closeSheet();render();toast('Поездка сохранена')}
 
 /* ---------- Календарь ---------- */
-function vCal(){const T=TD();if(calY==null){const d=new Date();calY=d.getFullYear();calM=d.getMonth()}
+function vCal(){const T=TD();if(calY==null){const d=new Date();calY=d.getFullYear();calM=d.getMonth()}const hs=homeSch();
  const m=mapNow(true);const first=dn(`${calY}-${pad(calM+1)}-01`);const last=(calM===11?dn(`${calY+1}-01-01`):dn(`${calY}-${pad(calM+2)}-01`))-1;
- const wd=(new Date(first*864e5).getUTCDay()+6)%7;const docDays=new Set(S.docs.map(d=>d.date));const A=trackStart();
+ const wd=(new Date(first*864e5).getUTCDay()+6)%7;const docDays=new Set(docsOf().map(d=>d.date));const A=trackStart();
  let cells='';for(let i=0;i<wd;i++)cells+='<div class="d e"></div>';
- for(let d=first;d<=last;d++){const e=m.get(d);let c=e?(e.p?'plan':e.s):'home';if(d>T&&!e)c='out';if(d<A&&!e)c='out';cells+=`<div class="d ${c} ${d===T?'today':''}" data-a="day" data-id="${d}">${d-first+1}${docDays.has(ds(d))?'<i class="dot"></i>':''}</div>`}
- const mm=mapNow(false);const c=countRange(mm,Math.max(first,A),Math.min(last,T));const yc=countRange(mm,Math.max(dn(calY+'-01-01'),A),Math.min(dn(calY+'-12-31'),T));
+ for(let d=first;d<=last;d++){const e=m.get(d);let c=e?(e.p?'plan':e.s==='abroad'?(e.z?'zone':'abroad'):e.s):'home';if(d>T&&!e)c='out';if(d<A&&!e)c='out';cells+=`<div class="d ${c} ${d===T?'today':''}" data-a="day" data-id="${d}">${d-first+1}${docDays.has(ds(d))?'<i class="dot"></i>':''}</div>`}
+ const mm=mapNow(false);const c=countRange(mm,Math.max(first,A),Math.min(last,T),hs);const yc=countRange(mm,Math.max(dn(calY+'-01-01'),A),Math.min(dn(calY+'-12-31'),T),hs);
  return`<div class="card"><div class="row" style="margin-bottom:10px"><button class="btn sm" data-a="calNav" data-id="-1">‹</button><b class="sp" style="text-align:center;font-size:1.05em">${MONTHS[calM]} ${calY}</b><button class="btn sm" data-a="calNav" data-id="1">›</button></div>
  <div class="cal">${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>`<div class="wd">${x}</div>`).join('')}${cells}</div>
- <div class="legend"><span><i style="background:color-mix(in srgb,var(--home) 30%,var(--card))"></i>в стране</span><span><i style="background:color-mix(in srgb,var(--abroad) 40%,var(--card))"></i>за границей</span><span><i style="background:color-mix(in srgb,var(--travel) 45%,var(--card))"></i>в дороге</span><span><i style="background:color-mix(in srgb,var(--plan) 30%,var(--card))"></i>план</span><span><i style="background:var(--accent);border-radius:50%;width:8px;height:8px"></i>документ</span></div>
+ <div class="legend"><span><i style="background:color-mix(in srgb,var(--home) 30%,var(--card))"></i>${countryLabel()}</span><span><i style="background:color-mix(in srgb,var(--zone) 34%,var(--card))"></i>др. страны Шенгена</span><span><i style="background:color-mix(in srgb,var(--abroad) 40%,var(--card))"></i>вне Шенгена</span><span><i style="background:color-mix(in srgb,var(--travel) 45%,var(--card))"></i>в дороге</span><span><i style="background:color-mix(in srgb,var(--plan) 30%,var(--card))"></i>план</span><span><i style="background:var(--accent);border-radius:50%;width:8px;height:8px"></i>документ</span></div>
  <div class="row" style="margin-top:10px"><button class="btn sm" data-a="calToday">Сегодня</button></div></div>
- <div class="card"><h2>${MONTHS[calM]}</h2><div class="grid3"><div class="stat"><b class="c-home">${c.present}</b><span>в стране</span></div><div class="stat"><b class="c-abroad">${c.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${c.travel}</b><span>в дороге</span></div></div></div>
- <div class="card"><h2>${calY} год (по сегодня)</h2><div class="grid3"><div class="stat"><b class="c-home">${yc.present}</b><span>в стране</span></div><div class="stat"><b class="c-abroad">${yc.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${yc.travel}</b><span>в дороге</span></div></div></div>`}
-function daySheet(d){const m=mapNow(true);const e=m.get(d);const s=ds(d);const docs=S.docs.filter(x=>x.date===s);
- const st=!e?'В стране':e.p?'Запланированная поездка':e.s==='travel'?'День в дороге (выезд/въезд)':'За границей';
- openSheet(fdLong(s),`<div class="card"><b>${st}</b>${e?`<div class="small muted">${esc(e.t.country||'')} · ${fd(e.t.dep)} — ${e.t.ret?fd(e.t.ret):'по сегодня'}</div><button class="btn sm" style="margin-top:8px" data-a="tripEdit" data-id="${e.t.id}">Открыть поездку</button>`:''}
+ ${zoneCard(c,MONTHS[calM])}${zoneCard(yc,calY+' год (по сегодня)')}`}
+function daySheet(d){const m=mapNow(true);const e=m.get(d);const s=ds(d);const docs=docsOf().filter(x=>x.date===s);
+ const st=!e?'В стране ВНЖ':e.p?'Запланированная поездка':e.s==='travel'?'День в дороге (выезд/въезд)':e.z?'В другой стране Шенгена':'Вне Шенгенской зоны';
+ const cr=e&&e.s==='travel'?(d===dn(e.t.dep)?e.t.exitCross:e.t.entryCross):'';
+ openSheet(fdLong(s)+(multi()?' · '+person().name:''),`<div class="card"><b>${st}</b>${e?`<div class="small muted">${esc(e.t.country||'')} · ${fd(e.t.dep)} — ${e.t.ret?fd(e.t.ret):'по сегодня'}</div>${cr?`<div class="small">Пункт пропуска: ${esc(cr)}</div>`:''}<button class="btn sm" style="margin-top:8px" data-a="tripEdit" data-id="${e.t.id}">Открыть поездку</button>`:''}
  ${e&&e.s==='travel'?`<div class="tiny muted" style="margin-top:6px">По настройке этот день считается: ${S.settings.travelAs==='abroad'?'днём отсутствия':'днём в стране'}.</div>`:''}</div>
  <div class="card"><h2>Документы за день</h2>${docs.length?`<div class="thumbs">${docs.map(docThumb).join('')}</div>`:'<div class="small muted">Нет документов.</div>'}</div>
  <div class="row"><button class="btn pri block" data-a="docNewDate" data-id="${s}">${ico('cam')}Документ</button><button class="btn block" data-a="tripNewDate" data-id="${s}">${ico('trips')}Поездка с даты</button></div>`)}
 
 /* ---------- Документы ---------- */
-const docThumb=d=>`<div class="th" data-a="docOpen" data-id="${d.id}">${d.files&&d.files[0]?(d.files[0].mime.startsWith('image/')?`<img data-th="${d.files[0].id}" alt="">`:'<div class="pdf">PDF</div>'):'<div class="pdf">📝</div>'}<div class="cap"><b>${fd(d.date)}</b><br>${esc(d.title||d.type)}</div></div>`;
+const docThumb=d=>`<div class="th" data-a="docOpen" data-id="${d.id}">${d.files&&d.files[0]?(d.files[0].mime.startsWith('image/')?`<img data-th="${d.files[0].id}" alt="">`:'<div class="pdf">PDF</div>'):'<div class="pdf">📝</div>'}<div class="cap"><b>${fd(d.date)}</b><br>${esc(d.title||d.type)}${multi()&&(!d.persons||!d.persons.length)?'<br>вся семья':''}</div></div>`;
 function vDocs(){const T=TD(),A=trackStart();const cov=coverage(A,T);const miss=cov.filter(x=>x.present>0&&x.docs===0);
- let list=[...S.docs].sort(byDate).reverse();const years=[...new Set(list.map(d=>(d.date||'').slice(0,4)).filter(Boolean))];
+ let list=docsOf().sort(byDate).reverse();const years=[...new Set(list.map(d=>(d.date||'').slice(0,4)).filter(Boolean))];
  if(docFilter.type)list=list.filter(d=>d.type===docFilter.type);if(docFilter.year)list=list.filter(d=>(d.date||'').startsWith(docFilter.year));
  if(docFilter.q){const q=docFilter.q.toLowerCase();list=list.filter(d=>(d.title+' '+d.note+' '+d.type).toLowerCase().includes(q))}
- return`<div class="card"><h2>${ico('check')}Подтверждение присутствия</h2><div class="small">Месяцев с подтверждениями: <b>${cov.length-miss.length} из ${cov.length}</b></div>
+ const idn=S.ids.filter(x=>x.personId===act()).length;
+ return`<div class="item" data-a="sub" data-id="ids"><div class="ic c-acc">${ico('card')}</div><div class="tx"><div class="t1">Карты ВНЖ, паспорта, права</div><div class="t2">${idn?`${idn} ${plural(idn,'документ','документа','документов')} · сканы с двух сторон`:'добавьте первую карту ВНЖ и права'}</div></div><span class="muted">›</span></div>
+ <div class="card"><h2>${ico('check')}Подтверждение присутствия</h2><div class="small">Месяцев с подтверждениями: <b>${cov.length-miss.length} из ${cov.length}</b></div>
  <div class="bar"><i class="${miss.length?'warn':'ok'}" style="width:${cov.length?(cov.length-miss.length)/cov.length*100:0}%"></i></div>
  ${miss.length?`<div class="small muted" style="margin-top:6px">Без документов: ${miss.slice(-12).map(x=>`<a href="#" data-a="docNewDate" data-id="${x.key}-15" style="color:var(--abroad)">${MSH[x.mo-1]} ${x.y}</a>`).join(', ')}${miss.length>12?' и ещё '+(miss.length-12):''}</div>`:'<div class="small c-home">Каждый месяц подтверждён — отлично!</div>'}</div>
  <div class="row" style="margin-bottom:10px"><input type="search" id="dq" placeholder="Поиск по документам" value="${esc(docFilter.q)}"></div>
  <div class="grid2" style="margin-bottom:12px"><select id="dtype"><option value="">Все типы</option>${DOCTYPES.map(t=>`<option ${docFilter.type===t?'selected':''}>${t}</option>`).join('')}</select><select id="dyear"><option value="">Все годы</option>${years.map(y=>`<option ${docFilter.year===y?'selected':''}>${y}</option>`).join('')}</select></div>
  ${list.length?`<div class="thumbs">${list.map(docThumb).join('')}</div>`:'<div class="empty">Документов пока нет.<br>Фотографируйте билеты, посадочные, штампы, чеки и счета.</div>'}
  <button class="fab" data-a="docNew">+</button>`}
-function docForm(d,preset={}){const isNew=!d;d=d||{id:uid(),type:preset.type||'Чек / квитанция',date:preset.date||todayS(),title:'',tripId:preset.tripId||'',note:'',files:[]};
- draft={kind:'doc',obj:{...d,files:[...d.files]},isNew,files:[],removed:[]};const trips=[...S.trips].sort(byDep).reverse();
+function docForm(d,preset={}){const isNew=!d;d=d||{id:uid(),type:preset.type||'Чек / квитанция',date:preset.date||todayS(),title:'',tripId:preset.tripId||'',note:'',files:[],persons:multi()?[act()]:[]};
+ draft={kind:'doc',obj:{...d,files:[...d.files],persons:[...(d.persons||[])]},isNew,files:[],removed:[]};const trips=tripsOf().sort(byDep).reverse();
  openSheet(isNew?'Новый документ':'Документ',`
  <div class="mini" id="d_old">${d.files.map((f,i)=>`<div class="th" data-a="fileView" data-id="${f.id}">${f.mime.startsWith('image/')?`<img data-th="${f.id}" alt="">`:'<div class="pdf">PDF</div>'}<button class="x" data-a="dfOld" data-id="${i}">×</button></div>`).join('')}</div>
  <div class="mini" id="d_new" style="margin-top:6px"></div>
  <label class="btn block" style="margin:8px 0 12px">${ico('cam')}Сфотографировать / выбрать файлы<input type="file" id="d_files" accept="image/*,application/pdf" multiple hidden></label>
+ ${multi()?`<div class="f"><span class="small muted">Чей документ (ничего не отмечено — общий для всей семьи)</span><div style="margin-top:6px">${personChecks('dp',draft.obj.persons)}</div></div>`:''}
  <div class="grid2"><label class="f"><span>Тип</span><select id="d_type">${DOCTYPES.map(t=>`<option ${d.type===t?'selected':''}>${t}</option>`).join('')}</select></label><label class="f"><span>Дата документа</span><input type="date" id="d_date" value="${d.date}"></label></div>
  <label class="f"><span>Название</span><input type="text" id="d_title" value="${esc(d.title)}" placeholder="Например: чек Kaufland, Варна"></label>
  <label class="f"><span>Связать с поездкой</span><select id="d_trip"><option value="">— не связан —</option>${trips.map(t=>`<option value="${t.id}" ${d.tripId===t.id?'selected':''}>${fd(t.dep)} ${esc(t.country)}</option>`).join('')}</select></label>
  <label class="f"><span>Заметка</span><textarea id="d_note">${esc(d.note)}</textarea></label>
  <button class="btn pri block" data-a="docSave">Сохранить</button>${!isNew?'<button class="btn danger block" style="margin-top:10px" data-a="docDel">Удалить документ</button>':''}`);
  $('#d_files').addEventListener('change',e=>addDraftFiles(e.target.files,'#d_new'))}
-async function docSave(){const o=draft.obj;o.type=$('#d_type').value;o.date=$('#d_date').value;o.title=$('#d_title').value.trim();o.tripId=$('#d_trip').value;o.note=$('#d_note').value.trim();
- if(!o.date)return toast('Укажите дату');for(const id of draft.removed)await removeFile(id);for(const p of draft.files)o.files.push(await storeFile(p));
- if(!o.files.length&&!o.title&&!o.note)return toast('Добавьте фото или описание');
+async function docSave(){const o=draft.obj;o.type=$('#d_type').value;o.date=$('#d_date').value;o.title=$('#d_title').value.trim();o.tripId=$('#d_trip').value;o.note=$('#d_note').value.trim();if(multi())o.persons=readChecks('dp');
+ if(!o.date)return toast('Укажите дату');if(!o.files.length&&!draft.files.length&&!o.title&&!o.note)return toast('Добавьте фото или описание');
+ for(const id of draft.removed)await removeFile(id);for(const p of draft.files)o.files.push(await storeFile(p));
  const i=S.docs.findIndex(x=>x.id===o.id);if(i>=0)S.docs[i]=o;else S.docs.push(o);save();closeSheet();render();toast('Документ сохранён')}
 function docView(id){const d=S.docs.find(x=>x.id===id);if(!d)return;const t=S.trips.find(x=>x.id===d.tripId);
  openSheet(d.title||d.type,`<div class="thumbs" style="margin-bottom:12px">${d.files.map(f=>`<div class="th" data-a="fileView" data-id="${f.id}">${f.mime.startsWith('image/')?`<img data-th="${f.id}" alt="">`:'<div class="pdf">PDF</div>'}</div>`).join('')}</div>
- <div class="card small"><div><b>${esc(d.type)}</b> · ${fdLong(d.date)}</div>${t?`<div class="muted">Поездка: ${esc(t.country)} ${fd(t.dep)} — ${fd(t.ret)}</div>`:''}${d.note?`<div style="margin-top:6px">${esc(d.note)}</div>`:''}</div>
+ <div class="card small"><div><b>${esc(d.type)}</b> · ${fdLong(d.date)}</div>${multi()?`<div class="muted">Чей: ${esc(whoDoc(d))}</div>`:''}${t?`<div class="muted">Поездка: ${esc(t.country)} ${fd(t.dep)} — ${fd(t.ret)}</div>`:''}${d.note?`<div style="margin-top:6px">${esc(d.note)}</div>`:''}</div>
  <div class="row"><button class="btn pri block" data-a="docEdit" data-id="${d.id}">Изменить</button><button class="btn block" data-a="docShare" data-id="${d.id}">${ico('share')}Поделиться</button></div>`)}
 let viewing=null;
 async function fileView(id){const f=await DB.get('files',id);if(!f)return toast('Файл не найден');const u=URL.createObjectURL(f.blob);
  if(!f.mime.startsWith('image/')){window.open(u,'_blank');return}viewing={f,u};$('#vImg').src=u;$('#viewer').classList.add('on')}
 
+/* ---------- Карты ВНЖ, паспорта, права ---------- */
+function idStatus(x){if(!x.validTo)return['','без срока'];const l=dn(x.validTo)-TD();if(l<0)return['over','истёк '+fd(x.validTo)];if(l<=60)return['warn','истекает через '+dd(l)];return['ok','до '+fd(x.validTo)]}
+const sideThumb=(f,lbl)=>f?`<div class="th land" data-a="fileView" data-id="${f.id}">${f.mime.startsWith('image/')?`<img data-th="${f.id}" alt="">`:'<div class="pdf">PDF</div>'}<div class="cap">${lbl}</div></div>`:`<div class="th land"><div class="pdf small">нет скана<br>${lbl.toLowerCase()}</div></div>`;
+function vIds(){const pid=act();const L=S.ids.filter(x=>x.personId===pid);
+ let h=`<div class="note">Храните здесь все карты ВНЖ (первую и каждое продление), карту ПМЖ, паспорта, российские и зарубежные водительские права, страховку — со сканами лицевой и оборотной стороны. Даты окончания автоматически попадают в «Сроки», а действующая карта ВНЖ — в профиль${multi()?' · '+esc(person().name):''}.</div>`;
+ for(const[g,ks]of IDGROUPS){const arr=L.filter(x=>ks.includes(x.kind)).sort((a,b)=>(b.issued||'')<(a.issued||'')?-1:1);
+  h+=`<div class="ygroup">${g}</div>`;if(!arr.length){h+=`<div class="small muted" style="margin:0 2px 8px">Пока нет. <a href="#" data-a="idNew" data-id="${ks[0]}" style="color:var(--accent)">Добавить</a></div>`;continue}
+  for(const x of arr){const[c,t]=idStatus(x);h+=`<div class="card" data-a="idEdit" data-id="${x.id}" style="cursor:pointer"><div class="row" style="margin-bottom:8px"><b class="sp">${esc(IDKINDS[x.kind]||x.kind)}</b><span class="badge ${c}">${t}</span></div>
+   <div class="grid2">${sideThumb(x.front,'Лицевая')}${sideThumb(x.back,'Оборот')}</div><div class="small muted" style="margin-top:8px">${x.number?'№ '+esc(x.number)+' · ':''}${x.issued?'выдан '+fd(x.issued):''}${x.issuer?' · '+esc(x.issuer):''}</div></div>`}}
+ return h+'<button class="fab" data-a="idNew">+</button>'}
+function idForm(x,kind){const isNew=!x;x=x||{id:uid(),personId:act(),kind:kind||(S.ids.some(i=>i.personId===act()&&RESKINDS.includes(i.kind))?'vnzh':'vnzh1'),number:'',issued:'',validTo:'',issuer:'',note:'',front:null,back:null};
+ draft={kind:'id',obj:{...x},isNew,side:{front:null,back:null},removed:[]};
+ openSheet(isNew?'Новый документ личности':IDKINDS[x.kind],`
+ ${multi()?`<label class="f"><span>Чей документ</span><select id="i_pid">${S.people.map(p=>`<option value="${p.id}" ${p.id===x.personId?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label>`:''}
+ <label class="f"><span>Вид документа</span><select id="i_kind">${Object.entries(IDKINDS).map(([k,v])=>`<option value="${k}" ${x.kind===k?'selected':''}>${v}</option>`).join('')}</select></label>
+ <div class="grid2"><div><div class="small muted" style="margin-bottom:4px">Лицевая сторона</div><div id="i_front"></div><label class="btn sm block" style="margin-top:6px">${ico('cam')}Скан<input type="file" id="i_ff" accept="image/*,application/pdf" hidden></label></div>
+ <div><div class="small muted" style="margin-bottom:4px">Оборотная сторона</div><div id="i_back"></div><label class="btn sm block" style="margin-top:6px">${ico('cam')}Скан<input type="file" id="i_fb" accept="image/*,application/pdf" hidden></label></div></div>
+ <label class="f" style="margin-top:12px"><span>Номер</span><input type="text" id="i_num" value="${esc(x.number)}"></label>
+ <div class="grid2"><label class="f"><span>Дата выдачи</span><input type="date" id="i_iss" value="${x.issued}"></label><label class="f"><span>Действует до</span><input type="date" id="i_to" value="${x.validTo}"></label></div>
+ <label class="f"><span>Кем выдан / категории прав / основание ВНЖ</span><input type="text" id="i_by" value="${esc(x.issuer)}"></label>
+ <label class="f"><span>Заметка</span><textarea id="i_note">${esc(x.note)}</textarea></label>
+ <button class="btn pri block" data-a="idSave">Сохранить</button>${!isNew?'<button class="btn danger block" style="margin-top:10px" data-a="idDel">Удалить</button>':''}`);
+ drawSides();
+ for(const[inp,s]of [['#i_ff','front'],['#i_fb','back']])$(inp).addEventListener('change',async e=>{if(!e.target.files[0])return;toast('Обработка скана…');draft.side[s]=await processFile(e.target.files[0]);drawSides()})}
+function drawSides(){for(const s of ['front','back']){const box=$('#i_'+s);if(!box)continue;const n=draft.side[s],o=draft.obj[s];const lbl=s==='front'?'Лицевая':'Оборот';
+ box.innerHTML=n?`<div class="th land">${n.thumb?`<img src="${n.thumb}" alt="">`:'<div class="pdf">PDF</div>'}<button class="x" data-a="idSide" data-id="${s}">×</button></div>`:o?`<div class="th land" data-a="fileView" data-id="${o.id}">${o.mime.startsWith('image/')?`<img data-th="${o.id}" alt="">`:'<div class="pdf">PDF</div>'}<button class="x" data-a="idSide" data-id="${s}">×</button></div>`:`<div class="th land"><div class="pdf small">нет скана<br>${lbl.toLowerCase()}</div></div>`;fillThumbs(box)}}
+async function idSave(){const o=draft.obj;o.kind=$('#i_kind').value;o.number=$('#i_num').value.trim();o.issued=$('#i_iss').value;o.validTo=$('#i_to').value;o.issuer=$('#i_by').value.trim();o.note=$('#i_note').value.trim();if($('#i_pid'))o.personId=$('#i_pid').value;
+ if(o.issued&&o.validTo&&o.validTo<o.issued)return toast('Дата окончания раньше выдачи');
+ for(const s of ['front','back'])if(draft.side[s]){if(o[s])draft.removed.push(o[s].id);o[s]=await storeFile(draft.side[s])}
+ for(const id of draft.removed)await removeFile(id);
+ const i=S.ids.findIndex(x=>x.id===o.id);if(i>=0)S.ids[i]=o;else S.ids.push(o);save();closeSheet();render();toast('Сохранено')}
+
 /* ---------- Расходы ---------- */
-function vMoney(){const B=S.settings.cur;const all=S.expenses;const years=[...new Set(all.map(x=>x.date.slice(0,4)))].sort().reverse();if(!years.includes(moneyYear)&&moneyYear!=='all')years.unshift(moneyYear);
+function vMoney(){const B=S.settings.cur;let all=S.expenses;if(moneyPerson!=='all')all=all.filter(x=>moneyPerson==='fam'?!x.personId:x.personId===moneyPerson);
+ const years=[...new Set(all.map(x=>x.date.slice(0,4)))].sort().reverse();if(!years.includes(moneyYear)&&moneyYear!=='all')years.unshift(moneyYear);
  const list=(moneyYear==='all'?all:all.filter(x=>x.date.startsWith(moneyYear))).slice().sort(byDate).reverse();
  const total=list.reduce((s,x)=>s+toBase(x),0);const byCat={};list.forEach(x=>byCat[x.cat]=(byCat[x.cat]||0)+toBase(x));const cats=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);const mx=cats.length?cats[0][1]:1;
  let bars='';if(moneyYear!=='all'){const mm=Array(12).fill(0);list.forEach(x=>mm[+x.date.slice(5,7)-1]+=toBase(x));const top=Math.max(...mm,1);bars=`<div class="card"><h2>По месяцам ${moneyYear}</h2><div class="vbars">${mm.map((v,i)=>`<div><span>${v?Math.round(v):''}</span><i style="height:${v/top*100}%"></i>${MSH[i]}</div>`).join('')}</div></div>`}
  else{const yy={};all.forEach(x=>{const y=x.date.slice(0,4);yy[y]=(yy[y]||0)+toBase(x)});const ks=Object.keys(yy).sort();const top=Math.max(...Object.values(yy),1);bars=ks.length?`<div class="card"><h2>По годам</h2><div class="vbars">${ks.map(k=>`<div><span>${Math.round(yy[k])}</span><i style="height:${yy[k]/top*100}%"></i>${k}</div>`).join('')}</div></div>`:''}
+ let byP='';if(multi()&&moneyPerson==='all'&&list.length){const bp={};list.forEach(x=>{const k=x.personId||'';bp[k]=(bp[k]||0)+toBase(x)});const mxp=Math.max(...Object.values(bp),1);
+  byP=`<div class="card"><h2>По членам семьи</h2>${Object.entries(bp).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="hbar"><span class="nm">${k?esc(pn(k)):'Вся семья'}</span><span class="tr"><i style="width:${v/mxp*100}%"></i></span><span class="vl">${fm(v)}</span></div>`).join('')}</div>`}
  const noRate=list.filter(x=>x.cur!==B&&!(x.cur==='BGN'&&B==='EUR')&&!(x.cur==='EUR'&&B==='BGN')&&!(+x.rate)).length;
  const months=new Set(list.map(x=>x.date.slice(0,7))).size;
- let html=`<div class="chips"><button class="chip ${moneyYear==='all'?'on':''}" data-a="mYear" data-id="all">Все годы</button>${years.map(y=>`<button class="chip ${moneyYear===y?'on':''}" data-a="mYear" data-id="${y}">${y}</button>`).join('')}</div>
+ let html=multi()?`<div class="pbar"><button class="pchip ${moneyPerson==='all'?'on':''}" data-a="mPerson" data-id="all">Все расходы</button><button class="pchip ${moneyPerson==='fam'?'on':''}" data-a="mPerson" data-id="fam">Общие семейные</button>${S.people.map(p=>`<button class="pchip ${moneyPerson===p.id?'on':''}" data-a="mPerson" data-id="${p.id}">${dot(p)}${esc(p.name)}</button>`).join('')}</div>`:'';
+ html+=`<div class="chips"><button class="chip ${moneyYear==='all'?'on':''}" data-a="mYear" data-id="all">Все годы</button>${years.map(y=>`<button class="chip ${moneyYear===y?'on':''}" data-a="mYear" data-id="${y}">${y}</button>`).join('')}</div>
  <div class="card"><div class="grid3" style="font-size:.82em"><div class="stat"><b class="c-acc">${fm(total)}</b><span>итого</span></div><div class="stat"><b>${list.length}</b><span>операций</span></div><div class="stat"><b>${fm(months?total/months:0)}</b><span>в месяц акт.</span></div></div>
  ${noRate?`<div class="warnbox">У ${noRate} операций в другой валюте не указан курс — они не вошли в сумму.</div>`:''}</div>
- ${cats.length?`<div class="card"><h2>По статьям</h2>${cats.map(([c,v])=>`<div class="hbar"><span class="nm">${esc(catName(c))}</span><span class="tr"><i style="width:${v/mx*100}%"></i></span><span class="vl">${fm(v)}</span></div>`).join('')}<div class="small muted" style="margin-top:8px">Крупнейшая статья: ${esc(catName(cats[0][0]))} — ${total?Math.round(cats[0][1]/total*100):0}% расходов.</div></div>`:''}${bars}`;
- if(!list.length)html+='<div class="empty">Расходов пока нет.<br>Записывайте пошлины, страховки, нотариуса, переводы — и видите полную стоимость ВНЖ.</div>';
+ ${cats.length?`<div class="card"><h2>По статьям</h2>${cats.map(([c,v])=>`<div class="hbar"><span class="nm">${esc(catName(c))}</span><span class="tr"><i style="width:${v/mx*100}%"></i></span><span class="vl">${fm(v)}</span></div>`).join('')}<div class="small muted" style="margin-top:8px">Крупнейшая статья: ${esc(catName(cats[0][0]))} — ${total?Math.round(cats[0][1]/total*100):0}% расходов.</div></div>`:''}${byP}${bars}`;
+ if(!list.length)html+='<div class="empty">Расходов пока нет.<br>Записывайте пошлины, страховки, нотариуса, переводы, права — и видите полную стоимость ВНЖ.</div>';
  let cm='';for(const x of list){const k=x.date.slice(0,7);if(k!==cm){html+=`<div class="ygroup">${MONTHS[+k.slice(5)-1]} ${k.slice(0,4)}</div>`;cm=k}
-  html+=`<div class="item" data-a="expEdit" data-id="${x.id}"><div class="ic">${x.files&&x.files.length?'🧾':'💶'}</div><div class="tx"><div class="t1">${esc(catName(x.cat))}</div><div class="t2">${fd(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div style="text-align:right"><b>${fm(+x.amount,x.cur)}</b>${x.cur!==B?`<div class="tiny muted">≈ ${fm(toBase(x))}</div>`:''}</div></div>`}
+  html+=`<div class="item" data-a="expEdit" data-id="${x.id}"><div class="ic">${x.files&&x.files.length?'🧾':'💶'}</div><div class="tx"><div class="t1">${esc(catName(x.cat))}</div><div class="t2">${fd(x.date)}${multi()?' · '+(x.personId?esc(pn(x.personId)):'вся семья'):''}${x.note?' · '+esc(x.note):''}</div></div><div style="text-align:right"><b>${fm(+x.amount,x.cur)}</b>${x.cur!==B?`<div class="tiny muted">≈ ${fm(toBase(x))}</div>`:''}</div></div>`}
  return html+'<button class="fab" data-a="expNew">+</button>'}
-function expForm(x){const isNew=!x;const B=S.settings.cur;x=x||{id:uid(),date:todayS(),cat:'fee',amount:'',cur:B,rate:'',note:'',files:[]};draft={kind:'exp',obj:{...x,files:[...(x.files||[])]},isNew,files:[],removed:[]};
+function expForm(x){const isNew=!x;const B=S.settings.cur;x=x||{id:uid(),date:todayS(),cat:'fee',amount:'',cur:B,rate:'',note:'',files:[],personId:moneyPerson!=='all'&&moneyPerson!=='fam'?moneyPerson:''};draft={kind:'exp',obj:{...x,files:[...(x.files||[])]},isNew,files:[],removed:[]};
  openSheet(isNew?'Новый расход':'Расход',`<div class="grid2"><label class="f"><span>Дата</span><input type="date" id="e_date" value="${x.date}"></label><label class="f"><span>Статья</span><select id="e_cat">${S.settings.cats.map(c=>`<option value="${c.id}" ${x.cat===c.id?'selected':''}>${esc(c.n)}</option>`).join('')}</select></label></div>
+ ${multi()?`<label class="f"><span>На кого</span><select id="e_pid"><option value="">Вся семья (общий расход)</option>${S.people.map(p=>`<option value="${p.id}" ${x.personId===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label>`:''}
  <div class="grid2"><label class="f"><span>Сумма</span><input type="number" inputmode="decimal" step="0.01" id="e_amt" value="${x.amount}"></label><label class="f"><span>Валюта</span><select id="e_cur">${Object.keys(CUR).map(c=>`<option ${x.cur===c?'selected':''}>${c}</option>`).join('')}</select></label></div>
  <label class="f" id="e_rateW"><span id="e_rateL"></span><input type="number" inputmode="decimal" step="0.000001" id="e_rate" value="${x.rate||''}"></label>
  <label class="f"><span>Комментарий</span><input type="text" id="e_note" value="${esc(x.note)}" placeholder="Например: продление, Варна"></label>
@@ -525,23 +715,24 @@ function expForm(x){const isNew=!x;const B=S.settings.cur;x=x||{id:uid(),date:to
  <button class="btn pri block" data-a="expSave">Сохранить</button>${!isNew?'<button class="btn danger block" style="margin-top:10px" data-a="expDel">Удалить</button>':''}`);
  const upd=()=>{const c=$('#e_cur').value;const fixed=(c==='BGN'&&B==='EUR')||(c==='EUR'&&B==='BGN');$('#e_rateW').style.display=c===B||fixed?'none':'block';$('#e_rateL').textContent=`Курс: сколько ${B} за 1 ${c}`;if(!$('#e_rate').value&&S.settings.rates[c])$('#e_rate').value=S.settings.rates[c]};
  $('#e_cur').addEventListener('change',upd);upd();$('#e_files').addEventListener('change',e=>addDraftFiles(e.target.files,'#e_new'))}
-async function expSave(){const o=draft.obj;o.date=$('#e_date').value;o.cat=$('#e_cat').value;o.amount=parseFloat(String($('#e_amt').value).replace(',','.'))||0;o.cur=$('#e_cur').value;o.rate=parseFloat($('#e_rate').value)||'';o.note=$('#e_note').value.trim();
+async function expSave(){const o=draft.obj;o.date=$('#e_date').value;o.cat=$('#e_cat').value;o.amount=parseFloat(String($('#e_amt').value).replace(',','.'))||0;o.cur=$('#e_cur').value;o.rate=parseFloat($('#e_rate').value)||'';o.note=$('#e_note').value.trim();if($('#e_pid'))o.personId=$('#e_pid').value;
  if(!o.amount)return toast('Укажите сумму');if(o.rate)S.settings.rates[o.cur]=o.rate;for(const id of draft.removed)await removeFile(id);for(const p of draft.files)o.files.push(await storeFile(p));
  const i=S.expenses.findIndex(x=>x.id===o.id);if(i>=0)S.expenses[i]=o;else S.expenses.push(o);moneyYear=o.date.slice(0,4);save();closeSheet();render();toast('Расход сохранён')}
 
 /* ---------- Ещё ---------- */
 function vMore(){const it=(k,i,t,s)=>`<div class="item" data-a="sub" data-id="${k}"><div class="ic c-acc">${ico(i)}</div><div class="tx"><div class="t1">${t}</div><div class="t2">${s}</div></div><span class="muted">›</span></div>`;
- return`<div class="menu">${it('profile','user','Профиль и ВНЖ','даты карты, паспорта, страховки, адрес')}${it('rules','rules','Правила подсчёта','лимиты отсутствия, Шенген 90/180, 183 дня')}${it('planner','plan','Планировщик поездки','проверить даты до покупки билетов')}${it('deadlines','clock','Сроки и напоминания','продление, ПМЖ, экспорт в Календарь')}${it('checklist','check','Чек-лист продления','документы, которые нужно собрать')}${it('export','exp','Отчёты: Word, PDF, Excel','выгрузка дней, поездок, документов, расходов')}${it('backup','save','Резервные копии','сохранить и восстановить все данные с фото')}${it('settings','gear','Настройки','тема, шрифт, цвета, валюта, PIN-код')}${it('guide','book','Инструкция','подробно о каждой функции')}${it('ref','law','Справочник мигранта','правила ВНЖ и ПМЖ, полезные сроки')}${it('about','info','О приложении и права','авторство и условия использования')}</div>
+ return`<div class="menu">${it('family','family','Семья',S.people.map(p=>p.name).join(', '))}${it('profile','user','Профиль и ВНЖ','страна, даты, адрес, окно продления')}${it('ids','card','Карты ВНЖ, паспорта, права','все карты со сканами двух сторон')}${it('rules','rules','Правила подсчёта','лимиты отсутствия, Шенген 90/180, 183 дня')}${it('planner','plan','Планировщик поездки','проверить даты до покупки билетов')}${it('deadlines','clock','Сроки и напоминания','продление, ПМЖ, права, Календарь')}${it('checklist','check','Чек-лист продления','документы, которые нужно собрать')}${it('crossings','border','Страны и погранпереходы','списки пунктов пропуска')}${it('export','exp','Отчёты: Word, PDF, Excel','по человеку или всей семье')}${it('backup','save','Резервные копии','сохранить и восстановить всё с фото')}${it('settings','gear','Настройки','тема, шрифт, цвета, валюта, PIN-код')}${it('guide','book','Инструкция','подробно о каждой функции')}${it('ref','law','Справочник мигранта','правила ВНЖ и ПМЖ, сроки')}${it('about','info','О приложении и права','авторство и условия использования')}</div>
  <div class="copy">${APP} · версия ${VER}<br>© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
-function vProfile(){const p=S.profile;const f=(id,l,type='text',ph='')=>`<label class="f"><span>${l}</span><input type="${type}" id="p_${id}" value="${esc(p[id])}" placeholder="${ph}"></label>`;
- return`<div class="card"><h2>Личные данные</h2>${f('name','ФИО (для отчётов)','text','Как в паспорте')}${f('citizenship','Гражданство')}${f('address','Адрес регистрации')}</div>
+function vProfile(){const p=person().profile;const e=prof();const f=(id,l,type='text',ph='')=>`<label class="f"><span>${l}</span><input type="${type}" id="p_${id}" value="${esc(p[id])}" placeholder="${ph}"></label>`;
+ return`<div class="card"><h2>${esc(person().name)}</h2>${f('citizenship','Гражданство')}${f('address','Адрес регистрации')}</div>
  <div class="card"><h2>ВНЖ</h2>${f('country','Страна ВНЖ')}${f('permit','Вид статуса')}${f('basis','Основание','text','пенсия, работа, недвижимость, кочевник…')}
  <div class="grid2">${f('permitStart','Дата первого ВНЖ','date')}${f('trackFrom','Учёт дней с','date')}</div><div class="grid2">${f('cardFrom','Карта выдана','date')}${f('cardTo','Карта действует до','date')}</div>
+ ${e.cardTo&&e.cardTo!==p.cardTo||e.permitStart&&e.permitStart!==p.permitStart?`<div class="note">Из раздела «Карты»: ${e.permitStart?'первый ВНЖ '+fd(e.permitStart)+' · ':''}${e.cardTo?'действующая карта до '+fd(e.cardTo):''}. Эти даты используются в расчётах автоматически.</div>`:''}
  <div class="grid2">${f('renewFrom','Продление: не раньше чем за (дн.)','number')}${f('renewTo','и не позже чем за (дн.)','number')}</div>${f('pmzhYears','Лет ВНЖ до права на ПМЖ','number')}</div>
- <div class="card"><h2>Документы</h2><div class="grid2">${f('passportTo','Паспорт действует до','date')}${f('insuranceTo','Страховка до','date')}</div></div>
- <button class="btn pri block" data-a="profSave">Сохранить профиль</button>`}
-function vRules(){const tn={consec:'Максимум дней отсутствия подряд',period:'Максимум дней отсутствия за период',zone:'Шенген: дней в зоне за скользящее окно',minyear:'Минимум дней в стране за календарный год'};
- return`<div class="note">Правила проверяются автоматически на «Обзоре», в планировщике и в отчётах. Лимиты можно менять под вашу страну и тип статуса.</div>
+ <div class="card"><h2>Прочие сроки</h2><div class="grid2">${f('passportTo','Паспорт действует до','date')}${f('insuranceTo','Страховка до','date')}</div><div class="tiny muted">Проще завести их в «Картах» со сканами — даты подтянутся сами.</div></div>
+ <button class="btn pri block" data-a="profSave">Сохранить профиль</button><button class="btn block" style="margin-top:8px" data-a="sub" data-id="ids">${ico('card')}Карты ВНЖ, паспорта, права</button>`}
+function vRules(){const tn={consec:'Максимум дней отсутствия подряд',period:'Максимум дней отсутствия за период',zone:'Шенген: дней в других странах зоны за скользящее окно',minyear:'Минимум дней в стране за календарный год'};
+ return`<div class="note">Правила общие для всей семьи и проверяются для каждого человека отдельно — на «Обзоре», в планировщике и в отчётах.</div>
  <div class="card"><h2>Дни выезда и въезда</h2><label class="chk"><input type="radio" name="tra" value="home" ${S.settings.travelAs==='home'?'checked':''} data-a="travelAs"> Считать днями в стране (обычная практика)</label><label class="chk"><input type="radio" name="tra" value="abroad" ${S.settings.travelAs==='abroad'?'checked':''} data-a="travelAs"> Считать днями отсутствия (строгий подсчёт)</label><div class="tiny muted">Дни в дороге в любом случае показываются отдельно. В Шенгене 90/180 дни въезда и выезда всегда считаются днями пребывания в зоне.</div></div>
  ${S.rules.map(r=>`<div class="card"><div class="row"><b class="sp">${esc(r.name)}</b><label class="chk" style="padding:0"><input type="checkbox" data-a="ruleOn" data-id="${r.id}" ${r.on?'checked':''}></label></div><div class="small muted">${tn[r.type]}. ${esc(r.note||'')}</div>
  <div class="grid2" style="margin-top:8px"><label class="f"><span>Лимит, дней</span><input type="number" data-rf="limit" data-id="${r.id}" value="${r.limit}"></label>${r.type==='period'||r.type==='zone'?`<label class="f"><span>Период, дней</span><input type="number" data-rf="period" data-id="${r.id}" value="${r.period}"></label>`:''}</div>
@@ -549,81 +740,101 @@ function vRules(){const tn={consec:'Максимум дней отсутстви
  ${r.custom?`<button class="btn sm danger" data-a="ruleDel" data-id="${r.id}">Удалить правило</button>`:''}</div>`).join('')}
  <div class="card"><h2>Добавить своё правило</h2><select id="nr_type"><option value="consec">${tn.consec}</option><option value="period">${tn.period}</option><option value="zone">${tn.zone}</option><option value="minyear">${tn.minyear}</option></select><input type="text" id="nr_name" placeholder="Название, например: ВНЖ Сербии" style="margin-top:8px"><button class="btn block" style="margin-top:8px" data-a="ruleAdd">Добавить</button></div>
  <button class="btn block" data-a="rulesReset">Вернуть правила по умолчанию</button>`}
-function vPlanner(){return`<div class="note">Введите даты будущей поездки — приложение проверит все включённые правила (с учётом уже совершённых и запланированных поездок) и подскажет крайнюю безопасную дату возвращения.</div>
+function vPlanner(){return`<div class="note">Введите даты будущей поездки — приложение проверит все включённые правила${multi()?` для «${esc(person().name)}»`:''} (с учётом прошлых и запланированных поездок) и подскажет крайнюю безопасную дату возвращения.</div>
  <div class="card"><div class="grid2"><label class="f"><span>Выезд</span><input type="date" id="pl_dep" value="${todayS()}"></label><label class="f"><span>Возвращение</span><input type="date" id="pl_ret"></label></div>
  <label class="f"><span>Страна</span><input type="text" id="pl_c" list="dlC"></label><label class="chk"><input type="checkbox" id="pl_s"> Страна Шенгена</label>
  <button class="btn pri block" data-a="planCheck">Проверить</button></div><div id="pl_out"></div>${dlC()}`}
-function planCheck(src){const dep=src?src.dep:$('#pl_dep').value,ret=src?src.ret:$('#pl_ret').value;if(!dep)return toast('Укажите дату выезда');
- const draftT={id:src?src.id:'__plan',dep,ret:ret||'',country:src?src.country:$('#pl_c').value,schengen:src?src.schengen:$('#pl_s').checked,planned:true};
- const others=S.trips.filter(t=>t.id!==draftT.id);let html='';
- if(ret){if(ret<dep)return toast('Возвращение раньше выезда');const m=statusMap([...others,draftT],true);const R=dn(ret);const rs=evalAll(m,R,{cur:true,curEnd:S.settings.travelAs==='abroad'?R:R-1,zFrom:dn(dep)});
-  const bad=rs.filter(x=>x.status==='over'&&x.r.type!=='minyear');const rsY=evalAll(m,dn(ret.slice(0,4)+'-12-31'),{fullYear:true}).filter(x=>x.r.type==='minyear');
-  html+=`<div class="card"><h2>${bad.length?'<span class="c-abroad">⚠ Есть нарушения</span>':'<span class="c-home">✓ Лимиты соблюдены</span>'}</h2><div class="small muted">Поездка ${fd(dep)} — ${fd(ret)}: ${dd(Math.max(0,R-dn(dep)-1))} за границей + ${dn(dep)===R?1:2} в дороге.</div>${[...rs.filter(x=>x.r.type!=='minyear'),...rsY].map(ruleRow).join('')}</div>`}
- const lr=latestReturn(draftT,others);html+=`<div class="card"><h2>Крайняя дата возвращения</h2>${lr==null?'<div class="c-abroad">Уже при выезде в эту дату лимиты будут превышены.</div>':`<div class="big" style="font-size:1.4em;font-weight:700">${fdLong(ds(lr))}</div><div class="small muted">Это последний день, когда можно вернуться без превышения включённых лимитов (${dd(lr-dn(dep)+1)} поездки).</div>`}</div>`;
+function planCheck(src){const pid=act();const dep=src?src.dep:$('#pl_dep').value,ret=src?src.ret:$('#pl_ret').value;if(!dep)return toast('Укажите дату выезда');
+ const draftT={id:src?src.id:'__plan',dep,ret:ret||'',country:src?src.country:$('#pl_c').value,schengen:src?src.schengen:$('#pl_s').checked,planned:true,persons:[pid]};
+ const others=tripsOf(pid).filter(t=>t.id!==draftT.id);let html='';
+ if(ret){if(ret<dep)return toast('Возвращение раньше выезда');const m=statusMap([...others,draftT],true);const R=dn(ret);const rs=evalAll(m,R,{pid,cur:true,curEnd:S.settings.travelAs==='abroad'?R:R-1,zFrom:dn(dep)});
+  const bad=rs.filter(x=>x.status==='over'&&x.r.type!=='minyear');const rsY=evalAll(m,dn(ret.slice(0,4)+'-12-31'),{pid,fullYear:true}).filter(x=>x.r.type==='minyear');
+  html+=`<div class="card"><h2>${bad.length?'<span class="c-abroad">⚠ Есть нарушения</span>':'<span class="c-home">✓ Лимиты соблюдены</span>'}</h2><div class="small muted">${multi()?esc(person().name)+': ':''}поездка ${fd(dep)} — ${fd(ret)}: ${dd(Math.max(0,R-dn(dep)-1))} за границей + ${dn(dep)===R?1:2} в дороге.</div>${[...rs.filter(x=>x.r.type!=='minyear'),...rsY].map(ruleRow).join('')}</div>`}
+ const lr=latestReturn(draftT,others,pid);html+=`<div class="card"><h2>Крайняя дата возвращения</h2>${lr==null?'<div class="c-abroad">Уже при выезде в эту дату лимиты будут превышены.</div>':`<div style="font-size:1.4em;font-weight:700">${fdLong(ds(lr))}</div><div class="small muted">Последний день, когда можно вернуться без превышения включённых лимитов (${dd(lr-dn(dep)+1)} поездки).</div>`}</div>`;
+ if(multi()&&!src)html+=`<div class="tiny muted" style="margin-bottom:8px">Чтобы проверить другого члена семьи, выберите его вверху и нажмите «Проверить» ещё раз.</div>`;
  if(!src)html+=`<button class="btn block" data-a="planSave">Сохранить как запланированную поездку</button>`;
  if(src){openSheet('Проверка лимитов',html);return}$('#pl_out').innerHTML=html}
-function vDeadlines(){const L=deadlineList();return`<div class="card">${L.length?L.map(dlRow).join(''):'<div class="small muted">Заполните даты в профиле или добавьте свои сроки.</div>'}</div>
- <div class="card"><h2>Мои сроки</h2>${S.deadlines.map(x=>`<div class="row" style="margin-bottom:6px"><span class="sp small">${fd(x.date)} · ${esc(x.name)}</span><button class="btn sm danger" data-a="dlDel" data-id="${x.id}">×</button></div>`).join('')}
- <input type="text" id="dl_n" placeholder="Например: запись в миграцию, выписка из банка"><div class="grid2" style="margin-top:8px"><input type="date" id="dl_d"><button class="btn" data-a="dlAdd">Добавить</button></div></div>
- <div class="card"><h2>Напоминания в календаре iPhone</h2><p class="small muted">Выгрузите все сроки в файл календаря: у каждого события будет напоминание за 30 и за 7 дней. Откройте файл — iPhone предложит добавить события в «Календарь».</p><button class="btn pri block" data-a="ics">${ico('cal')}Добавить сроки в Календарь</button></div>`}
-function vChecklist(){const d=S.checklist.filter(x=>x.on).length;return`<div class="card"><div class="small">Собрано: <b>${d} из ${S.checklist.length}</b></div><div class="bar"><i class="${d===S.checklist.length?'ok':''}" style="width:${S.checklist.length?d/S.checklist.length*100:0}%"></i></div>
- ${S.checklist.map(x=>`<div class="row"><label class="chk sp"><input type="checkbox" data-a="clOn" data-id="${x.id}" ${x.on?'checked':''}><span style="${x.on?'text-decoration:line-through;color:var(--muted)':''}">${esc(x.t)}</span></label><button class="btn sm" data-a="clDel" data-id="${x.id}">×</button></div>`).join('')}</div>
+function vDeadlines(){const L=deadlineList();return`<div class="card">${L.length?L.map(dlRow).join(''):'<div class="small muted">Заведите карты ВНЖ, паспорт и права в «Картах» или добавьте свои сроки.</div>'}</div>
+ <div class="card"><h2>Мои сроки</h2>${S.deadlines.filter(x=>!x.personId||x.personId===act()).map(x=>`<div class="row" style="margin-bottom:6px"><span class="sp small">${fd(x.date)} · ${esc(x.name)}${x.personId?'':' (вся семья)'}</span><button class="btn sm danger" data-a="dlDel" data-id="${x.id}">×</button></div>`).join('')}
+ <input type="text" id="dl_n" placeholder="Например: запись в миграцию, выписка из банка">${multi()?`<select id="dl_p" style="margin-top:8px"><option value="${act()}">${esc(person().name)}</option><option value="">Вся семья</option></select>`:''}<div class="grid2" style="margin-top:8px"><input type="date" id="dl_d"><button class="btn" data-a="dlAdd">Добавить</button></div></div>
+ <div class="card"><h2>Напоминания в календаре iPhone</h2><p class="small muted">Выгрузите сроки${multi()?' всей семьи':''} в файл календаря: у каждого события будет напоминание за 30 и за 7 дней. Туда же попадут <b>крайние даты возвращения</b> для текущих и запланированных поездок — с напоминаниями за 30, 14, 7, 3 и 1 день. Откройте файл — iPhone предложит добавить события в «Календарь».</p><button class="btn pri block" data-a="ics">${ico('cal')}Добавить сроки в Календарь</button></div>`}
+function vChecklist(){const cl=person().checklist;const d=cl.filter(x=>x.on).length;return`<div class="card"><div class="small">Собрано: <b>${d} из ${cl.length}</b></div><div class="bar"><i class="${d===cl.length?'ok':''}" style="width:${cl.length?d/cl.length*100:0}%"></i></div>
+ ${cl.map(x=>`<div class="row"><label class="chk sp"><input type="checkbox" data-a="clOn" data-id="${x.id}" ${x.on?'checked':''}><span style="${x.on?'text-decoration:line-through;color:var(--muted)':''}">${esc(x.t)}</span></label><button class="btn sm" data-a="clDel" data-id="${x.id}">×</button></div>`).join('')}</div>
  <div class="card"><input type="text" id="cl_t" placeholder="Добавить пункт"><button class="btn block" style="margin-top:8px" data-a="clAdd">Добавить</button></div>
  <div class="row"><button class="btn block" data-a="clReset">Снять все отметки</button><button class="btn block" data-a="clDefault">Список по умолчанию</button></div>
  <div class="tiny muted" style="margin-top:10px">Список ориентировочный: точный перечень зависит от основания ВНЖ и отделения миграции — уточняйте перед подачей.</div>`}
+function vCrossings(){const s=S.settings;const n=CROSSDIRS.filter(d=>crossVisible(d,'')).reduce((a,d)=>a+d.t.length,0);
+ return`<div class="note">Отметьте страны, куда вы ездите или через которые проезжаете. В карточке поездки появятся все пункты пропуска этих направлений (аэропорты, автомобильные и ж/д переходы, паромы). Пункты пропуска вашей страны ВНЖ (из профиля) доступны всегда. Сейчас доступно пунктов: <b>${n}</b>.</div>
+ <div class="card"><h2>Страны поездок</h2>${VCOUNTRIES.map(c=>`<label class="chk"><input type="checkbox" data-a="visited" data-id="${esc(c)}" ${s.visited.includes(c)||homeCountries().has(c)?'checked':''} ${homeCountries().has(c)?'disabled':''}> ${esc(c)}${homeCountries().has(c)?' <span class="badge acc">страна ВНЖ</span>':''} <span class="tiny muted">· ${CROSSDIRS.filter(d=>d.c.includes(c)).reduce((a,d)=>a+d.t.length,0)} пунктов</span></label>`).join('')}</div>
+ <div class="card"><h2>Ранее внесённые пункты</h2><p class="small muted">Пункты, которые вы уже выбирали или вписывали вручную, — показываются первыми в списке.</p>
+ ${s.recentCross.map((x,i)=>`<div class="row" style="margin-bottom:6px"><span class="sp small">${esc(x)}</span><button class="btn sm" data-a="crossDel" data-id="${i}">×</button></div>`).join('')||'<div class="small muted">Пока пусто.</div>'}
+ <div class="grid2" style="margin-top:8px"><input type="text" id="cr_new" placeholder="Свой пункт пропуска"><button class="btn" data-a="crossAdd">Добавить</button></div></div>
+ <details class="g"><summary>Весь справочник пунктов пропуска</summary><div class="gb">${CROSSDIRS.map(d=>`<p><b>${esc(d.n)}</b><br>${d.t.map(esc).join('<br>')}</p>`).join('')}<p class="tiny muted">Работа отдельных пунктов (особенно паромов и переходов на границе РФ и ЕС) может быть приостановлена — проверяйте перед поездкой.</p></div></details>`}
 function vExport(){const A=trackStart(),T=TD();return`<div class="card"><h2>Период отчёта</h2><div class="grid2"><label class="f"><span>С</span><input type="date" id="x_a" value="${ds(A)}"></label><label class="f"><span>По</span><input type="date" id="x_b" value="${ds(T)}"></label></div>
  <div class="chips"><button class="chip" data-a="xPreset" data-id="year">Этот год</button><button class="chip" data-a="xPreset" data-id="last">Прошлый год</button><button class="chip" data-a="xPreset" data-id="12">12 месяцев</button><button class="chip" data-a="xPreset" data-id="5y">5 лет</button><button class="chip" data-a="xPreset" data-id="all">Весь учёт</button></div>
- <label class="chk"><input type="checkbox" id="x_ph" checked> Включить фото документов (Word и PDF)</label><label class="chk"><input type="checkbox" id="x_ex" checked> Включить расходы</label><label class="chk"><input type="checkbox" id="x_ru" checked> Включить проверку правил</label></div>
+ ${multi()?`<div class="f"><span class="small muted">Для кого отчёт</span><div style="margin-top:6px">${personChecks('xp',[act()])}</div></div>`:''}
+ <label class="chk"><input type="checkbox" id="x_ph" checked> Включить фото документов и сканы карт (Word и PDF)</label><label class="chk"><input type="checkbox" id="x_ex" checked> Включить расходы</label><label class="chk"><input type="checkbox" id="x_ru" checked> Включить проверку правил</label></div>
  <button class="btn pri block" data-a="xWord" style="margin-bottom:8px">📄 Отчёт в Word (.docx)</button>
  <button class="btn pri block" data-a="xPdf" style="margin-bottom:8px">🧾 Отчёт в PDF</button>
  <button class="btn pri block" data-a="xXls" style="margin-bottom:8px">📊 Таблица Excel (.xlsx)</button>
- <div class="note">Excel содержит листы: «Сводка», «Поездки», «По дням» (каждый день периода со статусом), «По месяцам», «Документы», «Расходы» и «Статьи расходов».<br><br>PDF: в окне печати нажмите «Поделиться» (или разведите двумя пальцами превью) → «Сохранить в Файлы» или отправьте в мессенджер.</div>`}
-function vBackup(){const lb=S.meta.lastBackup;return`<div class="card"><h2>${ico('save')}Сохранить копию</h2><p class="small">Один файл со всеми поездками, документами (вместе с фото), расходами и настройками. Храните его в «Файлах» / iCloud Drive, в «Избранном» Telegram или на компьютере.</p><div class="small muted">Последняя копия: ${lb?fdLong(lb):'ещё не создавалась'}</div><button class="btn pri block" style="margin-top:10px" data-a="bkSave">Создать резервную копию</button></div>
- <div class="card"><h2>Восстановить</h2><p class="small">Выберите ранее сохранённый файл копии (.json).</p><label class="chk"><input type="radio" name="bkm" value="merge" checked> Объединить с текущими данными</label><label class="chk"><input type="radio" name="bkm" value="replace"> Заменить все текущие данные</label><label class="btn block">Выбрать файл копии<input type="file" id="bk_file" accept=".json,application/json" hidden></label></div>
- <div class="card"><h2>Перенос на другое устройство</h2><p class="small muted">Создайте копию на старом телефоне → отправьте файл себе (AirDrop, Telegram, почта) → на новом устройстве установите приложение и восстановите копию здесь.</p></div>
+ <div class="note">Excel: «Сводка», «Поездки» (с пунктами пропуска и участниками), «По дням» (статус каждого дня — для семьи по колонке на человека), «По месяцам», «Документы», «Карты и права», «Расходы», «Статьи расходов».<br><br>PDF: в окне печати нажмите «Поделиться» → «Сохранить в Файлы» или отправьте в мессенджер.</div>`}
+function vBackup(){const lb=S.meta.lastBackup;return`<div class="card"><h2>${ico('save')}Сохранить копию</h2><p class="small">Один файл со всеми членами семьи, поездками, документами, картами и сканами, расходами и настройками. Храните его в «Файлах» / iCloud Drive, в «Избранном» Telegram или на компьютере.</p><div class="small muted">Последняя копия: ${lb?fdLong(lb):'ещё не создавалась'}</div><button class="btn pri block" style="margin-top:10px" data-a="bkSave">Создать резервную копию</button></div>
+ <div class="card"><h2>Восстановить</h2><p class="small">Выберите ранее сохранённый файл копии (.json). Подходят и копии версии 1.0.</p><label class="chk"><input type="radio" name="bkm" value="merge" checked> Объединить с текущими данными</label><label class="chk"><input type="radio" name="bkm" value="replace"> Заменить все текущие данные</label><label class="btn block">Выбрать файл копии<input type="file" id="bk_file" accept=".json,application/json" hidden></label></div>
+ <div class="card"><h2>Перенос на другое устройство</h2><p class="small muted">Создайте копию на старом телефоне → отправьте файл себе (AirDrop, Telegram, почта) → на новом устройстве установите приложение и восстановите копию здесь. Так же можно вести учёт семьи на телефонах супругов: обменивайтесь копиями в режиме «Объединить».</p></div>
  <div class="card"><h2 class="c-abroad">Удалить все данные</h2><p class="small muted">Сначала сохраните копию — удаление необратимо.</p><button class="btn danger block" data-a="wipe">Удалить всё</button></div>`}
+const localGet=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
 function vSettings(){const s=S.settings;return`<div class="card"><h2>Тема оформления</h2><div class="themes">${Object.entries(THEMES).map(([k,[n,c]])=>`<button class="${s.theme===k?'on':''}" data-a="theme" data-id="${k}"><i style="background:${c}"></i>${n}</button>`).join('')}</div></div>
  <div class="card"><h2>Текст</h2><label class="f"><span>Размер шрифта: <b id="fsv">${s.fs}</b> px</span><input type="range" min="14" max="24" step="1" id="s_fs" value="${s.fs}"></label>
  <label class="f"><span>Шрифт</span><select id="s_font"><option value="system" ${s.font==='system'?'selected':''}>Системный</option><option value="serif" ${s.font==='serif'?'selected':''}>С засечками</option><option value="round" ${s.font==='round'?'selected':''}>Округлый</option><option value="mono" ${s.font==='mono'?'selected':''}>Моноширинный</option></select></label>
  <div class="row" style="margin-bottom:10px"><span class="sp">Цвет текста</span><input type="color" id="s_tc" value="${s.textColor||'#1e2227'}"><button class="btn sm" data-a="tcReset">Сброс</button></div>
  <div class="row" style="margin-bottom:6px"><span class="sp">Акцентный цвет</span><input type="color" id="s_ac" value="${s.accent||'#3d6b8a'}"><button class="btn sm" data-a="acReset">Сброс</button></div>
  <label class="chk"><input type="checkbox" id="s_hc" ${s.contrast?'checked':''}> Повышенная контрастность</label></div>
+ <div class="item" data-a="sub" data-id="crossings"><div class="ic c-acc">${ico('border')}</div><div class="tx"><div class="t1">Страны поездок и погранпереходы</div><div class="t2">${s.visited.length} стран отмечено</div></div><span class="muted">›</span></div>
+ <div class="item" data-a="sub" data-id="family"><div class="ic c-acc">${ico('family')}</div><div class="tx"><div class="t1">Члены семьи</div><div class="t2">${S.people.length} ${plural(S.people.length,'человек','человека','человек')}</div></div><span class="muted">›</span></div>
  <div class="card"><h2>Валюта и статьи расходов</h2><label class="f"><span>Основная валюта</span><select id="s_cur">${Object.keys(CUR).map(c=>`<option ${c===s.cur?'selected':''}>${c}</option>`).join('')}</select></label>
  ${s.cats.map(c=>`<div class="row" style="margin-bottom:6px"><input type="text" data-cat="${c.id}" value="${esc(c.n)}"><button class="btn sm" data-a="catDel" data-id="${c.id}">×</button></div>`).join('')}<button class="btn block" data-a="catAdd">+ Статья расходов</button></div>
  <div class="card"><h2>${ico('lock')}Защита PIN-кодом</h2><p class="small muted">PIN спрашивается при открытии приложения. Если забыть PIN, войти можно будет только удалив данные — держите резервную копию.</p>${s.pinHash?'<button class="btn block danger" data-a="pinOff">Отключить PIN</button>':'<div class="grid2"><input type="password" inputmode="numeric" maxlength="6" id="s_pin" placeholder="4–6 цифр"><button class="btn" data-a="pinOn">Включить</button></div>'}</div>
+ <div class="card"><h2>⚠ Предупреждения</h2><label class="f"><span>Предупреждать заранее — за сколько дней до лимита или срока</span><select id="s_warn">${[7,10,14,21,30,45,60].map(d=>`<option value="${d}" ${+s.warnDays===d?'selected':''}>за ${dd(d)}</option>`).join('')}</select></label>
+ <p class="small muted">Предупреждения показываются вверху «Обзора» (по всей семье) и цифрой на вкладке: до лимита «6 месяцев подряд», «90/180», «за 5 лет», крайняя дата возвращения, запланированные поездки с нарушением, окончание карт, прав, паспорта, окно продления.</p>
+ ${'Notification' in window?(s.notify&&Notification.permission==='granted'?'<div class="row"><span class="sp small c-home">✓ Уведомления на телефоне включены</span><button class="btn sm" data-a="notifyOff">Выключить</button></div>':'<button class="btn pri block" data-a="notifyOn">🔔 Включить уведомления на телефоне</button>'):'<div class="small muted">Этот браузер не поддерживает уведомления. На iPhone они работают для приложения, установленного на экран «Домой» (iOS 16.4 и новее).</div>'}
+ <div class="tiny muted" style="margin-top:8px">На iPhone уведомление и цифра на иконке обновляются, когда вы открываете приложение. Чтобы напоминание пришло точно в нужный день, даже если приложение не открывать, добавьте сроки и крайние даты возвращения в Календарь: «Сроки → Добавить в Календарь».</div></div>
+ <div class="card"><h2>Иконка на экране «Домой»</h2><div class="icons">${[['a','Паспорт'],['b','Штамп'],['c','Календарь'],['d','Монограмма']].map(([k,n])=>`<button class="${(localGet('dni-icon')||'a')===k?'on':''}" data-a="icon" data-id="${k}"><img src="icons/icon-${k}-192.png" alt=""><span>${n}</span></button>`).join('')}</div>
+ <div class="warnbox">Как поменять иконку на iPhone: 1) сохраните резервную копию; 2) выберите иконку здесь; 3) удалите старую иконку с экрана «Домой» (вместе с ней iPhone удаляет данные приложения); 4) откройте приложение в Safari → «Поделиться» → «На экран „Домой“» — там же можно изменить название; 5) восстановите резервную копию.</div></div>
  <div class="card"><button class="btn block" data-a="onboardAgain">Показать приветствие заново</button></div>`}
 function vAbout(){const y=new Date().getFullYear();return`<div class="card" style="text-align:center"><img src="icons/icon-192.png" alt="" style="width:84px;height:84px;border-radius:20px"><h2 style="justify-content:center;margin-top:10px">${APP}</h2><div class="small muted">Учёт дней пребывания, поездок и документов для ВНЖ · версия ${VER}</div></div>
  <div class="card"><h2>Правообладатель</h2><p class="small"><b>© ${y} ${OWNER}.</b> Все права защищены.</p>
- <p class="small">Приложение «${APP}», его исходный код, дизайн, структура, тексты инструкции и справочника являются объектами авторского права и принадлежат ${OWNER}.</p>
+ <p class="small">Приложение «${APP}», его исходный код, дизайн, структура, справочник пунктов пропуска, тексты инструкции и справочника являются объектами авторского права и принадлежат ${OWNER}.</p>
  <p class="small">Запрещается без письменного разрешения правообладателя: копировать, изменять, декомпилировать, переводить, распространять, продавать, сдавать в аренду, публиковать приложение или его части, а также создавать на его основе производные продукты. Разрешено личное некоммерческое использование приложения его законным пользователем.</p>
  <p class="small">Нарушение авторских прав влечёт ответственность в соответствии с законодательством об авторском праве и смежных правах.</p></div>
- <div class="card"><h2>Конфиденциальность</h2><p class="small">Приложение работает без регистрации и без интернета. Ваши данные и фото хранятся только на вашем устройстве и никуда не передаются. Выгрузки и резервные копии создаются только по вашей команде.</p></div>
+ <div class="card"><h2>Конфиденциальность</h2><p class="small">Приложение работает без регистрации и без интернета. Данные, номера документов и сканы хранятся только на вашем устройстве и никуда не передаются. Выгрузки и резервные копии создаются только по вашей команде. Для защиты включите PIN-код в настройках.</p></div>
  <div class="card"><h2>Ограничение ответственности</h2><p class="small">Приложение — инструмент учёта. Правила миграционного законодательства меняются и могут применяться по-разному в разных отделениях, поэтому окончательные решения сверяйте с миграционной службой или юристом.</p></div>`}
 
 /* ---------- Инструкция и справочник ---------- */
 const G=(t,b,open)=>`<details class="g" ${open?'open':''}><summary>${t}</summary><div class="gb">${b}</div></details>`;
-function vGuide(){return G('1. Установка на телефон',`<p><b>iPhone / iPad:</b></p><ol><li>Откройте приложение в браузере <b>Safari</b>.</li><li>Нажмите кнопку «Поделиться» (квадрат со стрелкой вверх).</li><li>Прокрутите и выберите «На экран „Домой“» → «Добавить».</li><li>На экране появится иконка «Дни ВНЖ». Запускайте приложение только с неё — так оно работает как обычное приложение и без интернета.</li></ol><p><b>Android:</b> откройте в Chrome → меню ⋮ → «Установить приложение» или «Добавить на главный экран».</p><div class="note">Данные хранятся внутри установленного приложения. Если открыть его в браузере отдельно — там будет пустая копия. Всегда пользуйтесь иконкой.</div>`,true)
-+G('2. Первый запуск и профиль',`<p>При первом запуске укажите страну ВНЖ, дату первого ВНЖ, срок действия карты и дату начала учёта. Позже всё можно дополнить в «Ещё → Профиль и ВНЖ»: ФИО (попадёт в отчёты), основание, даты паспорта и страховки, окно подачи на продление (по умолчанию за 60–14 дней до окончания карты).</p><p><b>Дата первого ВНЖ</b> важна: от неё считаются 5-летние периоды для ПМЖ и дата, когда возникает право подать на ПМЖ.</p>`)
-+G('3. Как считаются дни',`<ul><li><b>В стране</b> — все дни, когда вы не в поездке.</li><li><b>В дороге</b> — день выезда и день возвращения каждой поездки.</li><li><b>За границей</b> — полные дни между выездом и возвращением.</li></ul><p>Пример: выезд 10 мая, возвращение 15 мая → 2 дня в дороге (10 и 15) и 4 дня за границей (11–14).</p><p>Как учитывать дни в дороге, выбирается в «Правилах подсчёта»: <b>как дни в стране</b> (обычная практика — вы физически были в стране часть дня) или <b>как отсутствие</b> (строгий режим, если ваша миграционная служба считает так). Для Шенгена 90/180 дни въезда и выезда всегда идут в счёт пребывания в зоне — так считает официальный калькулятор ЕС.</p><p>Если вы сейчас за границей и дату возвращения ещё не знаете — отметьте «Ещё не вернулась(-ся)»: дни будут считаться по сегодняшний, а на «Обзоре» появится крайняя безопасная дата возвращения.</p>`)
-+G('4. Поездки',`<ol><li>Вкладка «Поездки» → «+».</li><li>Даты выезда и возвращения, страна (из подсказок), транспорт, цель, заметка (номер рейса, где стоит штамп).</li><li>«Страна Шенгена» ставится автоматически для стран зоны — эти дни учитываются в правиле 90/180.</li><li>Сразу прикрепите фото билетов и посадочных — они сохранятся как документы, связанные с поездкой.</li></ol><p>Карточка поездки показывает дни за границей, в дороге и количество подтверждений. Метка <span class="badge warn">нет подтверждений</span> подскажет, к каким поездкам ещё нет билетов.</p><p><b>Запланированные поездки</b> (галочка «Запланированная») не входят в фактические дни, но учитываются в планировщике и видны в календаре пунктиром.</p>`)
-+G('5. Календарь',`<p>Каждый день окрашен: зелёный — в стране, красный — за границей, оранжевый — в дороге, синий пунктир — план. Точка — есть документ за этот день. Нажмите на день, чтобы увидеть детали, добавить документ на эту дату или начать поездку с неё. Под календарём — итоги месяца и года.</p>`)
-+G('6. Документы и фото — доказательства присутствия',`<p>Миграционная служба может запросить подтверждение, что вы действительно жили в стране. Лучшие доказательства:</p><ul><li>билеты, посадочные талоны, штампы в паспорте — подтверждают даты выездов;</li><li>чеки из магазинов и аптек, оплаты картой, выписки из банка — подтверждают присутствие по датам;</li><li>счета за электричество, воду, интернет, договор аренды;</li><li>визиты к врачу, справки, документы из общины.</li></ul><p>Нажмите «+» → сфотографируйте документ или выберите фото/PDF → укажите тип, дату, название. Фото автоматически сжимаются, чтобы не занимать много места.</p><p>Блок <b>«Подтверждение присутствия»</b> показывает месяцы, где вы были в стране, но нет ни одного документа — нажмите на месяц, чтобы сразу добавить документ. Цель — минимум 1–2 документа каждый месяц.</p>`)
-+G('7. Правила и лимиты',`<p>На «Обзоре» для каждого правила — шкала: зелёная — в норме, оранжевая — использовано 80% лимита и больше, красная — превышено.</p><ul><li><b>Отсутствие подряд</b> — самая длинная поездка и текущая (если вы за границей).</li><li><b>Отсутствие за 5 лет</b> — сумма дней отсутствия в текущем 5-летнем цикле от даты первого ВНЖ (или скользящее окно).</li><li><b>Шенген 90/180</b> — дни в других странах Шенгена за последние 180 дней.</li><li><b>183 дня</b> — дни в стране за календарный год (налоговое резидентство).</li></ul><p>Лимиты и периоды можно изменить и добавить свои правила — например, для ВНЖ другой страны.</p>`)
-+G('8. Планировщик поездки',`<p>«Обзор» → «Планировщик» или «Ещё → Планировщик». Введите даты будущей поездки до покупки билетов — приложение покажет, не нарушит ли она правила, и рассчитает <b>крайнюю дату возвращения</b>. Результат можно сохранить как запланированную поездку. У сохранённой поездки есть кнопка «Проверить лимиты».</p>`)
-+G('9. Сроки, напоминания, чек-лист',`<p>«Сроки» — обратный отсчёт до окончания карты, окна подачи на продление, 5 лет ВНЖ, окончания паспорта и страховки, плюс ваши собственные даты. Кнопка «Добавить сроки в Календарь» создаёт файл календаря — откройте его, и iPhone добавит события с напоминаниями за 30 и 7 дней.</p><p>«Чек-лист продления» — отмечайте собранные документы, добавляйте свои пункты; перед следующим продлением снимите отметки.</p>`)
-+G('10. Расходы на ВНЖ и аналитика',`<p>Вкладка «Расходы» → «+»: дата, статья (госпошлины, карта, страховка, нотариус и переводы, аренда, адвокат, банк, дорога…), сумма и валюта, фото чека. Если валюта отличается от основной, укажите курс — он запомнится. Курс лева к евро фиксированный и подставляется сам.</p><p>Аналитика: итог за год или за всё время, средний расход в месяц, распределение по статьям и график по месяцам или годам. Так видна реальная стоимость каждого года ВНЖ. Статьи расходов меняются в «Настройках».</p>`)
-+G('11. Отчёты Word, PDF, Excel',`<ol><li>«Ещё → Отчёты».</li><li>Выберите период (кнопки «Этот год», «5 лет», «Весь учёт» и т.д.).</li><li>Отметьте, включать ли фото документов, расходы и проверку правил.</li><li><b>Word</b> — готовый документ с таблицами и фотографиями: можно распечатать, подписать, приложить к заявлению.</li><li><b>PDF</b> — откроется окно печати: нажмите «Поделиться» → «Сохранить в Файлы» или отправьте в Telegram/WhatsApp.</li><li><b>Excel</b> — подробная таблица: каждый день периода со статусом, поездки, месяцы, документы, расходы.</li></ol><p>Файл открывается в меню «Поделиться» — сохраните в «Файлы», отправьте в мессенджер, по почте или AirDrop.</p>`)
-+G('12. Резервные копии — обязательно!',`<p>Все данные хранятся только на телефоне. Если удалить иконку приложения, очистить данные Safari или сменить телефон — данные пропадут. Поэтому:</p><ul><li>раз в 1–2 недели нажимайте «Резервные копии → Создать» и сохраняйте файл в «Файлы» / iCloud Drive или в «Избранное» Telegram;</li><li>на «Обзоре» появится напоминание, если копия давно не делалась;</li><li>восстановление: «Резервные копии → Выбрать файл копии» — можно объединить с текущими данными или заменить их.</li></ul>`)
-+G('13. Настройки и защита',`<p>Темы оформления (светлые и тёмные, «Авто» — по системе), размер и вид шрифта, цвет текста и акцентный цвет, повышенная контрастность, основная валюта, статьи расходов. PIN-код защищает приложение от посторонних глаз при открытии.</p>`)
-+G('14. Частые вопросы',`<p><b>Нужен ли интернет?</b> Нет, после установки всё работает офлайн.</p><p><b>Где хранятся фото?</b> Внутри приложения на устройстве, в сжатом виде. Оригиналы в «Фото» остаются нетронутыми.</p><p><b>Можно ли пользоваться на iPhone и iPad одновременно?</b> Данные не синхронизируются автоматически; переносите их резервной копией с «Объединить».</p><p><b>Пересекаются две поездки?</b> Проверьте даты: день считается один раз.</p>`)
+function vGuide(){return G('1. Установка на телефон',`<p><b>iPhone / iPad:</b></p><ol><li>Откройте приложение в браузере <b>Safari</b>.</li><li>Нажмите кнопку «Поделиться» (квадрат со стрелкой вверх).</li><li>Выберите «На экран „Домой“» → «Добавить».</li><li>Запускайте приложение только с иконки «Мой ВНЖ» — так оно работает как обычное приложение и без интернета.</li></ol><p><b>Android:</b> Chrome → меню ⋮ → «Установить приложение» или «Добавить на главный экран».</p><div class="note">Данные хранятся внутри установленного приложения. Если открыть его в браузере отдельно — там будет пустая копия. Всегда пользуйтесь иконкой.</div>`,true)
++G('2. Первый запуск и семья',`<p>При первом запуске укажите своё имя, <b>свою страну ВНЖ</b> (любую — Болгария, Сербия, Испания, Кипр, Турция…), дату первого ВНЖ и срок карты. Затем нажмите <b>«+ член семьи»</b> над экраном и добавьте супруга, детей, родителей — у каждого своё имя и цвет.</p><p>Строка с именами вверху «Обзора», «Поездок», «Календаря» и «Документов» переключает, <b>чьи</b> данные вы видите. Каждый член семьи считается отдельно: свои дни, лимиты, карты и сроки — ведь члены семьи могут уезжать в разное время и на разный срок.</p><p>На «Обзоре» блок <b>«Семья сегодня»</b> показывает всех сразу: кто где находится и у кого лимиты близки к превышению.</p><p>Новому члену семьи можно скопировать страну, даты ВНЖ и адрес, а также сразу добавить его во все ваши поездки.</p>`)
++G('3. Как считаются дни: страна ВНЖ и Шенген отдельно',`<ul><li><b>В стране ВНЖ</b> (например, «в Болгарии») — дни, когда вы не в поездке, плюс дни выезда/въезда (по настройке).</li><li><b>В дороге</b> — день выезда и день возвращения каждой поездки.</li><li><b>В других странах Шенгена</b> — полные дни поездок в страны зоны (Греция, Румыния, Германия…).</li><li><b>Вне Шенгена</b> — полные дни в Турции, России, Сербии и других странах вне зоны.</li><li><b>В Шенгенской зоне всего</b> — если ваша страна ВНЖ в Шенгене (Болгария, Греция, Испания…): она сама + другие страны зоны + дни в дороге. Если не в Шенгене (Сербия, Черногория, Турция…) — только поездки в страны зоны.</li></ul><p>Пример: выезд 10 мая в Турцию, возвращение 15 мая → 2 дня в дороге (10 и 15), 4 дня вне Шенгена (11–14). Если бы это была Греция — 4 дня в других странах Шенгена.</p><p>Как учитывать дни в дороге, выбирается в «Правилах подсчёта»: <b>как дни в стране</b> (обычная практика) или <b>как отсутствие</b> (строгий режим). Для Шенгена 90/180 дни въезда и выезда всегда идут в счёт пребывания в зоне.</p><p>В календаре: зелёный — страна ВНЖ, фиолетовый — другие страны Шенгена, красный — вне Шенгена, оранжевый — в дороге.</p>`)
++G('4. Поездки и пункты пропуска',`<ol><li>«Поездки» → «+».</li><li>Отметьте, <b>кто едет</b> (или «Вся семья»). Общую поездку достаточно внести один раз.</li><li>Страна поездки — отметка «Шенген» ставится автоматически.</li><li><b>Выезд:</b> дата, транспорт, пункт пропуска.</li><li><b>Въезд обратно:</b> дата, транспорт, пункт пропуска — или «Ещё не вернулись», тогда дни считаются по сегодняшний.</li><li>Цель, заметка (рейс, номер билета), фото билетов и посадочных.</li></ol><p><b>Пункты пропуска</b> выбираются из списка: сначала «Ранее внесённые» (то, что вы уже выбирали), затем направления, связанные со страной поездки, затем все остальные отмеченные. Если нужного пункта нет — «✎ Ввести свой пункт пропуска», он запомнится.</p><p>Какие направления показывать, задаётся в «Ещё → Страны и погранпереходы»: отметьте страны, куда ездите, — и в списке появятся все их аэропорты и переходы с Болгарией.</p>`)
++G('5. Календарь',`<p>Каждый день выбранного члена семьи окрашен по статусу, пунктир — запланированные поездки, точка — есть документ. Нажмите на день: детали, пункт пропуска, документы, кнопки «Документ на эту дату» и «Поездка с даты». Под календарём — итоги месяца и года с разбивкой Болгария / Шенген / вне Шенгена.</p>`)
++G('6. Карты ВНЖ, паспорта, водительские права',`<p>«Документы» → «Карты ВНЖ, паспорта, права» (или «Ещё»). Добавляйте:</p><ul><li><b>первую карту ВНЖ</b> и <b>каждое продление</b> отдельно, затем карту ПМЖ;</li><li>загранпаспорт и внутренний паспорт;</li><li><b>водительские права РФ</b>, <b>зарубежные (болгарские) права</b>, международное удостоверение;</li><li>страховку, визу D и другие документы.</li></ul><p>К каждому — скан <b>лицевой</b> и <b>оборотной</b> стороны, номер, даты выдачи и окончания. Даты окончания автоматически появляются в «Сроках», самая поздняя карта ВНЖ становится действующей, а дата первой карты — началом 5-летнего срока для ПМЖ. Сканы можно включить в отчёт Word/PDF.</p>`)
++G('7. Документы — доказательства присутствия',`<p>Миграционная служба может запросить подтверждение, что вы действительно жили в стране. Лучшие доказательства: билеты, посадочные, штампы; чеки, оплаты картой, выписки; коммунальные счета, договор аренды; визиты к врачу, справки.</p><p>Документ можно отнести к конкретному человеку или ко всей семье (если никто не отмечен). Блок <b>«Подтверждение присутствия»</b> показывает месяцы без документов — нажмите на месяц, чтобы сразу добавить документ.</p>`)
++G('8. Правила, лимиты, планировщик',`<p>Правила общие для семьи и проверяются для каждого отдельно: отсутствие подряд (6 месяцев), отсутствие за 5 лет для ПМЖ, Шенген 90/180 для других стран зоны, 183 дня. Лимиты можно менять и добавлять свои.</p><p><b>Планировщик</b>: введите даты будущей поездки — приложение покажет, не нарушит ли она правила, и рассчитает крайнюю дату возвращения для выбранного человека.</p>`)
++G('9. Сроки, напоминания, чек-лист',`<p>«Сроки» — обратный отсчёт до окончания карты, окна подачи на продление, 5 лет ВНЖ, паспорта, прав, страховки и ваших собственных дат (для человека или всей семьи). «Добавить сроки в Календарь» создаёт файл с напоминаниями за 30 и 7 дней по всей семье.</p><p>«Чек-лист продления» ведётся отдельно для каждого члена семьи.</p>`)
++G('9а. Предупреждения и уведомления',`<p>Вверху «Обзора» появляется блок <b>«Требует внимания»</b>, а на вкладке «Обзор» — красная цифра, когда у кого-то из семьи:</p><ul><li>до лимита «6 месяцев подряд», «90/180» или «за 5 лет» осталось меньше выбранного числа дней (по умолчанию 14);</li><li>приближается крайняя дата возвращения из текущей поездки;</li><li>запланированная поездка нарушит лимит;</li><li>скоро истекает карта ВНЖ, паспорт, права, страховка или открывается окно продления.</li></ul><p>Порог меняется в «Настройки → Предупреждения». Там же кнопка <b>«Включить уведомления на телефоне»</b>: на iPhone (iOS 16.4+) приложение, установленное на экран «Домой», покажет уведомление и цифру на иконке при открытии. Чтобы напоминание пришло в точный день без открытия приложения, нажмите «Сроки → Добавить в Календарь» — туда попадут и крайние даты возвращения с напоминаниями за 30, 14, 7, 3 и 1 день.</p>`)
++G('10. Расходы и аналитика',`<p>«Расходы» → «+»: дата, статья, на кого (человек или вся семья), сумма и валюта, фото чека. Курс лева к евро подставляется сам, для других валют запоминается.</p><p>Аналитика: итог, средний расход в месяц, статьи, графики по месяцам/годам и распределение по членам семьи. Фильтр вверху: все расходы, общие семейные или конкретного человека.</p>`)
++G('11. Отчёты Word, PDF, Excel',`<ol><li>«Ещё → Отчёты».</li><li>Выберите период и <b>для кого</b> отчёт — одного человека или нескольких членов семьи сразу.</li><li>Отметьте фото документов и сканы карт, расходы, проверку правил.</li><li><b>Word</b> — по разделу на каждого человека: сведения, дни (Болгария / Шенген / вне Шенгена), правила, поездки с пунктами пропуска, месяцы, документы, карты и права; в конце — приложение со сканами.</li><li><b>PDF</b> — то же через окно печати: «Поделиться» → «Сохранить в Файлы».</li><li><b>Excel</b> — подробные таблицы, включая статус каждого дня для каждого члена семьи.</li></ol>`)
++G('12. Резервные копии — обязательно!',`<p>Все данные хранятся только на телефоне. Раз в 1–2 недели нажимайте «Резервные копии → Создать» и сохраняйте файл в «Файлы» / iCloud Drive или в «Избранное» Telegram. Восстановление: «Выбрать файл копии» — объединить или заменить. Копии старой версии тоже подходят.</p>`)
++G('13. Настройки, иконка и защита',`<p>Иконку приложения можно выбрать из четырёх вариантов в «Настройках» — там же пошаговая подсказка, как переустановить иконку, не потеряв данные. Темы оформления, размер и вид шрифта, цвет текста и акцента, контрастность, валюта, статьи расходов, страны и пункты пропуска, члены семьи. PIN-код защищает сканы документов от посторонних глаз.</p>`)
++G('14. Частые вопросы',`<p><b>Нужен ли интернет?</b> Нет, после установки всё работает офлайн.</p><p><b>Ребёнок ездил с бабушкой, а мы остались?</b> Внесите поездку и отметьте только ребёнка — его дни посчитаются отдельно.</p><p><b>Где хранятся фото и сканы?</b> Внутри приложения на устройстве, в сжатом виде.</p><p><b>Пересекаются две поездки?</b> Проверьте даты: день считается один раз.</p>`)
 +`<div class="copy">© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
-function vRef(){return`<div class="warnbox">Справочник — краткая памятка по Болгарии (актуально на 2026 г.). Требования меняются и применяются по-разному в разных отделениях «Миграции» — перед подачей уточняйте.</div>`
-+G('ВНЖ (продължително пребиваване)',`<ul><li>Выдаётся обычно на 1 год и продлевается ежегодно. Сначала нужна виза D, затем подача в Дирекцию «Миграция» в Болгарии.</li><li>Продление — фактически новая подача с полным пакетом документов. Подают, как правило, не раньше чем за 60 и не позже чем за 14 дней до окончания карты; некоторые отделения принимают строго за 2 недели.</li><li>Начинайте собирать документы за 2 месяца: нотариальные заверения, выписка, страховка требуют времени.</li></ul>`,true)
-+G('Сколько можно отсутствовать',`<ul><li><b>Сохранение ВНЖ:</b> не более 6 месяцев подряд вне страны.</li><li><b>ПМЖ — долгосрочный статус ЕС:</b> суммарно не более 10 месяцев отсутствия за 5 лет.</li><li><b>Национальный ПМЖ:</b> лимит мягче — до 30 месяцев за 5 лет.</li><li>Любые разрывы в легальном пребывании и штрафы за нарушение режима осложняют получение ПМЖ.</li></ul>`)
-+G('Путь к ПМЖ',`<ul><li>Право возникает после 5 лет непрерывного ВНЖ.</li><li>Подавать лучше минимум за 3–4 месяца до окончания текущей карты: рассмотрение занимает 2–4 месяца.</li><li>Одновременно вести дело о продлении ВНЖ и о ПМЖ нельзя — заранее рассчитайте сроки.</li></ul>`)
-+G('Поездки по Шенгену с ВНЖ',`<p>Болгарский ВНЖ позволяет ездить по другим странам Шенгена без визы, но не более 90 дней в любые 180 дней. Дни в Болгарии в этот лимит не входят. Это правило «Шенген 90/180» в приложении.</p>`)
-+G('Проверка адреса',`<p>Полиция может прийти по адресу регистрации без предупреждения. Отсутствие дома может стать проблемой при продлении — держите документы, подтверждающие проживание, и сообщайте соседям/собственнику, как с вами связаться.</p>`)
-+G('Финансовые требования',`<p>Суммы на счёте привязаны к минимальной зарплате или минимальной пенсии в Болгарии и пересматриваются. Обычно нужна выписка за 3 месяца с движением средств. Держите сумму с запасом — отделения могут требовать больше минимума.</p>`)
+function vRef(){return`<div class="warnbox">Справочник — краткая памятка по Болгарии (актуально на 2026 г.). Если у вас ВНЖ другой страны, настройте лимиты под её правила в «Ещё → Правила подсчёта». Требования меняются и применяются по-разному в разных отделениях «Миграции» — перед подачей уточняйте.</div>`
++G('ВНЖ (продължително пребиваване)',`<ul><li>Выдаётся обычно на 1 год и продлевается ежегодно. Сначала нужна виза D, затем подача в Дирекцию «Миграция» в Болгарии.</li><li>Продление — фактически новая подача с полным пакетом документов. Подают, как правило, не раньше чем за 60 и не позже чем за 14 дней до окончания карты; некоторые отделения принимают строго за 2 недели.</li><li>Начинайте собирать документы за 2 месяца.</li></ul>`,true)
++G('Сколько можно отсутствовать',`<ul><li><b>Сохранение ВНЖ:</b> не более 6 месяцев подряд вне страны.</li><li><b>ПМЖ — долгосрочный статус ЕС:</b> суммарно не более 10 месяцев отсутствия за 5 лет.</li><li><b>Национальный ПМЖ:</b> до 30 месяцев за 5 лет.</li><li>Поездки в другие страны Шенгена — это тоже отсутствие в Болгарии, хотя вы остаётесь в зоне.</li></ul>`)
++G('Путь к ПМЖ',`<ul><li>Право возникает после 5 лет непрерывного ВНЖ — поэтому важно хранить даты первой карты и всех продлений.</li><li>Подавать лучше минимум за 3–4 месяца до окончания текущей карты: рассмотрение занимает 2–4 месяца.</li><li>Одновременно вести дело о продлении ВНЖ и о ПМЖ нельзя — заранее рассчитайте сроки.</li></ul>`)
++G('Поездки по Шенгену с ВНЖ',`<p>Болгарский ВНЖ позволяет ездить по другим странам Шенгена без визы, но не более 90 дней в любые 180 дней. Дни в Болгарии в этот лимит не входят. С 2025 года на сухопутных границах Болгарии с Грецией и Румынией нет постоянного паспортного контроля — даты таких поездок лучше подтверждать билетами, чеками заправок, бронями.</p>`)
++G('Водительские права',`<p>Иностранные (в том числе российские) права можно использовать в Болгарии ограниченное время после получения статуса резидента, затем их обменивают на болгарские. Сроки и порядок обмена уточняйте в «Пътна полиция» (КАТ) по месту жительства. Храните в приложении сканы обоих комплектов прав и следите за сроками в разделе «Сроки».</p>`)
++G('Проверка адреса',`<p>Полиция может прийти по адресу регистрации без предупреждения. Отсутствие дома может стать проблемой при продлении — держите документы, подтверждающие проживание.</p>`)
++G('Финансовые требования',`<p>Суммы на счёте привязаны к минимальной зарплате или минимальной пенсии в Болгарии и пересматриваются. Обычно нужна выписка за 3 месяца с движением средств. Держите сумму с запасом.</p>`)
 +G('Налоговое резидентство',`<p>Нахождение в стране более 183 дней в году — один из критериев налогового резидентства. Включите правило «183 дня», если это для вас важно, и консультируйтесь с бухгалтером.</p>`)
 +`<div class="copy">© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
 
@@ -669,87 +880,118 @@ function docx(body,images){const files=[
  return zip(files,'application/vnd.openxmlformats-officedocument.wordprocessingml.document')}
 
 /* ---------- Данные отчёта ---------- */
-function reportData(a,b){const m=mapNow(false);const T=TD();const end=Math.min(b,T);const tot=countRange(m,a,end);const years={};
- for(let y=+ds(a).slice(0,4);y<=+ds(end).slice(0,4);y++){years[y]=countRange(m,Math.max(a,dn(y+'-01-01')),Math.min(end,dn(y+'-12-31')))}
- const trips=S.trips.filter(t=>!t.planned&&dn(t.dep)<=b&&(t.ret?dn(t.ret):T)>=a).sort(byDep);
- const docs=S.docs.filter(x=>x.date&&dn(x.date)>=a&&dn(x.date)<=b).sort(byDate);const exps=S.expenses.filter(x=>dn(x.date)>=a&&dn(x.date)<=b).sort(byDate);
- return{a,b,end,m,tot,years,trips,docs,exps,months:coverage(a,end),rules:evalAll(m,end,{})}}
-function readX(){const a=$('#x_a').value,b=$('#x_b').value;if(!a||!b||b<a){toast('Проверьте период');return null}return{a:dn(a),b:dn(b),ph:$('#x_ph').checked,ex:$('#x_ex').checked,ru:$('#x_ru').checked}}
+function reportData(a,b,pid){const m=mapNow(false,pid);const T=TD();const end=Math.min(b,T);const hs=homeSch(pid);const tot=countRange(m,a,end,hs);const years={};
+ for(let y=+ds(a).slice(0,4);y<=+ds(end).slice(0,4);y++){years[y]=countRange(m,Math.max(a,dn(y+'-01-01')),Math.min(end,dn(y+'-12-31')),hs)}
+ const trips=tripsOf(pid).filter(t=>!t.planned&&dn(t.dep)<=b&&(t.ret?dn(t.ret):T)>=a).sort(byDep);
+ const docs=docsOf(pid).filter(x=>x.date&&dn(x.date)>=a&&dn(x.date)<=b).sort(byDate);
+ const ids=S.ids.filter(x=>x.personId===pid).sort((x,y)=>Object.keys(IDKINDS).indexOf(x.kind)-Object.keys(IDKINDS).indexOf(y.kind)||((x.issued||'')<(y.issued||'')?-1:1));
+ return{pid,name:person(pid).name,pr:prof(pid),a,b,end,m,tot,years,trips,docs,ids,months:coverage(a,end,pid),rules:evalAll(m,end,{pid})}}
+function readX(){const a=$('#x_a').value,b=$('#x_b').value;if(!a||!b||b<a){toast('Проверьте период');return null}const pids=multi()?readChecks('xp'):[act()];if(!pids.length){toast('Отметьте, для кого отчёт');return null}
+ return{a:dn(a),b:dn(b),ph:$('#x_ph').checked,ex:$('#x_ex').checked,ru:$('#x_ru').checked,pids}}
 const TRN=t=>(TRANSPORT[t]||TRANSPORT.other)[1];
+const crs=x=>(x||'').replace(/^\S+\s/,'');
 const stName=x=>({ok:'в норме',warn:'близко к лимиту',over:'превышено',prog:'в процессе'}[x.status]);
+const dayStatus=e=>!e?'в стране ВНЖ':e.s==='travel'?'в дороге':e.z?'др. страна Шенгена':'вне Шенгена';
 const fileStamp=()=>todayS().replace(/-/g,'');
+const expsFor=(o)=>S.expenses.filter(x=>dn(x.date)>=o.a&&dn(x.date)<=o.b&&(!x.personId||o.pids.includes(x.personId))).sort(byDate);
+const trName=R=>R.trips.length;
 async function deliver(blob,name){const file=new File([blob],name,{type:blob.type});
  try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}}catch(e){if(e.name==='AbortError')return}
  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},5000);toast('Файл сохранён: '+name)}
+const yearRows=R=>Object.entries(R.years).map(([y,c])=>[y,c.days,c.present,c.sch,c.zone,c.non,c.travel,c.absent]);
+const YH=['Год','Всего','В стране ВНЖ','В Шенгене всего','Др. страны Шенгена','Вне Шенгена','В дороге','Отсутствие'];
+const totRows=R=>[['Всего дней в периоде',R.tot.days],['В стране ВНЖ ('+(R.pr.country||'')+')',R.tot.present],['В Шенгенской зоне всего',R.tot.sch],['В других странах Шенгена (полные дни)',R.tot.zone],['Вне Шенгена (полные дни)',R.tot.non],['В дороге (дни выезда и въезда)',R.tot.travel],['Итого дней отсутствия в стране ВНЖ',R.tot.absent]];
+const profRows=R=>{const p=R.pr;return[['ФИО',R.name],['Гражданство',p.citizenship||'—'],['Страна ВНЖ',p.country||'—'],['Статус / основание',[p.permit,p.basis].filter(Boolean).join(', ')||'—'],['Первый ВНЖ',fd(p.permitStart)],['Действующая карта',`${fd(p.cardFrom)} — ${fd(p.cardTo)}`],['Адрес',p.address||'—']]};
+const tripPpl=t=>(t.persons||[]).map(pn).join(', ');
+const idRow=x=>[IDKINDS[x.kind]||x.kind,x.number||'',fd(x.issued),fd(x.validTo),idStatus(x)[1],[x.front?'лицевая':'',x.back?'оборот':''].filter(Boolean).join(' + ')||'нет'];
 
-async function exportXlsx(){const o=readX();if(!o)return;const R=reportData(o.a,o.b);const p=S.profile;const B=S.settings.cur;const H=v=>({v,s:2});
- const sum=[[{v:'Отчёт о пребывании в стране',s:3}],[],['ФИО',p.name||''],['Страна ВНЖ',p.country],['Статус',p.permit],['Основание',p.basis||''],['Первый ВНЖ',fd(p.permitStart)],['Карта действует до',fd(p.cardTo)],['Период отчёта',`${fdn(o.a)} — ${fdn(R.end)}`],['Сформирован',fd(todayS())],[],
-  [H('Итого'),H('Дней')],['Всего дней в периоде',R.tot.days],['В стране (с учётом настройки дней в дороге)',R.tot.present],['За границей (полные дни)',R.tot.abroad],['В дороге (дни выезда и въезда)',R.tot.travel],['Дней отсутствия',R.tot.absent],['Поездок',R.trips.length],['Документов-подтверждений',R.docs.length],[],
-  [H('Год'),H('Всего'),H('В стране'),H('За границей'),H('В дороге'),H('Отсутствие')],...Object.entries(R.years).map(([y,c])=>[y,c.days,c.present,c.abroad,c.travel,c.absent])];
- if(o.ru){sum.push([],[H('Правило'),H('Значение'),H('Лимит'),H('Статус'),H('Пояснение')]);R.rules.forEach(x=>sum.push([x.r.name,x.value,x.limit,stName(x),x.text]))}
- sum.push([],[`Дни выезда/въезда считаются: ${S.settings.travelAs==='abroad'?'днями отсутствия':'днями в стране'}`],[`${APP} · © ${OWNER}`]);
- const trips=[['№','Выезд','Возвращение','Страна','Город','Шенген','Транспорт','Цель','Дней за границей','Дней в дороге','Дней отсутствия','Документов','Заметка'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep),t.ret?fd(t.ret):'не вернулись',t.country,t.city,t.schengen?'да':'',TRN(t.transport),t.purpose,f.full,f.travel,f.abs,f.docs,t.note]})];
- const days=[['Дата','День недели','Статус','Отсутствие','Страна (если в поездке)','Документов']];const WD=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];const dc={};S.docs.forEach(d=>dc[d.date]=(dc[d.date]||0)+1);
- for(let d=o.a;d<=R.end;d++){const e=R.m.get(d);const s=ds(d);days.push([fd(s),WD[new Date(d*864e5).getUTCDay()],e?(e.s==='travel'?'в дороге':'за границей'):'в стране',absent(e)?'да':'',e?e.t.country:'',dc[s]||''])}
- const months=[['Месяц','Дней в стране','За границей','В дороге','Отсутствие','Документов'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.abroad,x.travel,x.absent,x.docs])];
- const docs=[['Дата','Тип','Название','Поездка','Файлов','Заметка'],...R.docs.map(d=>{const t=S.trips.find(x=>x.id===d.tripId);return[fd(d.date),d.type,d.title,t?`${t.country} ${fd(t.dep)}`:'',d.files.length,d.note]})];
- const sheets=[{name:'Сводка',rows:sum,widths:[44,14,14,16,14,50],freeze:false},{name:'Поездки',rows:trips,widths:[5,12,14,16,14,9,13,18,10,10,10,11,40]},{name:'По дням',rows:days,widths:[12,8,14,12,22,11]},{name:'По месяцам',rows:months,widths:[18,14,13,11,12,12]},{name:'Документы',rows:docs,widths:[12,20,34,22,8,40]}];
- if(o.ex){const ex=[['Дата','Статья','Сумма','Валюта','Курс',`Сумма, ${B}`,'Комментарий'],...R.exps.map(x=>[fd(x.date),catName(x.cat),{v:+x.amount,s:4},x.cur,x.cur===B?'':(+x.rate||''),{v:Math.round(toBase(x)*100)/100,s:4},x.note])];
-  const tot=R.exps.reduce((s,x)=>s+toBase(x),0);ex.push([],[H('Итого'),'','','','',{v:Math.round(tot*100)/100,s:4}]);
-  const bc={};R.exps.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));const cs=[['Статья',`Сумма, ${B}`,'Доля, %'],...Object.entries(bc).sort((a,b)=>b[1]-a[1]).map(([c,v])=>[catName(c),{v:Math.round(v*100)/100,s:4},tot?Math.round(v/tot*1000)/10:0])];
-  sheets.push({name:'Расходы',rows:ex,widths:[12,24,12,8,10,14,40]},{name:'Статьи расходов',rows:cs,widths:[28,16,10]})}
- await deliver(xlsx(sheets),`Дни_ВНЖ_${fileStamp()}.xlsx`)}
+async function exportXlsx(){const o=readX();if(!o)return;const Rs=o.pids.map(p=>reportData(o.a,o.b,p));const B=S.settings.cur;const H=v=>({v,s:2});
+ const sum=[[{v:'Отчёт о пребывании в стране',s:3}],['Период отчёта',`${fdn(o.a)} — ${fdn(Math.min(o.b,TD()))}`],['Сформирован',fd(todayS())],[`Дни выезда/въезда считаются: ${S.settings.travelAs==='abroad'?'днями отсутствия':'днями в стране'}`]];
+ for(const R of Rs){sum.push([],[{v:R.name,s:3}],...profRows(R),[],[H('Итого'),H('Дней')],...totRows(R),['Поездок',R.trips.length],['Документов-подтверждений',R.docs.length],[],YH.map(H),...yearRows(R));
+  if(o.ru){sum.push([],[H('Правило'),H('Значение'),H('Лимит'),H('Статус'),H('Пояснение')]);R.rules.forEach(x=>sum.push([x.r.name,x.value,x.limit,stName(x),x.text]))}}
+ sum.push([],[`${APP} · © ${OWNER}`]);
+ const allTrips=[...new Map(Rs.flatMap(R=>R.trips).map(t=>[t.id,t])).values()].sort(byDep);
+ const trips=[['№','Кто','Выезд','Пункт пропуска (выезд)','Транспорт туда','Въезд','Пункт пропуска (въезд)','Транспорт обратно','Страна','Город','Шенген','Цель','Дней за границей','Дней в дороге','Дней отсутствия','Документов','Заметка'],...allTrips.map((t,i)=>{const f=tripInfo(t);return[i+1,tripPpl(t),fd(t.dep),crs(t.exitCross),TRN(t.transport),t.ret?fd(t.ret):'не вернулись',crs(t.entryCross),t.ret?TRN(t.retTransport||t.transport):'',t.country,t.city,t.schengen?'да':'нет',t.purpose,f.full,f.travel,f.abs,f.docs,t.note]})];
+ const WD=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];const end=Math.min(o.b,TD());
+ const days=[['Дата','День недели',...Rs.flatMap(R=>Rs.length>1?[`${R.name}: статус`,`${R.name}: страна`]:['Статус','Страна (если в поездке)']),'Документов']];
+ for(let d=o.a;d<=end;d++){const s=ds(d);const row=[fd(s),WD[new Date(d*864e5).getUTCDay()]];let dc=0;for(const R of Rs){const e=R.m.get(d);row.push(dayStatus(e),e?e.t.country:'');dc+=R.docs.filter(x=>x.date===s).length}row.push(dc||'');days.push(row)}
+ const months=[['Кто','Месяц','В стране ВНЖ','В Шенгене всего','Др. страны Шенгена','Вне Шенгена','В дороге','Отсутствие','Документов'],...Rs.flatMap(R=>R.months.map(x=>[R.name,`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.sch,x.zone,x.non,x.travel,x.absent,x.docs]))];
+ const allDocs=[...new Map(Rs.flatMap(R=>R.docs).map(d=>[d.id,d])).values()].sort(byDate);
+ const docs=[['Дата','Чей','Тип','Название','Поездка','Файлов','Заметка'],...allDocs.map(d=>{const t=S.trips.find(x=>x.id===d.tripId);return[fd(d.date),whoDoc(d),d.type,d.title,t?`${t.country} ${fd(t.dep)}`:'',d.files.length,d.note]})];
+ const ids=[['Кто','Документ','Номер','Выдан','Действует до','Статус','Сканы','Кем выдан / категории','Заметка'],...Rs.flatMap(R=>R.ids.map(x=>[R.name,...idRow(x),x.issuer,x.note]))];
+ const sheets=[{name:'Сводка',rows:sum,widths:[42,16,16,16,18,14,12,14],freeze:false},{name:'Поездки',rows:trips,widths:[5,18,12,30,13,12,30,13,16,14,8,18,10,10,10,10,36]},{name:'По дням',rows:days,widths:[12,8,...Rs.flatMap(()=>[20,18]),11]},{name:'По месяцам',rows:months,widths:[16,18,13,14,16,12,10,12,12]},{name:'Документы',rows:docs,widths:[12,18,20,34,22,8,36]},{name:'Карты и права',rows:ids,widths:[16,40,18,12,14,22,18,26,30]}];
+ if(o.ex){const E=expsFor(o);const ex=[['Дата','На кого','Статья','Сумма','Валюта','Курс',`Сумма, ${B}`,'Комментарий'],...E.map(x=>[fd(x.date),x.personId?pn(x.personId):'вся семья',catName(x.cat),{v:+x.amount,s:4},x.cur,x.cur===B?'':(+x.rate||''),{v:Math.round(toBase(x)*100)/100,s:4},x.note])];
+  const tot=E.reduce((s,x)=>s+toBase(x),0);ex.push([],[H('Итого'),'','','','','',{v:Math.round(tot*100)/100,s:4}]);
+  const bc={};E.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));const cs=[['Статья',`Сумма, ${B}`,'Доля, %'],...Object.entries(bc).sort((a,b)=>b[1]-a[1]).map(([c,v])=>[catName(c),{v:Math.round(v*100)/100,s:4},tot?Math.round(v/tot*1000)/10:0])];
+  sheets.push({name:'Расходы',rows:ex,widths:[12,16,24,12,8,10,14,36]},{name:'Статьи расходов',rows:cs,widths:[28,16,10]})}
+ await deliver(xlsx(sheets),`Мой_ВНЖ_${fileStamp()}.xlsx`)}
 
-async function exportDocx(){const o=readX();if(!o)return;toast('Готовлю документ…');const R=reportData(o.a,o.b);const p=S.profile;const B=S.settings.cur;let b='';const images=[];
- b+=W.p('ОТЧЁТ О ПРЕБЫВАНИИ В СТРАНЕ',{b:true,sz:18,al:'center',c:'1F3A4D',sp:60});b+=W.p(`Период: ${fdn(o.a)} — ${fdn(R.end)}`,{al:'center',sz:11,sp:240});
- b+=W.tbl([['Сведения',''],['ФИО',p.name||'—'],['Гражданство',p.citizenship||'—'],['Страна ВНЖ',p.country||'—'],['Статус / основание',[p.permit,p.basis].filter(Boolean).join(', ')||'—'],['Первый ВНЖ',fd(p.permitStart)],['Текущая карта',`${fd(p.cardFrom)} — ${fd(p.cardTo)}`],['Адрес',p.address||'—']],[3000,6900]);
- b+=W.h('1. Итоги по дням',2);b+=W.tbl([['Показатель','Дней'],['Всего дней в периоде',R.tot.days],['В стране',R.tot.present],['За границей (полные дни)',R.tot.abroad],['В дороге (дни выезда и въезда)',R.tot.travel],['Итого дней отсутствия',R.tot.absent]],[7400,2500]);
- b+=W.tbl([['Год','Всего','В стране','За границей','В дороге','Отсутствие'],...Object.entries(R.years).map(([y,c])=>[y,c.days,c.present,c.abroad,c.travel,c.absent])],[1600,1660,1660,1660,1660,1660]);
- b+=W.p(`Дни выезда и въезда учтены как ${S.settings.travelAs==='abroad'?'дни отсутствия':'дни присутствия в стране'}.`,{sz:9,c:'555555'});
- if(o.ru&&R.rules.length){b+=W.h('2. Соблюдение требований',2);b+=W.tbl([['Требование','Значение','Лимит','Статус'],...R.rules.map(x=>[x.r.name,x.value,x.limit,stName(x)])],[5200,1500,1500,1700])}
- b+=W.h('3. Поездки за пределы страны',2);b+=R.trips.length?W.tbl([['№','Выезд','Возвращение','Направление','Транспорт','За границей','В дороге','Подтв.'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep),t.ret?fd(t.ret):'—',[t.country,t.city].filter(Boolean).join(', '),TRN(t.transport),f.full,f.travel,f.docs]})],[500,1300,1400,2300,1300,1100,1000,1000]):W.p('Поездок в периоде нет.');
- b+=W.h('4. Присутствие по месяцам',2);b+=W.tbl([['Месяц','В стране','За границей','В дороге','Документов'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.abroad,x.travel,x.docs])],[3100,1700,1700,1700,1700]);
- b+=W.h('5. Документы, подтверждающие присутствие',2);b+=R.docs.length?W.tbl([['Дата','Тип','Название','Примечание'],...R.docs.map(d=>[fd(d.date),d.type,d.title||'',d.note||''])],[1300,2300,3300,3000]):W.p('Документов в периоде нет.');
- if(o.ex&&R.exps.length){const tot=R.exps.reduce((s,x)=>s+toBase(x),0);const bc={};R.exps.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));
-  b+=W.h('6. Расходы на оформление',2);b+=W.tbl([['Статья',`Сумма, ${B}`,'Доля'],...Object.entries(bc).sort((a,c)=>c[1]-a[1]).map(([c,v])=>[catName(c),nf.format(Math.round(v*100)/100),(tot?Math.round(v/tot*100):0)+'%']),['Итого',nf.format(Math.round(tot*100)/100),'100%']],[5500,2600,1800]);
-  b+=W.tbl([['Дата','Статья','Сумма','Комментарий'],...R.exps.map(x=>[fd(x.date),catName(x.cat),fm(+x.amount,x.cur),x.note||''])],[1300,3000,2000,3600])}
- if(o.ph){const withImg=R.docs.filter(d=>d.files.some(f=>f.mime.startsWith('image/')));if(withImg.length){b+=W.h('Приложение: копии документов',2);let i=1;
-  for(const d of withImg)for(const f of d.files){if(!f.mime.startsWith('image/'))continue;const rec=await DB.get('files',f.id);if(!rec)continue;const data=new Uint8Array(await rec.blob.arrayBuffer());const rid='rIdImg'+i;images.push({rid,data});b+=W.img(rid,i,f.w||1000,f.h||1300,`${fd(d.date)} · ${d.type}${d.title?' · '+d.title:''}`);i++}}}
+async function exportDocx(){const o=readX();if(!o)return;toast('Готовлю документ…');const Rs=o.pids.map(p=>reportData(o.a,o.b,p));const B=S.settings.cur;let b='';const images=[];let img=1;const PB='<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+ const addImg=async(f,cap)=>{if(!f||!f.mime.startsWith('image/'))return'';const rec=await DB.get('files',f.id);if(!rec)return'';const data=new Uint8Array(await rec.blob.arrayBuffer());const rid='rIdImg'+img;images.push({rid,data});const x=W.img(rid,img,f.w||1000,f.h||1300,cap);img++;return x};
+ Rs.forEach((R,ri)=>{if(ri)b+=PB;
+  b+=W.p('ОТЧЁТ О ПРЕБЫВАНИИ В СТРАНЕ',{b:true,sz:18,al:'center',c:'1F3A4D',sp:40});b+=W.p(R.name,{b:true,sz:13,al:'center',sp:40});b+=W.p(`Период: ${fdn(o.a)} — ${fdn(R.end)}`,{al:'center',sz:11,sp:240});
+  b+=W.tbl([['Сведения',''],...profRows(R)],[3000,6900]);
+  b+=W.h('1. Итоги по дням',2);b+=W.tbl([['Показатель','Дней'],...totRows(R)],[7400,2500]);
+  b+=W.tbl([['Год','Всего','В стране','В Шенгене','Др. Шенген','Вне Шенг.','В дороге','Отсутств.'],...yearRows(R)],[1100,1100,1250,1250,1300,1300,1200,1400]);
+  b+=W.p(`Дни выезда и въезда учтены как ${S.settings.travelAs==='abroad'?'дни отсутствия':'дни присутствия в стране'}. «В Шенгене всего» включает страну ВНЖ, другие страны Шенгенской зоны и дни в дороге.`,{sz:9,c:'555555'});
+  if(o.ru&&R.rules.length){b+=W.h('2. Соблюдение требований',2);b+=W.tbl([['Требование','Значение','Лимит','Статус'],...R.rules.map(x=>[x.r.name,x.value,x.limit,stName(x)])],[5200,1500,1500,1700])}
+  b+=W.h('3. Поездки за пределы страны',2);b+=R.trips.length?W.tbl([['№','Выезд / пункт пропуска','Въезд / пункт пропуска','Страна','Транспорт','За гран.','В дороге','Подтв.'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep)+(t.exitCross?'\n'+crs(t.exitCross):''),(t.ret?fd(t.ret):'не вернулись')+(t.entryCross?'\n'+crs(t.entryCross):''),[t.country,t.city].filter(Boolean).join(', ')+(t.schengen?'\n(Шенген)':''),TRN(t.transport)+(t.ret&&t.retTransport&&t.retTransport!==t.transport?' / '+TRN(t.retTransport):''),f.full,f.travel,f.docs]})],[450,2150,2150,1500,1250,850,800,750]):W.p('Поездок в периоде нет.');
+  b+=W.h('4. Присутствие по месяцам',2);b+=W.tbl([['Месяц','В стране','В Шенгене','Др. Шенген','Вне Шенг.','В дороге','Докум.'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.sch,x.zone,x.non,x.travel,x.docs])],[2200,1300,1300,1300,1300,1250,1250]);
+  b+=W.h('5. Документы, подтверждающие присутствие',2);b+=R.docs.length?W.tbl([['Дата','Тип','Название','Примечание'],...R.docs.map(d=>[fd(d.date),d.type,d.title||'',d.note||''])],[1300,2300,3300,3000]):W.p('Документов в периоде нет.');
+  b+=W.h('6. Карты ВНЖ, паспорта, водительские права',2);b+=R.ids.length?W.tbl([['Документ','Номер','Выдан','Действует до','Статус','Сканы'],...R.ids.map(idRow)],[2700,1600,1200,1300,1700,1400]):W.p('Документы не внесены.')});
+ if(o.ex){const E=expsFor(o);if(E.length){const tot=E.reduce((s,x)=>s+toBase(x),0);const bc={};E.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));b+=PB;
+  b+=W.h('Расходы на оформление',1);b+=W.tbl([['Статья',`Сумма, ${B}`,'Доля'],...Object.entries(bc).sort((a,c)=>c[1]-a[1]).map(([c,v])=>[catName(c),nf.format(Math.round(v*100)/100),(tot?Math.round(v/tot*100):0)+'%']),['Итого',nf.format(Math.round(tot*100)/100),'100%']],[5500,2600,1800]);
+  b+=W.tbl([['Дата','На кого','Статья','Сумма','Комментарий'],...E.map(x=>[fd(x.date),x.personId?pn(x.personId):'вся семья',catName(x.cat),fm(+x.amount,x.cur),x.note||''])],[1200,1700,2500,1700,2800])}}
+ if(o.ph){let ap='';for(const R of Rs){for(const x of R.ids){ap+=await addImg(x.front,`${R.name} · ${IDKINDS[x.kind]} · лицевая сторона`);ap+=await addImg(x.back,`${R.name} · ${IDKINDS[x.kind]} · оборотная сторона`)}
+  for(const d of R.docs)for(const f of d.files)ap+=await addImg(f,`${R.name} · ${fd(d.date)} · ${d.type}${d.title?' · '+d.title:''}`)}
+  if(ap)b+=PB+W.h('Приложение: копии документов',1)+ap}
  b+=W.p(`Сформировано ${fd(todayS())} в приложении «${APP}».`,{sz:8,c:'888888',al:'right'});
- await deliver(docx(b,images),`Отчёт_ВНЖ_${fileStamp()}.docx`)}
+ await deliver(docx(b,images),`Отчёт_Мой_ВНЖ_${fileStamp()}.docx`)}
 
-async function exportPdf(){const o=readX();if(!o)return;const R=reportData(o.a,o.b);const p=S.profile;const B=S.settings.cur;const tb=(rows)=>`<table>${rows.map((r,i)=>`<tr>${r.map(c=>i?`<td>${esc(c)}</td>`:`<th>${esc(c)}</th>`).join('')}</tr>`).join('')}</table>`;
- let h=`<h1>Отчёт о пребывании в стране</h1><div class="meta">Период: ${fdn(o.a)} — ${fdn(R.end)} · сформирован ${fd(todayS())}</div>`;
- h+=tb([['Сведения',''],['ФИО',p.name||'—'],['Гражданство',p.citizenship||'—'],['Страна ВНЖ',p.country],['Статус / основание',[p.permit,p.basis].filter(Boolean).join(', ')],['Первый ВНЖ',fd(p.permitStart)],['Текущая карта',`${fd(p.cardFrom)} — ${fd(p.cardTo)}`],['Адрес',p.address||'—']]);
- h+=`<h2>1. Итоги по дням</h2>`+tb([['Всего дней','В стране','За границей','В дороге','Отсутствие'],[R.tot.days,R.tot.present,R.tot.abroad,R.tot.travel,R.tot.absent]])+tb([['Год','Всего','В стране','За границей','В дороге','Отсутствие'],...Object.entries(R.years).map(([y,c])=>[y,c.days,c.present,c.abroad,c.travel,c.absent])]);
- if(o.ru&&R.rules.length)h+=`<h2>2. Соблюдение требований</h2>`+tb([['Требование','Значение','Лимит','Статус'],...R.rules.map(x=>[x.r.name,x.value,x.limit,stName(x)])]);
- h+=`<h2>3. Поездки</h2>`+(R.trips.length?tb([['№','Выезд','Возвращение','Направление','Транспорт','За гран.','В дороге','Подтв.'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep),t.ret?fd(t.ret):'—',[t.country,t.city].filter(Boolean).join(', '),TRN(t.transport),f.full,f.travel,f.docs]})]):'<p>Поездок нет.</p>');
- h+=`<h2>4. По месяцам</h2>`+tb([['Месяц','В стране','За границей','В дороге','Документов'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.abroad,x.travel,x.docs])]);
- h+=`<h2>5. Документы</h2>`+(R.docs.length?tb([['Дата','Тип','Название','Примечание'],...R.docs.map(d=>[fd(d.date),d.type,d.title,d.note])]):'<p>Документов нет.</p>');
- if(o.ex&&R.exps.length){const tot=R.exps.reduce((s,x)=>s+toBase(x),0);const bc={};R.exps.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));h+=`<h2>6. Расходы</h2>`+tb([['Статья','Сумма','Доля'],...Object.entries(bc).sort((a,c)=>c[1]-a[1]).map(([c,v])=>[catName(c),fm(v),(tot?Math.round(v/tot*100):0)+'%']),['Итого',fm(tot),'100%']])+tb([['Дата','Статья','Сумма','Комментарий'],...R.exps.map(x=>[fd(x.date),catName(x.cat),fm(+x.amount,x.cur),x.note])])}
- const urls=[];if(o.ph){const ph=[];for(const d of R.docs)for(const f of d.files){if(!f.mime.startsWith('image/'))continue;const rec=await DB.get('files',f.id);if(!rec)continue;const u=URL.createObjectURL(rec.blob);urls.push(u);ph.push(`<div class="ph"><img src="${u}"><br>${fd(d.date)} · ${esc(d.type)} ${esc(d.title||'')}</div>`)}if(ph.length)h+=`<h2 style="page-break-before:always">Приложение: копии документов</h2>`+ph.join('')}
+async function exportPdf(){const o=readX();if(!o)return;const Rs=o.pids.map(p=>reportData(o.a,o.b,p));const tb=rows=>`<table>${rows.map((r,i)=>`<tr>${r.map(c=>i?`<td>${esc(c).replace(/\n/g,'<br>')}</td>`:`<th>${esc(c)}</th>`).join('')}</tr>`).join('')}</table>`;const urls=[];
+ const ph=async(f,cap)=>{if(!f||!f.mime.startsWith('image/'))return'';const rec=await DB.get('files',f.id);if(!rec)return'';const u=URL.createObjectURL(rec.blob);urls.push(u);return`<div class="ph"><img src="${u}"><br>${esc(cap)}</div>`};
+ let h='';Rs.forEach((R,ri)=>{h+=`<div style="${ri?'page-break-before:always':''}"><h1>Отчёт о пребывании в стране</h1><div class="meta"><b>${esc(R.name)}</b> · период ${fdn(o.a)} — ${fdn(R.end)} · сформирован ${fd(todayS())}</div>`;
+  h+=tb([['Сведения',''],...profRows(R)]);h+=`<h2>1. Итоги по дням</h2>`+tb([['Показатель','Дней'],...totRows(R)])+tb([YH,...yearRows(R)]);
+  if(o.ru&&R.rules.length)h+=`<h2>2. Соблюдение требований</h2>`+tb([['Требование','Значение','Лимит','Статус'],...R.rules.map(x=>[x.r.name,x.value,x.limit,stName(x)])]);
+  h+=`<h2>3. Поездки</h2>`+(R.trips.length?tb([['№','Выезд / пункт пропуска','Въезд / пункт пропуска','Страна','Транспорт','За гран.','В дороге','Подтв.'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep)+(t.exitCross?'\n'+crs(t.exitCross):''),(t.ret?fd(t.ret):'—')+(t.entryCross?'\n'+crs(t.entryCross):''),[t.country,t.city].filter(Boolean).join(', ')+(t.schengen?' (Шенген)':''),TRN(t.transport),f.full,f.travel,f.docs]})]):'<p>Поездок нет.</p>');
+  h+=`<h2>4. По месяцам</h2>`+tb([['Месяц','В стране','В Шенгене','Др. Шенген','Вне Шенг.','В дороге','Докум.'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.sch,x.zone,x.non,x.travel,x.docs])]);
+  h+=`<h2>5. Документы</h2>`+(R.docs.length?tb([['Дата','Тип','Название','Примечание'],...R.docs.map(d=>[fd(d.date),d.type,d.title,d.note])]):'<p>Документов нет.</p>');
+  h+=`<h2>6. Карты ВНЖ, паспорта, права</h2>`+(R.ids.length?tb([['Документ','Номер','Выдан','Действует до','Статус','Сканы'],...R.ids.map(idRow)]):'<p>Не внесены.</p>')+'</div>'});
+ if(o.ex){const E=expsFor(o);if(E.length){const tot=E.reduce((s,x)=>s+toBase(x),0);const bc={};E.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));h+=`<h2 style="page-break-before:always">Расходы</h2>`+tb([['Статья','Сумма','Доля'],...Object.entries(bc).sort((a,c)=>c[1]-a[1]).map(([c,v])=>[catName(c),fm(v),(tot?Math.round(v/tot*100):0)+'%']),['Итого',fm(tot),'100%']])+tb([['Дата','На кого','Статья','Сумма','Комментарий'],...E.map(x=>[fd(x.date),x.personId?pn(x.personId):'вся семья',catName(x.cat),fm(+x.amount,x.cur),x.note])])}}
+ if(o.ph){let ap='';for(const R of Rs){for(const x of R.ids){ap+=await ph(x.front,`${R.name} · ${IDKINDS[x.kind]} · лицевая`);ap+=await ph(x.back,`${R.name} · ${IDKINDS[x.kind]} · оборот`)}for(const d of R.docs)for(const f of d.files)ap+=await ph(f,`${R.name} · ${fd(d.date)} · ${d.type} ${d.title||''}`)}
+  if(ap)h+=`<h2 style="page-break-before:always">Приложение: копии документов</h2>`+ap}
  h+=`<p class="meta" style="margin-top:16px">Сформировано в приложении «${APP}».</p>`;
  const pr=$('#print');pr.innerHTML=h;await Promise.all($$('img',pr).map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r})));
  document.body.classList.add('printing');const done=()=>{document.body.classList.remove('printing');pr.innerHTML='';urls.forEach(u=>URL.revokeObjectURL(u))};
  window.addEventListener('afterprint',done,{once:true});setTimeout(()=>{window.print();setTimeout(()=>{if(document.body.classList.contains('printing'))done()},60000)},150)}
 
-function exportIcs(){const L=deadlineList().filter(x=>x.left>=0);if(!L.length)return toast('Нет будущих сроков');const st=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
- const f=n=>ds(n).replace(/-/g,'');const esc2=s=>String(s).replace(/[,;\\]/g,m=>'\\'+m);
+function exportIcs(){const L=S.people.flatMap(p=>deadlineList(p.id).filter(x=>x.left>=0).map(x=>({...x,name:(multi()&&!/вся семья/.test(x.name)?p.name+': ':'')+x.name})));
+ const seen=new Set();let U=L.filter(x=>{const k=x.name+x.d;if(seen.has(k))return false;seen.add(k);return true});
+ if(!U.length)return toast('Нет будущих сроков');const st=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+ const f=n=>ds(n).replace(/-/g,'');const e2=s=>String(s).replace(/[,;\\]/g,m=>'\\'+m);
  let s='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//DniVNZH//RU\r\nCALSCALE:GREGORIAN\r\n';
- L.forEach((x,i)=>{s+=`BEGIN:VEVENT\r\nUID:dni-${i}-${f(x.d)}@dni-vnzh\r\nDTSTAMP:${st}\r\nDTSTART;VALUE=DATE:${f(x.d)}\r\nDTEND;VALUE=DATE:${f(x.d+1)}\r\nSUMMARY:${esc2('ВНЖ: '+x.name)}\r\nDESCRIPTION:${esc2(x.sub||'')}\r\nBEGIN:VALARM\r\nTRIGGER:-P30D\r\nACTION:DISPLAY\r\nDESCRIPTION:${esc2(x.name)}\r\nEND:VALARM\r\nBEGIN:VALARM\r\nTRIGGER:-P7D\r\nACTION:DISPLAY\r\nDESCRIPTION:${esc2(x.name)}\r\nEND:VALARM\r\nEND:VEVENT\r\n`});
- s+='END:VCALENDAR\r\n';deliver(new Blob([s],{type:'text/calendar'}),'Сроки_ВНЖ.ics')}
+ for(const p of S.people){const T=TD();const tag=multi()?p.name+': ':'';for(const t of tripsOf(p.id).filter(t=>(!t.ret&&!t.planned)||(t.planned&&t.ret&&dn(t.ret)>=T))){const lr=latestReturn(t,tripsOf(p.id).filter(x=>x.id!==t.id),p.id);if(lr!=null&&lr>=T)U.push({name:`${tag}крайний день возвращения (${t.country||'поездка'} с ${fd(t.dep)})`,d:lr,sub:'Последний день, чтобы вернуться без превышения лимитов',al:['P30D','P14D','P7D','P3D','P1D']})}}
+ U.forEach((x,i)=>{s+=`BEGIN:VEVENT\r\nUID:dni-${i}-${f(x.d)}@dni-vnzh\r\nDTSTAMP:${st}\r\nDTSTART;VALUE=DATE:${f(x.d)}\r\nDTEND;VALUE=DATE:${f(x.d+1)}\r\nSUMMARY:${e2('ВНЖ: '+x.name)}\r\nDESCRIPTION:${e2(x.sub||'')}\r\n${(x.al||['P30D','P7D']).map(a=>`BEGIN:VALARM\r\nTRIGGER:-${a}\r\nACTION:DISPLAY\r\nDESCRIPTION:${e2(x.name)}\r\nEND:VALARM\r\n`).join('')}END:VEVENT\r\n`});
+ s+='END:VCALENDAR\r\n';deliver(new Blob([s],{type:'text/calendar'}),'Сроки_Мой_ВНЖ.ics')}
 
-/* ---------- Резервные копии ---------- */
+/* ---------- Резервные копии и миграция данных ---------- */
+function migrate(st){if(!st)return st;
+ if(!st.people){const pid=uid();st.people=[{id:pid,name:(st.profile&&st.profile.name)||'Я',relation:'Я',color:PCOL[0],profile:Object.assign(defProfile(),st.profile||{}),checklist:st.checklist||defChecklist()}];
+  (st.trips||[]).forEach(t=>{t.persons=[pid];if(!t.retTransport)t.retTransport=t.transport});(st.docs||[]).forEach(d=>{d.persons=d.persons||[]});st.settings=st.settings||{};st.settings.active=pid;delete st.profile;delete st.checklist}
+ st.ids=st.ids||[];st.deadlines=st.deadlines||[];st.expenses=st.expenses||[];st.trips=st.trips||[];st.docs=st.docs||[];
+ st.people.forEach(p=>{p.profile=Object.assign(defProfile(),p.profile||{});if(!p.checklist)p.checklist=defChecklist()});return st}
+function loadState(st){const d=defState(),dS=d.settings,dM=d.meta;st=migrate(st);S=Object.assign(d,st);S.settings=Object.assign(dS,st.settings||{});S.meta=Object.assign(dM,st.meta||{});if(!S.people.length)S.people=d.people;S.v=2}
 async function backupSave(){toast('Собираю копию…');const keys=await DB.keys('files');const files={};
  for(const k of keys){const v=await DB.get('files',k);if(typeof v==='string')files[k]=v;else if(v&&v.blob)files[k]={...v,blob:await blobToDataURL(v.blob)}}
- S.meta.lastBackup=todayS();await saveNow();const data=JSON.stringify({app:'dni-vnzh',v:1,date:new Date().toISOString(),state:S,files});
- await deliver(new Blob([data],{type:'application/json'}),`Дни_ВНЖ_копия_${fileStamp()}.json`);render()}
+ S.meta.lastBackup=todayS();await saveNow();const data=JSON.stringify({app:'dni-vnzh',v:2,date:new Date().toISOString(),state:S,files});
+ await deliver(new Blob([data],{type:'application/json'}),`Мой_ВНЖ_копия_${fileStamp()}.json`);render()}
 async function backupLoad(file){let j;try{j=JSON.parse(await file.text())}catch(e){return toast('Файл повреждён или это не копия')}
- if(j.app!=='dni-vnzh'||!j.state)return toast('Это не резервная копия «Дни ВНЖ»');const mode=($('input[name=bkm]:checked')||{}).value||'merge';
+ if(j.app!=='dni-vnzh'||!j.state)return toast('Это не резервная копия «Мой ВНЖ»');const mode=($('input[name=bkm]:checked')||{}).value||'merge';
  if(!confirm(mode==='replace'?'Заменить ВСЕ текущие данные данными из копии?':'Объединить данные из копии с текущими?'))return;
- if(mode==='replace'){await DB.clear('files');S=Object.assign(defState(),j.state);}
- else{const st=j.state;const mg=(k)=>{const ids=new Set(S[k].map(x=>x.id));for(const x of st[k]||[])if(!ids.has(x.id))S[k].push(x)};['trips','docs','expenses','deadlines'].forEach(mg);
-  if(!S.profile.permitStart&&st.profile)S.profile=Object.assign(S.profile,Object.fromEntries(Object.entries(st.profile).filter(([k,v])=>v&&!S.profile[k])))}
+ const st=migrate(j.state);
+ if(mode==='replace'){await DB.clear('files');loadState(st)}
+ else{const mg=k=>{const ids=new Set(S[k].map(x=>x.id));for(const x of st[k]||[])if(!ids.has(x.id))S[k].push(x)};['people','trips','docs','expenses','deadlines','ids'].forEach(mg);
+  const s2=st.settings||{};S.settings.recentCross=[...new Set([...S.settings.recentCross,...(s2.recentCross||[])])].slice(0,25);S.settings.visited=[...new Set([...S.settings.visited,...(s2.visited||[])])]}
  for(const[k,v]of Object.entries(j.files||{})){if(typeof v==='string')await DB.put('files',k,v);else await DB.put('files',k,{...v,blob:dataURLToBlob(v.blob)})}
  S.settings.onboarded=true;await saveNow();applySettings();render();toast('Данные восстановлены')}
 
@@ -766,11 +1008,25 @@ function showLock(){let v='';const L=$('#lock');const draw=()=>{L.innerHTML=`<di
 
 /* ---------- Обработчики ---------- */
 const ACT={
- tab:id=>go(id),sub:id=>go(route.tab==='more'||!route.tab?'more':route.tab,id),back:()=>go(route.tab),close:closeSheet,
+ tab:id=>go(id),sub:id=>go(route.tab||'more',id),back:()=>go(route.tab),close:closeSheet,
+ pSel:id=>{S.settings.active=id;save();render()},personNew:()=>personForm(null),personEdit:id=>personForm(S.people.find(p=>p.id===id)),
+ personSave:(id,el)=>{const name=$('#pp_name').value.trim();if(!name)return toast('Введите имя');const color=($('input[name=pcol]:checked')||{}).value||PCOL[0];const rel=$('#pp_rel').value;
+  if(el.dataset.new){const src=person();const p={id,name,relation:rel,color,profile:defProfile(),checklist:defChecklist()};
+   if($('#pp_copy')&&$('#pp_copy').checked){const sp=src.profile;Object.assign(p.profile,{country:sp.country,permit:sp.permit,basis:sp.basis,permitStart:sp.permitStart,cardFrom:sp.cardFrom,cardTo:sp.cardTo,trackFrom:sp.trackFrom,address:sp.address,citizenship:sp.citizenship,renewFrom:sp.renewFrom,renewTo:sp.renewTo})}
+   if($('#pp_trips')&&$('#pp_trips').checked)tripsOf(src.id).forEach(t=>t.persons.push(id));
+   S.people.push(p);S.settings.active=id;S.settings.onboarded=true}
+  else{const p=S.people.find(x=>x.id===id);Object.assign(p,{name,relation:rel,color})}
+  save();closeSheet();render();toast('Сохранено')},
+ personDel:async id=>{const p=S.people.find(x=>x.id===id);if(!confirm(`Удалить «${p.name}»? Его карты и сканы будут удалены, из общих поездок он будет убран, личные поездки — удалены.`))return;
+  for(const x of S.ids.filter(i=>i.personId===id)){for(const f of [x.front,x.back])if(f)await removeFile(f.id)}S.ids=S.ids.filter(i=>i.personId!==id);
+  S.trips.forEach(t=>t.persons=(t.persons||[]).filter(x=>x!==id));S.trips=S.trips.filter(t=>t.persons.length);S.docs.forEach(d=>d.persons=(d.persons||[]).filter(x=>x!==id));
+  S.expenses.forEach(x=>{if(x.personId===id)x.personId=''});S.deadlines=S.deadlines.filter(x=>x.personId!==id);S.people=S.people.filter(x=>x.id!==id);S.settings.active=S.people[0].id;save();closeSheet();render()},
+ allPersons:()=>$$('input[name=tp]').forEach(i=>i.checked=true),
  tripNew:()=>tripForm(null),tripEdit:id=>{tripForm(S.trips.find(t=>t.id===id))},tripSave,
- tripDel:async()=>{if(!confirm('Удалить поездку? Связанные документы останутся, но будут отвязаны.'))return;const id=draft.obj.id;S.trips=S.trips.filter(t=>t.id!==id);S.docs.forEach(d=>{if(d.tripId===id)d.tripId=''});save();closeSheet();render()},
+ tripDel:async()=>{const o=draft.obj;const others=(o.persons||[]).filter(x=>x!==act());if(multi()&&others.length&&!confirm(`Поездка общая (${o.persons.map(pn).join(', ')}). Удалить её для всех? «Отмена» — убрать из поездки только «${person().name}».`)){const t=S.trips.find(x=>x.id===o.id);t.persons=others;save();closeSheet();render();return}
+  if(!confirm('Удалить поездку? Связанные документы останутся, но будут отвязаны.'))return;S.trips=S.trips.filter(t=>t.id!==o.id);S.docs.forEach(d=>{if(d.tripId===o.id)d.tripId=''});save();closeSheet();render()},
  tripYear:id=>{tripYear=id;render()},planFromTrip:()=>{const o=readTrip();if(!o.dep)return;planCheck(o)},
- tripNewDate:id=>{tripForm(null);$('#f_dep').value=ds(+id)},
+ tripNewDate:id=>tripForm(null,{dep:id.length===10?id:ds(+id)}),
  calNav:id=>{calM+=+id;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}render()},calToday:()=>{calY=null;render()},day:id=>daySheet(+id),
  docNew:()=>docForm(null),docNewDate:id=>docForm(null,{date:id.length===10?id:ds(+id)}),docOpen:id=>docView(id),docEdit:id=>docForm(S.docs.find(d=>d.id===id)),docSave,
  docDel:async()=>{if(!confirm('Удалить документ вместе с фото?'))return;const o=draft.obj;for(const f of o.files)await removeFile(f.id);S.docs=S.docs.filter(d=>d.id!==o.id);save();closeSheet();render()},
@@ -778,31 +1034,40 @@ const ACT={
   try{if(navigator.canShare&&navigator.canShare({files:fs})){await navigator.share({files:fs,title:d.title||d.type});return}}catch(e){if(e.name==='AbortError')return}for(const f of fs)await deliver(f,f.name)},
  fileView:id=>fileView(id),dfDel:(id,el)=>{draft.files.splice(+id,1);drawDraftFiles(el.dataset.box)},
  dfOld:(id,el)=>{const f=draft.obj.files[+id];draft.removed.push(f.id);draft.obj.files.splice(+id,1);el.closest('.th').remove();$$('[data-a=dfOld]',$('#sheet')).forEach((b,i)=>b.dataset.id=i)},
+ idNew:id=>idForm(null,IDKINDS[id]?id:undefined),idEdit:id=>idForm(S.ids.find(x=>x.id===id)),idSave,
+ idSide:s=>{if(draft.side[s])draft.side[s]=null;else if(draft.obj[s]){draft.removed.push(draft.obj[s].id);draft.obj[s]=null}drawSides()},
+ idDel:async()=>{if(!confirm('Удалить документ вместе со сканами?'))return;const o=draft.obj;for(const f of [o.front,o.back])if(f)await removeFile(f.id);S.ids=S.ids.filter(x=>x.id!==o.id);save();closeSheet();render()},
  vClose:()=>{$('#viewer').classList.remove('on');if(viewing)URL.revokeObjectURL(viewing.u);viewing=null},
  vShare:async()=>{if(!viewing)return;await deliver(new File([viewing.f.blob],viewing.f.name||'doc.jpg',{type:viewing.f.mime}),viewing.f.name||'doc.jpg')},
  expNew:()=>expForm(null),expEdit:id=>expForm(S.expenses.find(x=>x.id===id)),expSave,
  expDel:async()=>{if(!confirm('Удалить расход?'))return;const o=draft.obj;for(const f of o.files||[])await removeFile(f.id);S.expenses=S.expenses.filter(x=>x.id!==o.id);save();closeSheet();render()},
- mYear:id=>{moneyYear=id;render()},
- welcomeSave:()=>{const p=S.profile;p.country=$('#w_country').value.trim()||p.country;p.permitStart=$('#w_start').value;p.cardTo=$('#w_to').value;p.trackFrom=$('#w_track').value;S.settings.cur=$('#w_cur').value;S.settings.onboarded=true;save();render();toast('Готово! Добавьте первую поездку или документ')},
- profSave:()=>{$$('[id^=p_]').forEach(i=>{const k=i.id.slice(2);S.profile[k]=i.type==='number'?(+i.value||0):i.value.trim()});save();toast('Профиль сохранён');go('more')},
+ mYear:id=>{moneyYear=id;render()},mPerson:id=>{moneyPerson=id;render()},
+ welcomeSave:()=>{if(!$('#w_country').value.trim())return toast('Укажите страну ВНЖ');const p=person();p.name=$('#w_name').value.trim()||'Я';const pr=p.profile;pr.country=$('#w_country').value.trim()||pr.country;pr.permitStart=$('#w_start').value;pr.cardTo=$('#w_to').value;pr.trackFrom=$('#w_track').value;S.settings.cur=$('#w_cur').value;S.settings.onboarded=true;save();render();toast('Готово! Добавьте членов семьи, карты ВНЖ и первую поездку')},
+ profSave:()=>{const pr=person().profile;$$('[id^=p_]').forEach(i=>{const k=i.id.slice(2);pr[k]=i.type==='number'?(+i.value||0):i.value.trim()});save();toast('Профиль сохранён');go(route.tab)},
  travelAs:(id,el)=>{S.settings.travelAs=el.value;save();toast('Сохранено')},ruleOn:(id,el)=>{S.rules.find(r=>r.id===id).on=el.checked;save()},
  ruleAdd:()=>{const t=$('#nr_type').value;const n=$('#nr_name').value.trim()||'Моё правило';S.rules.push({id:uid(),on:true,custom:true,name:n,type:t,limit:t==='zone'?90:t==='minyear'?183:180,period:t==='zone'?180:t==='period'?365:0,anchor:'rolling',note:''});save();render()},
  ruleDel:id=>{S.rules=S.rules.filter(r=>r.id!==id);save();render()},rulesReset:()=>{if(confirm('Вернуть стандартные правила? Свои правила будут удалены.')){S.rules=defRules();save();render()}},
- planCheck:()=>planCheck(),planSave:()=>{const dep=$('#pl_dep').value,ret=$('#pl_ret').value;if(!dep||!ret)return toast('Укажите обе даты');S.trips.push({id:uid(),dep,ret,country:$('#pl_c').value.trim(),city:'',schengen:$('#pl_s').checked,transport:'plane',purpose:'',note:'',planned:true});save();toast('Поездка запланирована');go('trips')},
- dlAdd:()=>{const n=$('#dl_n').value.trim(),d=$('#dl_d').value;if(!n||!d)return toast('Название и дата');S.deadlines.push({id:uid(),name:n,date:d});save();render()},dlDel:id=>{S.deadlines=S.deadlines.filter(x=>x.id!==id);save();render()},ics:exportIcs,
- clOn:(id,el)=>{S.checklist.find(x=>x.id===id).on=el.checked;save();render()},clDel:id=>{S.checklist=S.checklist.filter(x=>x.id!==id);save();render()},
- clAdd:()=>{const t=$('#cl_t').value.trim();if(!t)return;S.checklist.push({id:uid(),t,on:false});save();render()},clReset:()=>{S.checklist.forEach(x=>x.on=false);save();render()},clDefault:()=>{if(confirm('Заменить список стандартным?')){S.checklist=defChecklist();save();render()}},
- xPreset:id=>{const T=TD(),y=new Date().getFullYear();let a=trackStart(),b=T;if(id==='year')a=dn(y+'-01-01');if(id==='last'){a=dn((y-1)+'-01-01');b=dn((y-1)+'-12-31')}if(id==='12')a=T-364;if(id==='5y')a=S.profile.permitStart?dn(S.profile.permitStart):T-1825;$('#x_a').value=ds(a);$('#x_b').value=ds(b)},
+ planCheck:()=>planCheck(),planSave:()=>{const dep=$('#pl_dep').value,ret=$('#pl_ret').value;if(!dep||!ret)return toast('Укажите обе даты');S.trips.push({id:uid(),dep,ret,country:$('#pl_c').value.trim(),city:'',schengen:$('#pl_s').checked,transport:'plane',retTransport:'plane',exitCross:'',entryCross:'',purpose:'',note:'',planned:true,persons:[act()]});save();toast('Поездка запланирована');go('trips')},
+ dlAdd:()=>{const n=$('#dl_n').value.trim(),d=$('#dl_d').value;if(!n||!d)return toast('Название и дата');S.deadlines.push({id:uid(),name:n,date:d,personId:$('#dl_p')?$('#dl_p').value:act()});save();render()},dlDel:id=>{S.deadlines=S.deadlines.filter(x=>x.id!==id);save();render()},ics:exportIcs,
+ clOn:(id,el)=>{person().checklist.find(x=>x.id===id).on=el.checked;save();render()},clDel:id=>{const p=person();p.checklist=p.checklist.filter(x=>x.id!==id);save();render()},
+ clAdd:()=>{const t=$('#cl_t').value.trim();if(!t)return;person().checklist.push({id:uid(),t,on:false});save();render()},clReset:()=>{person().checklist.forEach(x=>x.on=false);save();render()},clDefault:()=>{if(confirm('Заменить список стандартным?')){person().checklist=defChecklist();save();render()}},
+ visited:(id,el)=>{const v=S.settings.visited;if(el.checked){if(!v.includes(id))v.push(id)}else S.settings.visited=v.filter(x=>x!==id);save();render()},
+ crossDel:id=>{S.settings.recentCross.splice(+id,1);save();render()},crossAdd:()=>{const v=$('#cr_new').value.trim();if(!v)return;rememberCross(v);save();render()},
+ xPreset:id=>{const T=TD(),y=new Date().getFullYear();let a=trackStart(),b=T;if(id==='year')a=dn(y+'-01-01');if(id==='last'){a=dn((y-1)+'-01-01');b=dn((y-1)+'-12-31')}if(id==='12')a=T-364;if(id==='5y')a=prof().permitStart?dn(prof().permitStart):T-1825;$('#x_a').value=ds(a);$('#x_b').value=ds(b)},
  xXls:()=>exportXlsx().catch(e=>toast('Ошибка: '+e.message)),xWord:()=>exportDocx().catch(e=>toast('Ошибка: '+e.message)),xPdf:()=>exportPdf().catch(e=>toast('Ошибка: '+e.message)),
  bkSave:()=>backupSave().catch(e=>toast('Ошибка: '+e.message)),
  wipe:async()=>{if(confirm('Удалить ВСЕ данные и фото без возможности восстановления?')&&confirm('Вы сохранили резервную копию? Удаляем?')){await DB.clear('files');S=defState();await saveNow();applySettings();go('home')}},
  theme:id=>{S.settings.theme=id;applySettings();save();render()},tcReset:()=>{S.settings.textColor='';applySettings();save();render()},acReset:()=>{S.settings.accent='';applySettings();save();render()},
  catAdd:()=>{S.settings.cats.push({id:uid(),n:'Новая статья'});save();render()},catDel:id=>{if(S.expenses.some(x=>x.cat===id))return toast('Эта статья используется в расходах');S.settings.cats=S.settings.cats.filter(c=>c.id!==id);save();render()},
  pinOn:async()=>{const v=$('#s_pin').value.trim();if(!/^\d{4,6}$/.test(v))return toast('PIN — от 4 до 6 цифр');S.settings.pinHash=await hash(v);save();render();toast('PIN включён')},
+ icon:id=>{try{localStorage.setItem('dni-icon',id)}catch(e){}$('#appleIcon').href=`icons/icon-${id}-180.png`;$('#favIcon').href=`icons/icon-${id}-192.png`;render();toast('Иконка выбрана — добавьте приложение на экран «Домой» заново')},
+ notifyOn:async()=>{if(!('Notification' in window))return toast('Уведомления не поддерживаются');const r=await Notification.requestPermission();if(r!=='granted')return toast('Разрешение не дано — включите его в настройках iPhone для этого приложения');S.settings.notify=true;S.meta.lastNotify='';save();render();notifyCheck();toast('Уведомления включены')},
+ notifyOff:()=>{S.settings.notify=false;save();render()},
  pinOff:()=>{if(confirm('Отключить PIN?')){S.settings.pinHash='';save();render()}},onboardAgain:()=>{S.settings.onboarded=false;save();go('home')}};
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const a=el.dataset.a;if(!ACT[a])return;
  if(el.tagName==='INPUT'&&(el.type==='checkbox'||el.type==='radio')){ACT[a](el.dataset.id,el);return}
- if(el.tagName==='A')e.preventDefault();if(a==='docOpen'&&$('#sheetWrap').classList.contains('on')&&draft&&draft.kind==='trip'){closeSheet()}
+ if(el.tagName==='A')e.preventDefault();if(a==='docOpen'&&$('#sheetWrap').classList.contains('on')&&draft&&draft.kind==='trip')closeSheet();
+ if(['idEdit','idNew'].includes(a)&&$('#sheetWrap').classList.contains('on'))return;
  ACT[a](el.dataset.id,el)});
 document.addEventListener('input',e=>{const t=e.target;
  if(t.id==='dq'){docFilter.q=t.value;clearTimeout(ACT._q);ACT._q=setTimeout(()=>{render();const q=$('#dq');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}},350)}
@@ -810,17 +1075,21 @@ document.addEventListener('input',e=>{const t=e.target;
  if(t.id==='s_tc'){S.settings.textColor=t.value;applySettings();save()}if(t.id==='s_ac'){S.settings.accent=t.value;applySettings();save()}
  if(t.dataset.cat){const c=S.settings.cats.find(x=>x.id===t.dataset.cat);if(c){c.n=t.value;save()}}});
 document.addEventListener('change',e=>{const t=e.target;
+ if(t.dataset.cross){const tx=$('#'+t.dataset.cross);if(tx){tx.classList.toggle('hid',t.value!=='__new');if(t.value==='__new')tx.focus()}}
  if(t.id==='dtype'){docFilter.type=t.value;render()}if(t.id==='dyear'){docFilter.year=t.value;render()}
+ if(t.id==='s_warn'){S.settings.warnDays=+t.value;save();render()}
  if(t.id==='s_font'){S.settings.font=t.value;applySettings();save()}if(t.id==='s_hc'){S.settings.contrast=t.checked;applySettings();save()}if(t.id==='s_cur'){S.settings.cur=t.value;save()}
  if(t.dataset.rf){const r=S.rules.find(x=>x.id===t.dataset.id);r[t.dataset.rf]=t.tagName==='SELECT'?t.value:(+t.value||0);save()}
  if(t.id==='bk_file'&&t.files[0])backupLoad(t.files[0]).catch(er=>toast('Ошибка: '+er.message))});
 
 /* ---------- Запуск ---------- */
-(async()=>{try{await DB.open();const st=await DB.get('kv','state');if(st){const d=defState();S=Object.assign(d,st);S.profile=Object.assign(d.profile,st.profile);S.settings=Object.assign(d.settings,st.settings);S.meta=Object.assign(d.meta,st.meta)}}catch(e){toast('Хранилище недоступно: '+e.message)}
- applySettings();render();if(S.settings.pinHash)showLock();
+(async()=>{try{await DB.open();const st=await DB.get('kv','state');if(st)loadState(st)}catch(e){toast('Хранилище недоступно: '+e.message)}
+ applySettings();render();if(S.settings.pinHash)showLock();notifyCheck();
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){ALERTS=allAlerts();renderTabs();notifyCheck()}});
  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
  if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
- setInterval(()=>{if(route.tab==='home'&&!route.sub&&!$('#sheetWrap').classList.contains('on'))render()},3600000)})();
+ setInterval(()=>{if(route.tab==='home'&&!route.sub&&!$('#sheetWrap').classList.contains('on'))render();notifyCheck()},3600000)})();
+
 </script>
 </body>
 </html>
