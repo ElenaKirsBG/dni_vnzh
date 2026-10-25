@@ -1,5 +1,5 @@
 /* © Елена Кирсанова. Все права защищены. */
-const C='moy-vnzh-v5';
+const C='moy-vnzh-v7';
 const IC=['a','b','c','d'].flatMap(k=>[180,192,512].map(s=>`./icons/icon-${k}-${s}.png`));
 const F=['./','./index.html','./manifest.webmanifest','./icons/icon-180.png','./icons/icon-192.png','./icons/icon-512.png',...IC];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)));self.skipWaiting()});
