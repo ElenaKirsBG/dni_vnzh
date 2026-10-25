@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Дни ВНЖ">
+<meta name="application-name" content="Дни ВНЖ">
+<meta name="theme-color" content="#f5f4f1">
+<meta name="author" content="Елена Кирсанова">
+<meta name="copyright" content="© Елена Кирсанова. Все права защищены.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<title>Дни ВНЖ — учёт пребывания</title>
+<style>
+:root{--bg:#f5f4f1;--card:#fff;--card2:#faf9f7;--text:#1e2227;--muted:#6c7178;--line:#e5e2dc;--accent:#3d6b8a;--home:#3e8b5c;--abroad:#c2554f;--travel:#d08a2b;--plan:#5b7fc7;--fs:17px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--r:16px;--shadow:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04)}
+:root[data-theme=graphite]{--bg:#141619;--card:#1e2125;--card2:#252a2f;--text:#e9e7e3;--muted:#9aa0a8;--line:#30353b;--accent:#7eb1d1;--home:#5fb381;--abroad:#e07a73;--travel:#e3a94f;--plan:#8ea8ef;--shadow:none}
+:root[data-theme=indigo]{--bg:#11132a;--card:#1a1d3a;--card2:#21254b;--text:#e6e7f5;--muted:#9da1c4;--line:#2c3058;--accent:#a3adff;--home:#6cc39a;--abroad:#ef8a85;--travel:#f0b35e;--plan:#9fb4ff;--shadow:none}
+:root[data-theme=sage]{--bg:#f1f3ee;--card:#fff;--card2:#f7f9f5;--text:#232a22;--muted:#69736a;--line:#dfe4da;--accent:#5a7d5e}
+:root[data-theme=powder]{--bg:#f8f1ef;--card:#fff;--card2:#fcf7f6;--text:#2d2324;--muted:#7a6a6b;--line:#ecdeda;--accent:#a35f67}
+:root[data-theme=sepia]{--bg:#f3eadb;--card:#fbf6ec;--card2:#f6eee0;--text:#3a2e21;--muted:#7d6c58;--line:#e3d6c1;--accent:#8a6838}
+:root[data-theme=sea]{--bg:#eef4f5;--card:#fff;--card2:#f5f9fa;--text:#1d2b30;--muted:#5f7379;--line:#d9e5e8;--accent:#2f7c8a}
+:root.hc{--muted:var(--text)}
+:root.hc .card,:root.hc .item{border-width:1.5px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--fs);line-height:1.42;-webkit-text-size-adjust:100%}
+body{min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+header#top{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(env(safe-area-inset-top) + 10px) 16px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+header#top h1{font-size:1.3em;margin:0;font-weight:700;flex:1;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.back{border:0;background:none;color:var(--accent);font-size:1em;padding:4px 6px 4px 0;display:flex;align-items:center;gap:2px}
+main{padding:14px 16px calc(96px + env(safe-area-inset-bottom));max-width:820px;margin:0 auto}
+nav#tabs{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav#tabs button{flex:1;border:0;background:none;color:var(--muted);padding:7px 0 5px;font-size:10.5px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+nav#tabs button svg{width:24px;height:24px}
+nav#tabs button.on{color:var(--accent);font-weight:600}
+svg.i{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card h2{font-size:1.02em;margin:0 0 10px;font-weight:650;display:flex;align-items:center;gap:8px}
+.card h3{font-size:.95em;margin:14px 0 6px}
+.muted{color:var(--muted)}.small{font-size:.84em}.tiny{font-size:.74em}
+.row{display:flex;gap:10px;align-items:center}.row.wrap{flex-wrap:wrap}.sp{flex:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center}
+.stat b{display:block;font-size:1.45em;line-height:1.15;font-weight:700}
+.stat span{font-size:.74em;color:var(--muted)}
+.c-home{color:var(--home)}.c-abroad{color:var(--abroad)}.c-travel{color:var(--travel)}.c-plan{color:var(--plan)}.c-acc{color:var(--accent)}
+.hero{border-radius:var(--r);padding:16px;margin-bottom:12px;color:#fff;background:linear-gradient(135deg,var(--home),color-mix(in srgb,var(--home) 70%,#000))}
+.hero.abroad{background:linear-gradient(135deg,var(--abroad),color-mix(in srgb,var(--abroad) 70%,#000))}
+.hero .big{font-size:1.5em;font-weight:700;line-height:1.2}
+.hero .sub{opacity:.92;font-size:.9em;margin-top:4px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;font-weight:550;min-height:44px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{color:var(--abroad)}
+.btn.block{width:100%}.btn.sm{min-height:34px;padding:6px 11px;font-size:.88em;border-radius:10px}
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.qa button{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.74em;color:var(--text)}
+.qa button svg{width:22px;height:22px;color:var(--accent)}
+.bar{height:9px;background:var(--card2);border:1px solid var(--line);border-radius:9px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:9px}
+.bar i.ok{background:var(--home)}.bar i.warn{background:var(--travel)}.bar i.over{background:var(--abroad)}
+.rule{padding:10px 0;border-top:1px solid var(--line)}.rule:first-of-type{border-top:0;padding-top:2px}
+.badge{display:inline-block;font-size:.72em;padding:2px 8px;border-radius:20px;background:var(--card2);border:1px solid var(--line);color:var(--muted);white-space:nowrap;font-weight:550}
+.badge.ok{color:var(--home);border-color:color-mix(in srgb,var(--home) 40%,transparent)}
+.badge.warn{color:var(--travel);border-color:color-mix(in srgb,var(--travel) 40%,transparent)}
+.badge.over{color:var(--abroad);border-color:color-mix(in srgb,var(--abroad) 40%,transparent)}
+.badge.plan{color:var(--plan);border-color:color-mix(in srgb,var(--plan) 40%,transparent)}
+.badge.acc{color:var(--accent)}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:center;cursor:pointer}
+.item.planned{border-style:dashed}
+.item .ic{width:40px;height:40px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:1.15em;flex:none}
+.item .tx{flex:1;min-width:0}.item .t1{font-weight:600}.item .t2{font-size:.84em;color:var(--muted)}
+.menu .item{margin-bottom:6px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 13px;font-size:.86em;white-space:nowrap}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.ygroup{font-weight:700;margin:16px 2px 8px;color:var(--muted);font-size:.86em;text-transform:uppercase;letter-spacing:.05em}
+label.f{display:block;margin-bottom:11px}
+label.f>span{display:block;font-size:.82em;color:var(--muted);margin-bottom:4px}
+input[type=text],input[type=date],input[type=number],input[type=password],input[type=search],select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:max(16px,1em);outline:none;-webkit-appearance:none;appearance:none;min-height:46px}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:30px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:80px;resize:vertical}
+.chk{display:flex;gap:10px;align-items:center;padding:8px 0}
+.chk input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=color]{width:46px;height:40px;border:1px solid var(--line);border-radius:10px;background:none;padding:2px}
+#sheetWrap{position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;z-index:20;align-items:flex-end;justify-content:center}
+#sheetWrap.on{display:flex}
+#sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:8px 16px calc(22px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch;animation:up .22s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:4px auto 10px}
+.shead{display:flex;align-items:center;gap:8px;margin-bottom:12px}.shead h2{margin:0;font-size:1.15em;flex:1}
+.xbtn{border:0;background:var(--card2);width:34px;height:34px;border-radius:50%;font-size:1.1em;color:var(--muted)}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s;z-index:40;max-width:90%;text-align:center}
+#toast.on{opacity:.95}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .wd{text-align:center;font-size:.72em;color:var(--muted);padding:2px 0}
+.cal .d{aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.88em;background:var(--card);border:1px solid var(--line);position:relative;cursor:pointer}
+.cal .d.e{visibility:hidden}
+.cal .d.home{background:color-mix(in srgb,var(--home) 16%,var(--card))}
+.cal .d.abroad{background:color-mix(in srgb,var(--abroad) 22%,var(--card))}
+.cal .d.travel{background:color-mix(in srgb,var(--travel) 26%,var(--card))}
+.cal .d.plan{background:color-mix(in srgb,var(--plan) 16%,var(--card));border-style:dashed}
+.cal .d.out{opacity:.45}
+.cal .d.today{outline:2px solid var(--accent);outline-offset:-2px;font-weight:700}
+.cal .d .dot{position:absolute;bottom:4px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.78em;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:4px}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.th{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--card2);border:1px solid var(--line);cursor:pointer}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+.th .cap{position:absolute;left:0;right:0;bottom:0;padding:16px 7px 6px;background:linear-gradient(transparent,rgba(0,0,0,.66));color:#fff;font-size:.7em;line-height:1.25}
+.th .pdf{display:flex;align-items:center;justify-content:center;height:100%;font-weight:700;color:var(--muted)}
+.th .x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:15px;line-height:1}
+.mini{display:flex;gap:6px;flex-wrap:wrap}.mini .th{width:76px;aspect-ratio:3/4}
+.hbar{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:.88em}
+.hbar .nm{width:38%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbar .tr{flex:1;height:14px;background:var(--card2);border-radius:7px;overflow:hidden}
+.hbar .tr i{display:block;height:100%;background:var(--accent);border-radius:7px}
+.hbar .vl{width:24%;text-align:right;font-variant-numeric:tabular-nums}
+.vbars{display:flex;align-items:flex-end;gap:4px;height:140px;padding-top:8px}
+.vbars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;font-size:.62em;color:var(--muted);gap:3px}
+.vbars div i{width:100%;background:var(--accent);border-radius:5px 5px 2px 2px;min-height:2px;opacity:.85}
+.fab{position:fixed;right:18px;bottom:calc(76px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:30px;box-shadow:0 6px 18px rgba(0,0,0,.22);z-index:7;display:flex;align-items:center;justify-content:center}
+details.g{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;padding:0 14px}
+details.g summary{padding:13px 0;font-weight:600;cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px}
+details.g summary::-webkit-details-marker{display:none}
+details.g summary:after{content:"›";margin-left:auto;color:var(--muted);font-size:1.3em;transition:transform .2s}
+details.g[open] summary:after{transform:rotate(90deg)}
+details.g .gb{padding:0 0 14px;font-size:.94em}
+details.g .gb p{margin:6px 0}details.g .gb ul,details.g .gb ol{margin:6px 0;padding-left:20px}details.g .gb li{margin:4px 0}
+.note{background:color-mix(in srgb,var(--accent) 9%,var(--card));border:1px solid color-mix(in srgb,var(--accent) 25%,transparent);border-radius:12px;padding:10px 12px;font-size:.88em;margin:8px 0}
+.warnbox{background:color-mix(in srgb,var(--travel) 12%,var(--card));border:1px solid color-mix(in srgb,var(--travel) 35%,transparent);border-radius:12px;padding:10px 12px;font-size:.88em;margin:8px 0}
+.copy{text-align:center;color:var(--muted);font-size:.76em;margin:22px 0 6px}
+.empty{text-align:center;color:var(--muted);padding:26px 10px}
+table.t{width:100%;border-collapse:collapse;font-size:.84em}
+table.t th,table.t td{padding:7px 5px;border-bottom:1px solid var(--line);text-align:left}
+table.t th{color:var(--muted);font-weight:600}
+table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
+.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.themes button{border:2px solid var(--line);border-radius:14px;padding:8px 4px;font-size:.72em;background:var(--card);display:flex;flex-direction:column;align-items:center;gap:5px}
+.themes button.on{border-color:var(--accent)}
+.themes button i{width:34px;height:22px;border-radius:7px;display:block;border:1px solid rgba(0,0,0,.08)}
+#viewer{position:fixed;inset:0;background:#000;z-index:30;display:none;flex-direction:column}
+#viewer.on{display:flex}
+#viewer .vt{display:flex;gap:8px;padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;color:#fff;align-items:center}
+#viewer .vt button{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:10px;padding:8px 12px}
+#viewer .vi{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;touch-action:pinch-zoom pan-x pan-y}
+#viewer img{max-width:100%;max-height:100%}
+#lock{position:fixed;inset:0;background:var(--bg);z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px}
+#lock.on{display:flex}
+#lock .dots{display:flex;gap:14px}#lock .dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--accent)}#lock .dots i.f{background:var(--accent)}
+#lock .pad{display:grid;grid-template-columns:repeat(3,72px);gap:14px}
+#lock .pad button{height:72px;border-radius:50%;border:1px solid var(--line);background:var(--card);font-size:1.5em}
+#print{display:none}
+@media print{
+ body.printing>*:not(#print){display:none!important}
+ body.printing{background:#fff!important}
+ body.printing #print{display:block;color:#000;font:11pt/1.4 -apple-system,"Segoe UI",Arial,sans-serif}
+}
+#print h1{font-size:18pt;margin:0 0 4px}#print h2{font-size:13pt;margin:18px 0 6px;border-bottom:1.5px solid #333;padding-bottom:3px}
+#print table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:4px 0}
+#print th,#print td{border:1px solid #999;padding:3px 5px;text-align:left;vertical-align:top}
+#print th{background:#eef2f5}
+#print .ph{display:inline-block;width:31%;margin:0 1% 10px;vertical-align:top;page-break-inside:avoid;font-size:8.5pt}
+#print .ph img{width:100%;border:1px solid #ccc}
+#print .meta{color:#444;font-size:9.5pt}
+@media (min-width:700px){.thumbs{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div id="lock"></div>
+<header id="top"><div id="backWrap"></div><h1 id="title">Дни ВНЖ</h1><div id="topR"></div></header>
+<main id="view"></main>
+<nav id="tabs"></nav>
+<div id="sheetWrap"><div id="sheet"></div></div>
+<div id="viewer"><div class="vt"><button data-a="vClose">Закрыть</button><span class="sp"></span><button data-a="vShare">Поделиться</button></div><div class="vi"><img id="vImg" alt=""></div></div>
+<div id="toast"></div>
+<div id="print"></div>
+<script>
+'use strict';
+/* © Елена Кирсанова. Все права защищены. Копирование, изменение и распространение кода без письменного разрешения правообладателя запрещены. */
+const APP='Дни ВНЖ',VER='1.0',OWNER='Елена Кирсанова';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const pad=n=>String(n).padStart(2,'0');
+const dn=s=>{const[y,m,d]=s.split('-').map(Number);return Math.round(Date.UTC(y,m-1,d)/864e5)};
+const ds=n=>{const d=new Date(n*864e5);return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate())};
+const todayS=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const TD=()=>dn(todayS());
+const fd=s=>s?s.split('-').reverse().join('.'):'—';
+const fdn=n=>fd(ds(n));
+const addY=(s,y)=>{const[a,b,c]=s.split('-').map(Number);return Math.round(Date.UTC(a+y,b-1,c)/864e5)};
+const MONTHS=['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const MSH=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+const plural=(n,a,b,c)=>{n=Math.abs(n)%100;const k=n%10;if(n>10&&n<20)return c;if(k>1&&k<5)return b;if(k===1)return a;return c};
+const dd=n=>n+' '+plural(n,'день','дня','дней');
+const fdLong=s=>{if(!s)return '—';const[y,m,d]=s.split('-').map(Number);return d+' '+['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][m-1]+' '+y};
+
+const SCHENGEN=['Австрия','Бельгия','Болгария','Венгрия','Германия','Греция','Дания','Исландия','Испания','Италия','Латвия','Литва','Лихтенштейн','Люксембург','Мальта','Нидерланды','Норвегия','Польша','Португалия','Румыния','Словакия','Словения','Финляндия','Франция','Хорватия','Чехия','Швейцария','Швеция','Эстония'];
+const COUNTRIES=[...SCHENGEN,'Россия','Турция','Сербия','Северная Македония','Черногория','Албания','Босния и Герцеговина','Грузия','Армения','Азербайджан','Казахстан','Узбекистан','Кыргызстан','Беларусь','Украина','Молдова','Кипр','Великобритания','Ирландия','ОАЭ','Египет','Израиль','Таиланд','Вьетнам','Индонезия','США','Канада'];
+const TRANSPORT={plane:['✈️','Самолёт'],bus:['🚌','Автобус'],train:['🚆','Поезд'],car:['🚗','Автомобиль'],ferry:['⛴️','Паром'],walk:['🚶','Пешком / граница'],other:['🧭','Другое']};
+const DOCTYPES=['Билет','Посадочный талон','Штамп в паспорте','Чек / квитанция','Выписка из банка','Договор аренды','Коммунальные счета','Медицинский документ','Страховка','Карта ВНЖ','Паспорт','Справка','Фото с геометкой','Другое'];
+const DEFCATS=[['fee','Госпошлины'],['card','Карта ВНЖ'],['visa','Виза D'],['ins','Медстраховка'],['nota','Нотариус и переводы'],['apost','Апостиль и справки'],['rent','Аренда для ВНЖ'],['legal','Адвокат / посредник'],['bank','Банк и выписки'],['travel','Дорога и билеты'],['photo','Фото и копии'],['other','Прочее']];
+const CUR={EUR:'€',BGN:'лв',RUB:'₽',USD:'$',GBP:'£',UAH:'₴',KZT:'₸',BYN:'Br',TRY:'₺',RSD:'дин',GEL:'₾',AMD:'֏',CHF:'CHF',PLN:'zł',CZK:'Kč'};
+const BGN_RATE=1.95583;
+const FONTS={system:'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif',serif:'"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif',round:'ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",sans-serif',mono:'ui-monospace,"SF Mono",Menlo,Consolas,monospace'};
+const THEMES={auto:['Авто','linear-gradient(90deg,#f5f4f1 50%,#141619 50%)'],pearl:['Жемчуг','#f5f4f1'],graphite:['Графит','#1e2125'],indigo:['Ночь','#1a1d3a'],sage:['Шалфей','#dfe7d9'],powder:['Пудра','#f1dfdb'],sepia:['Сепия','#eadbc2'],sea:['Море','#d4e7ea']};
+
+const IC={
+home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+trips:'<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h8a3 3 0 0 0 0-6H8a3 3 0 0 1 0-6h8"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+docs:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
+money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>',
+more:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+back:'<path d="M15 18l-6-6 6-6"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+cam:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
+plan:'<path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+rules:'<path d="M4 6h16M4 12h16M4 18h10"/><path d="M18 16l2 2 3-4"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+exp:'<path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/>',
+save:'<path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/>',
+gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/>',
+book:'<path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
+check:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 15h8"/>',
+law:'<path d="M12 3v18M6 7h12M4 14l2-7 2 7a2 2 0 0 1-4 0zM16 14l2-7 2 7a2 2 0 0 1-4 0zM8 21h8"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+share:'<path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>'};
+const ico=(n,cls='i')=>`<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[n]||''}</svg>`;
+
+/* ---------- Хранилище ---------- */
+const DB={d:null,
+ open(){return new Promise((ok,no)=>{const r=indexedDB.open('dni-vnzh',1);r.onupgradeneeded=()=>{r.result.createObjectStore('kv');r.result.createObjectStore('files')};r.onsuccess=()=>{DB.d=r.result;ok()};r.onerror=()=>no(r.error)})},
+ tx(st,mode,fn){return new Promise((ok,no)=>{const t=DB.d.transaction(st,mode);const q=fn(t.objectStore(st));t.oncomplete=()=>ok(q?q.result:undefined);t.onerror=()=>no(t.error);t.onabort=()=>no(t.error)})},
+ get(st,k){return DB.tx(st,'readonly',s=>s.get(k))},
+ put(st,k,v){return DB.tx(st,'readwrite',s=>s.put(v,k))},
+ del(st,k){return DB.tx(st,'readwrite',s=>s.delete(k))},
+ keys(st){return DB.tx(st,'readonly',s=>s.getAllKeys())},
+ clear(st){return DB.tx(st,'readwrite',s=>s.clear())}};
+
+function defRules(){return[
+ {id:'r1',on:true,name:'Отсутствие подряд (сохранение ВНЖ)',type:'consec',limit:180,period:0,anchor:'',note:'Нельзя находиться вне страны более 6 месяцев подряд — иначе риск отказа в продлении.'},
+ {id:'r2',on:true,name:'ПМЖ ЕС: отсутствие за 5 лет',type:'period',limit:300,period:1826,anchor:'start',note:'Для долгосрочного статуса ЕС суммарное отсутствие за 5 лет — не более 10 месяцев.'},
+ {id:'r3',on:false,name:'Национальный ПМЖ: отсутствие за 5 лет',type:'period',limit:900,period:1826,anchor:'start',note:'Для национального ПМЖ лимит мягче — до 30 месяцев отсутствия за 5 лет.'},
+ {id:'r4',on:true,name:'Шенген 90/180 (другие страны)',type:'zone',limit:90,period:180,anchor:'',note:'С ВНЖ одной страны Шенгена в других странах зоны — не более 90 дней в любые 180 дней.'},
+ {id:'r5',on:false,name:'Налоговое резидентство: 183 дня',type:'minyear',limit:183,period:0,anchor:'',note:'Присутствие в стране не менее 183 дней в календарном году.'}]}
+function defChecklist(){return['Заявление на продление (формуляр)','Загранпаспорт и копия','Действующая карта ВНЖ','Договор аренды на год (нотариально)','Декларация собственника жилья (нотариально)','Медицинская страховка на год','Выписка из банка за 3 месяца','Документ-основание: пенсия / работа / собственность','Справка о несудимости (с апостилем)','Квитанция об оплате госпошлины','Подтверждения проживания: билеты, чеки, счета'].map(t=>({id:uid(),t,on:false}))}
+function defState(){return{v:1,
+ profile:{name:'',country:'Болгария',citizenship:'',permit:'ВНЖ (продължително пребиваване)',basis:'',permitStart:'',cardFrom:'',cardTo:'',trackFrom:'',passportTo:'',insuranceTo:'',address:'',renewFrom:60,renewTo:14,pmzhYears:5},
+ settings:{theme:'auto',fs:17,font:'system',accent:'',textColor:'',contrast:false,cur:'EUR',travelAs:'home',pinHash:'',rates:{},cats:DEFCATS.map(([id,n])=>({id,n})),onboarded:false},
+ rules:defRules(),trips:[],docs:[],expenses:[],deadlines:[],checklist:defChecklist(),meta:{lastBackup:'',created:todayS()}}}
+let S=defState();
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>DB.put('kv','state',S).catch(e=>toast('Ошибка сохранения: '+e)),200)}
+function saveNow(){clearTimeout(saveT);return DB.put('kv','state',S)}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveNow()});
+
+/* ---------- Подсчёт дней ---------- */
+const byDep=(a,b)=>a.dep<b.dep?-1:a.dep>b.dep?1:0;
+const byDate=(a,b)=>a.date<b.date?-1:a.date>b.date?1:0;
+function trackStart(){const p=S.profile;if(p.trackFrom)return dn(p.trackFrom);if(p.permitStart)return dn(p.permitStart);const t=S.trips.filter(x=>!x.planned).map(x=>dn(x.dep));return t.length?Math.min(...t):TD()}
+function statusMap(trips,withPlan){const m=new Map(),T=TD();
+ for(const t of trips){if(t.planned&&!withPlan)continue;if(!t.dep)continue;const a=dn(t.dep);const open=!t.ret;const b=open?Math.max(a,t.planned?a:T):dn(t.ret);
+  for(let d=a;d<=b;d++){const tr=d===a||(!open&&d===b);const st=tr?'travel':'abroad';const prev=m.get(d);
+   if(!prev||(prev.s==='travel'&&st==='abroad'))m.set(d,{s:st,t,z:!!t.schengen,p:!!t.planned})}}
+ return m}
+const absent=e=>!!e&&(e.s==='abroad'||(e.s==='travel'&&S.settings.travelAs==='abroad'));
+function mapNow(withPlan){return statusMap(S.trips,withPlan)}
+function countRange(m,a,b){const r={home:0,abroad:0,travel:0,present:0,absent:0,days:Math.max(0,b-a+1)};for(let d=a;d<=b;d++){const e=m.get(d);r[e?e.s:'home']++;if(absent(e))r.absent++;else r.present++}return r}
+function tripInfo(t){const T=TD();const a=dn(t.dep),b=t.ret?dn(t.ret):Math.max(a,T);const open=!t.ret;const travel=open?1:(a===b?1:2);const full=open?Math.max(0,b-a):Math.max(0,b-a-1);const abs=S.settings.travelAs==='abroad'?full+travel:full;const docs=S.docs.filter(x=>x.tripId===t.id).length;return{a,b,open,travel,full,abs,docs,total:b-a+1}}
+
+function evalAll(m,R,o={}){
+ const A=Math.min(trackStart(),R-1900);const n=R-A+1;
+ const ab=new Uint8Array(n),Pa=new Int32Array(n+1),Pz=new Int32Array(n+1);
+ for(let i=0;i<n;i++){const e=m.get(A+i);ab[i]=absent(e)?1:0;Pa[i+1]=Pa[i]+ab[i];Pz[i+1]=Pz[i]+(e&&e.z?1:0)}
+ const cnt=(P,a,b)=>{a=Math.max(a,A);b=Math.min(b,R);return b<a?0:P[b-A+1]-P[a-A]};
+ const st=(v,l)=>v>l?'over':v>=l*.8?'warn':'ok';
+ return S.rules.filter(r=>r.on).map(r=>{const res={r,limit:+r.limit||0};
+  if(r.type==='consec'){const ce=o.curEnd??R;let best=0,bEnd=0,run=0,cr=0;for(let i=0;i<n;i++){if(ab[i]){run++;if(run>best){best=run;bEnd=A+i}}else run=0;if(A+i===ce)cr=run}
+   run=ce>=R?run:cr;res.cur=run;res.best=best;res.bestEnd=bEnd;res.value=o.cur?run:best;res.left=res.limit-run;res.status=st(res.value,res.limit);
+   res.text=o.cur?`Отсутствие подряд: ${dd(run)} из ${res.limit}`:`Максимум подряд: ${dd(best)} из ${res.limit}`+(run?` · сейчас ${dd(run)}`:'');}
+  else if(r.type==='period'){const P=+r.period||1826,ps=S.profile.permitStart,anc=r.anchor==='start'&&ps;
+   const win=d=>{if(anc){const s0=dn(ps);const k=Math.max(0,Math.floor((d-s0)/P));return[s0+k*P,s0+k*P+P-1]}return[d-P+1,d]};
+   let[a,b]=win(R);let v=cnt(Pa,a,Math.min(b,R));
+   if(o.zFrom!=null){if(anc){for(let d=o.zFrom,g=0;g<20;g++){const[wa,wb]=win(d);const c=cnt(Pa,wa,Math.min(wb,R));if(c>v){v=c;a=wa;b=wb}if(wb>=R)break;d=wb+1}}
+    else for(let d=o.zFrom;d<=R;d++){const c=cnt(Pa,d-P+1,d);if(c>v){v=c;a=d-P+1;b=d}}}
+   res.value=v;res.from=a;res.to=b;res.left=res.limit-res.value;res.status=st(res.value,res.limit);
+   res.text=`Отсутствие: ${dd(res.value)} из ${res.limit} · окно ${fdn(a)} — ${fdn(b)}`;}
+  else if(r.type==='zone'){const P=+r.period||180;const val=d=>cnt(Pz,d-P+1,d);res.value=val(Math.min(R,o.zoneAt??R));let mx=res.value,mxd=R;
+   if(o.zFrom!=null){mx=0;for(let d=o.zFrom;d<=R;d++){const v=val(d);if(v>mx){mx=v;mxd=d}}res.value=mx}
+   res.maxDay=mxd;res.left=res.limit-res.value;res.status=st(res.value,res.limit);res.text=`В зоне за ${P} дн.: ${dd(res.value)} из ${res.limit}`;}
+  else if(r.type==='minyear'){const y=ds(R).slice(0,4);const a=dn(y+'-01-01'),b=dn(y+'-12-31');const end=o.fullYear?b:Math.min(b,R);
+   const abs=cnt(Pa,Math.max(a,A),end);const span=end-a+1;res.value=span-abs;const rest=o.fullYear?0:b-R;
+   res.status=res.value>=res.limit?'ok':(res.value+rest<res.limit?'over':'prog');res.left=res.limit-res.value;
+   res.text=`В стране в ${y} г.: ${dd(res.value)} из ${res.limit}`+(res.status==='prog'?` · нужно ещё ${dd(res.left)}`:'');}
+  res.pct=res.limit?Math.min(1.2,res.value/res.limit):0;return res})}
+
+function latestReturn(draft,others){
+ const a=dn(draft.dep);
+ const ok=ret=>{const t={...draft,ret:ds(ret),planned:true};const m=statusMap([...others,t],true);
+  const rs=evalAll(m,ret,{cur:true,curEnd:S.settings.travelAs==='abroad'?ret:ret-1,zFrom:a});
+  return rs.every(x=>x.r.type==='minyear'||x.status!=='over')};
+ if(!ok(a))return null;let lo=a,hi=a+1100;if(ok(hi))return hi;
+ while(hi-lo>1){const mid=(lo+hi)>>1;if(ok(mid))lo=mid;else hi=mid}return lo}
+
+function coverage(a,b){const m=mapNow(false);const out=[];if(b<a)return out;let y=+ds(a).slice(0,4),mo=+ds(a).slice(5,7);
+ for(let g=0;g<400;g++){const first=dn(`${y}-${pad(mo)}-01`);const next=mo===12?dn(`${y+1}-01-01`):dn(`${y}-${pad(mo+1)}-01`);const s=Math.max(a,first),e=Math.min(b,next-1);if(s>b)break;
+  const c=countRange(m,s,e);const key=`${y}-${pad(mo)}`;const docs=S.docs.filter(x=>x.date&&x.date.slice(0,7)===key).length;out.push({key,y,mo,...c,docs});mo++;if(mo>12){mo=1;y++}}
+ return out}
+
+/* ---------- Деньги ---------- */
+const catName=id=>(S.settings.cats.find(c=>c.id===id)||{n:'Прочее'}).n;
+const nf=new Intl.NumberFormat('ru-RU',{minimumFractionDigits:0,maximumFractionDigits:2});
+const fm=(v,c=S.settings.cur)=>nf.format(Math.round(v*100)/100)+' '+(CUR[c]||c);
+function toBase(x){const B=S.settings.cur;const v=+x.amount||0;if(x.cur===B)return v;if(B==='EUR'&&x.cur==='BGN')return v/BGN_RATE;if(B==='BGN'&&x.cur==='EUR')return v*BGN_RATE;return v*(+x.rate||0)}
+
+/* ---------- Файлы и фото ---------- */
+function loadImage(f){return new Promise((ok,no)=>{const u=URL.createObjectURL(f);const i=new Image();i.onload=()=>{URL.revokeObjectURL(u);ok(i)};i.onerror=()=>{URL.revokeObjectURL(u);no(new Error('Не удалось открыть изображение'))};i.src=u})}
+async function processFile(f){
+ if(f.type&&f.type.startsWith('image/')){try{const img=await loadImage(f);const w=img.naturalWidth,h=img.naturalHeight;const k=Math.min(1,1800/Math.max(w,h));const cw=Math.round(w*k),ch=Math.round(h*k);
+  const c=document.createElement('canvas');c.width=cw;c.height=ch;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,cw,ch);g.drawImage(img,0,0,cw,ch);
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.82));const tk=Math.min(1,360/Math.max(cw,ch));const t=document.createElement('canvas');t.width=Math.round(cw*tk);t.height=Math.round(ch*tk);t.getContext('2d').drawImage(c,0,0,t.width,t.height);
+  return{id:uid(),blob,mime:'image/jpeg',w:cw,h:ch,name:(f.name||'photo').replace(/\.[^.]+$/,'')+'.jpg',thumb:t.toDataURL('image/jpeg',.7)}}catch(e){}}
+ return{id:uid(),blob:f,mime:f.type||'application/octet-stream',w:0,h:0,name:f.name||'file',thumb:''}}
+async function storeFile(p){await DB.put('files',p.id,{blob:p.blob,mime:p.mime,w:p.w,h:p.h,name:p.name});if(p.thumb)await DB.put('files','t:'+p.id,p.thumb);return{id:p.id,mime:p.mime,w:p.w,h:p.h,name:p.name}}
+async function removeFile(id){await DB.del('files',id);await DB.del('files','t:'+id)}
+async function fillThumbs(root=document){for(const el of $$('[data-th]',root)){const id=el.dataset.th;el.removeAttribute('data-th');const t=await DB.get('files','t:'+id);if(t)el.src=t;else{const f=await DB.get('files',id);if(f&&f.mime==='application/pdf')el.replaceWith(Object.assign(document.createElement('div'),{className:'pdf',textContent:'PDF'}));else el.replaceWith(Object.assign(document.createElement('div'),{className:'pdf',textContent:'Файл'}))}}}
+const blobToDataURL=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b)});
+const dataURLToBlob=u=>{const[h,d]=u.split(',');const mime=(h.match(/data:([^;]+)/)||[])[1]||'application/octet-stream';const bin=atob(d);const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new Blob([a],{type:mime})};
+
+/* ---------- UI базовое ---------- */
+let route={tab:'home',sub:null};let calY,calM;let tripYear='all',docFilter={type:'',year:'',q:''},moneyYear=String(new Date().getFullYear());
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2600)}
+function openSheet(title,html){$('#sheet').innerHTML=`<div class="grab"></div><div class="shead"><h2>${esc(title)}</h2><button class="xbtn" data-a="close">✕</button></div>${html}`;$('#sheetWrap').classList.add('on');$('#sheet').scrollTop=0;fillThumbs($('#sheet'))}
+function closeSheet(){$('#sheetWrap').classList.remove('on');$('#sheet').innerHTML='';draft=null}
+$('#sheetWrap').addEventListener('click',e=>{if(e.target.id==='sheetWrap')closeSheet()});
+const TABS=[['home','Обзор','home'],['trips','Поездки','trips'],['cal','Календарь','cal'],['docs','Документы','docs'],['money','Расходы','money'],['more','Ещё','more']];
+function renderTabs(){$('#tabs').innerHTML=TABS.map(([k,n,i])=>`<button class="${route.tab===k?'on':''}" data-a="tab" data-id="${k}">${ico(i,'')}${n}</button>`).join('')}
+const SUBS={profile:['Профиль и ВНЖ',vProfile],rules:['Правила подсчёта',vRules],planner:['Планировщик поездки',vPlanner],deadlines:['Сроки и напоминания',vDeadlines],export:['Отчёты: Word, PDF, Excel',vExport],backup:['Резервные копии',vBackup],settings:['Настройки',vSettings],guide:['Инструкция',vGuide],ref:['Справочник мигранта',vRef],checklist:['Чек-лист продления',vChecklist],about:['О приложении и права',vAbout]};
+function render(){renderTabs();const v=$('#view');let title,html;
+ if(route.sub){const[t,f]=SUBS[route.sub];title=t;html=f()}
+ else{const f={home:vHome,trips:vTrips,cal:vCal,docs:vDocs,money:vMoney,more:vMore}[route.tab];title={home:APP,trips:'Поездки',cal:'Календарь',docs:'Документы',money:'Расходы на ВНЖ',more:'Ещё'}[route.tab];html=f()}
+ $('#title').textContent=title;$('#backWrap').innerHTML=route.sub?`<button class="back" data-a="back">${ico('back')}Назад</button>`:'';
+ v.innerHTML=html;fillThumbs(v);window.scrollTo(0,0)}
+function go(tab,sub=null){route={tab,sub};render()}
+
+/* ---------- Обзор ---------- */
+function ruleRow(x){const cls=x.status==='prog'?'':x.status;const lab={ok:'в норме',warn:'близко к лимиту',over:x.r.type==='minyear'?'не набрать':'превышено',prog:'в процессе'}[x.status];
+ return`<div class="rule"><div class="row"><b class="sp" style="font-weight:600">${esc(x.r.name)}</b><span class="badge ${cls}">${lab}</span></div><div class="bar"><i class="${cls}" style="width:${Math.min(100,x.pct*100).toFixed(1)}%"></i></div><div class="small muted">${esc(x.text)}</div></div>`}
+function deadlineList(){const p=S.profile,T=TD(),L=[];
+ const add=(name,d,sub)=>{if(d!=null&&!isNaN(d))L.push({name,d,left:d-T,sub})};
+ if(p.cardTo){const e=dn(p.cardTo);add('Карта ВНЖ действует до',e);const a=e-(+p.renewFrom||60),b=e-(+p.renewTo||14);
+  let sub=T<a?`окно откроется через ${dd(a-T)}`:T<=b?`окно открыто, осталось ${dd(b-T)}`:T<=e?'окно закрыто — срочно в миграцию':'карта истекла';
+  L.push({name:`Подача на продление: ${fdn(a)} — ${fdn(b)}`,d:b,left:b-T,sub,win:[a,b]})}
+ if(p.permitStart){add(`${p.pmzhYears||5} лет ВНЖ — право на ПМЖ`,addY(p.permitStart,+p.pmzhYears||5),'подавать минимум за 3–4 месяца до окончания текущей карты')}
+ if(p.passportTo)add('Загранпаспорт действует до',dn(p.passportTo),'менять заранее: карта ВНЖ привязана к паспорту');
+ if(p.insuranceTo)add('Медстраховка до',dn(p.insuranceTo));
+ for(const x of S.deadlines)if(x.date)add(x.name,dn(x.date),x.note);
+ return L.sort((a,b)=>a.d-b.d)}
+function dlRow(x){const c=x.left<0?'over':x.left<=30?'warn':'ok';const l=x.left<0?`прошло ${dd(-x.left)}`:x.left===0?'сегодня':`через ${dd(x.left)}`;
+ return`<div class="rule"><div class="row"><span class="sp">${esc(x.name)}</span><span class="badge ${c}">${l}</span></div><div class="small muted">${fdn(x.d)}${x.sub?' · '+esc(x.sub):''}</div></div>`}
+function vHome(){const p=S.profile,T=TD();
+ if(!S.settings.onboarded)return vWelcome();
+ const m=mapNow(false),e=m.get(T);const y=new Date().getFullYear();const ys=countRange(m,dn(y+'-01-01'),T);const A=trackStart();const all=countRange(m,A,T);
+ const rs=evalAll(m,T,{});let hero;
+ if(e&&e.s!=='home'){const t=e.t;const k=T-dn(t.dep)+1;const others=S.trips.filter(x=>x.id!==t.id);const lr=t.ret?null:latestReturn({...t},others);const c=rs.find(x=>x.r.type==='consec');
+  hero=`<div class="hero abroad"><div class="small" style="opacity:.85">Сейчас</div><div class="big">За границей · ${esc(t.country||'поездка')}</div><div class="sub">${dd(k)} в поездке с ${fd(t.dep)}${t.ret?' · возвращение '+fd(t.ret):''}</div>${c?`<div class="sub">Можно отсутствовать подряд ещё: <b>${dd(Math.max(0,c.left))}</b></div>`:''}${lr!=null?`<div class="sub">Вернуться не позже: <b>${fdn(lr)}</b></div>`:''}</div>`}
+ else{let last=null;for(const t of S.trips)if(!t.planned&&t.ret&&dn(t.ret)<=T&&(!last||t.ret>last.ret))last=t;const since=last?T-dn(last.ret):T-A;
+  hero=`<div class="hero"><div class="small" style="opacity:.85">Сейчас</div><div class="big">В стране · ${esc(p.country||'')}</div><div class="sub">${last?`Без выездов ${dd(since)} (с ${fd(last.ret)})`:`Учёт ведётся с ${fdn(A)}`}</div></div>`}
+ const cov=coverage(Math.max(A,T-364),T);const covOk=cov.filter(x=>x.present===0||x.docs>0).length;
+ const dls=deadlineList().filter(x=>x.left>=-30).slice(0,5);
+ const nextPlan=S.trips.filter(t=>t.planned&&dn(t.dep)>=T).sort(byDep)[0];
+ const lb=S.meta.lastBackup?T-dn(S.meta.lastBackup):null;const hasData=S.trips.length+S.docs.length+S.expenses.length>0;
+ return`${hero}
+ <div class="qa"><button data-a="tripNew">${ico('trips','')}Поездка</button><button data-a="docNew">${ico('cam','')}Документ</button><button data-a="expNew">${ico('money','')}Расход</button><button data-a="sub" data-id="planner">${ico('plan','')}Планировщик</button></div>
+ ${hasData&&(lb===null||lb>14)?`<div class="warnbox">${lb===null?'Резервная копия ещё ни разу не сохранялась.':'Последняя резервная копия — '+dd(lb)+' назад.'} Фото и данные хранятся только на этом устройстве. <a href="#" data-a="sub" data-id="backup" style="color:var(--accent)">Сохранить копию</a></div>`:''}
+ <div class="card"><h2>${y} год</h2><div class="grid3"><div class="stat"><b class="c-home">${ys.present}</b><span>в стране</span></div><div class="stat"><b class="c-abroad">${ys.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${ys.travel}</b><span>в дороге</span></div></div>
+ <div class="small muted" style="margin-top:9px">С начала учёта (${fdn(A)}): в стране ${dd(all.present)}, отсутствие ${dd(all.absent)}, в дороге ${dd(all.travel)}.</div></div>
+ <div class="card"><h2>${ico('rules')}Правила и лимиты <span class="sp"></span><button class="btn sm" data-a="sub" data-id="rules">Настроить</button></h2>${rs.length?rs.map(ruleRow).join(''):'<div class="muted small">Правила выключены.</div>'}</div>
+ ${nextPlan?`<div class="card"><h2>${ico('plan')}Запланировано</h2><div class="small">${esc(nextPlan.country||'Поездка')}: ${fd(nextPlan.dep)} — ${fd(nextPlan.ret)} · через ${dd(dn(nextPlan.dep)-T)}</div></div>`:''}
+ <div class="card"><h2>${ico('clock')}Сроки <span class="sp"></span><button class="btn sm" data-a="sub" data-id="deadlines">Все</button></h2>${dls.length?dls.map(dlRow).join(''):'<div class="small muted">Укажите даты карты ВНЖ, паспорта и страховки в профиле — здесь появятся обратные отсчёты.</div>'}</div>
+ <div class="card"><h2>${ico('docs')}Доказательная база</h2><div class="small">За последние 12 месяцев подтверждено документами: <b>${covOk} из ${cov.length}</b> мес.</div><div class="bar"><i class="${covOk===cov.length?'ok':'warn'}" style="width:${cov.length?covOk/cov.length*100:0}%"></i></div><div class="small muted">Цель — хотя бы 1–2 документа на каждый месяц: чек, счёт, выписка, билет.</div></div>`}
+function vWelcome(){return`<div class="card"><h2>Добро пожаловать!</h2><p class="small">«${APP}» считает дни в стране, за границей и в дороге, хранит фото билетов и документов, следит за лимитами отсутствия, сроками продления ВНЖ и расходами. Все данные хранятся только на вашем устройстве.</p><p class="small">Для начала заполните основное — остальное можно дополнить позже в «Ещё → Профиль».</p></div>
+ <div class="card"><label class="f"><span>Страна ВНЖ</span><input type="text" id="w_country" list="dlC" value="${esc(S.profile.country)}"></label>
+ <label class="f"><span>Дата начала первого ВНЖ (для 5-летнего срока ПМЖ)</span><input type="date" id="w_start"></label>
+ <label class="f"><span>Текущая карта ВНЖ действует до</span><input type="date" id="w_to"></label>
+ <label class="f"><span>Вести учёт дней с даты (если пусто — с даты ВНЖ)</span><input type="date" id="w_track"></label>
+ <label class="f"><span>Валюта расходов</span><select id="w_cur">${Object.keys(CUR).map(c=>`<option ${c===S.settings.cur?'selected':''}>${c}</option>`).join('')}</select></label>
+ <button class="btn pri block" data-a="welcomeSave">Начать</button></div>${dlC()}<div class="copy">© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
+const dlC=()=>`<datalist id="dlC">${COUNTRIES.map(c=>`<option value="${c}">`).join('')}</datalist>`;
+
+/* ---------- Поездки ---------- */
+function tripCard(t){const i=tripInfo(t);const tr=TRANSPORT[t.transport]||TRANSPORT.other;
+ return`<div class="item ${t.planned?'planned':''}" data-a="tripEdit" data-id="${t.id}"><div class="ic">${tr[0]}</div><div class="tx"><div class="t1">${esc(t.country||'Поездка')}${t.city?', '+esc(t.city):''}</div>
+ <div class="t2">${fd(t.dep)} — ${t.ret?fd(t.ret):'<b class="c-abroad">ещё не вернулись</b>'}</div>
+ <div class="row wrap" style="gap:5px;margin-top:5px">${t.planned?'<span class="badge plan">план</span>':''}<span class="badge">за границей ${i.full}</span><span class="badge">в дороге ${i.travel}</span>${t.schengen?'<span class="badge acc">Шенген</span>':''}${!t.planned?(i.docs?`<span class="badge ok">📎 ${i.docs}</span>`:'<span class="badge warn">нет подтверждений</span>'):''}</div></div></div>`}
+function vTrips(){const T=TD();const ts=[...S.trips].sort(byDep).reverse();const years=[...new Set(ts.map(t=>t.dep.slice(0,4)))];
+ const list=tripYear==='all'?ts:ts.filter(t=>t.dep.slice(0,4)===tripYear||(t.ret||todayS()).slice(0,4)===tripYear);
+ const m=mapNow(false);let sumHtml='';if(tripYear!=='all'){const c=countRange(m,dn(tripYear+'-01-01'),Math.min(T,dn(tripYear+'-12-31')));sumHtml=`<div class="card"><div class="grid3"><div class="stat"><b>${list.filter(t=>!t.planned).length}</b><span>поездок</span></div><div class="stat"><b class="c-abroad">${c.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${c.travel}</b><span>в дороге</span></div></div></div>`}
+ let html=`<div class="chips"><button class="chip ${tripYear==='all'?'on':''}" data-a="tripYear" data-id="all">Все</button>${years.map(y=>`<button class="chip ${tripYear===y?'on':''}" data-a="tripYear" data-id="${y}">${y}</button>`).join('')}</div>${sumHtml}`;
+ if(!list.length)html+=`<div class="empty">Поездок пока нет.<br>Нажмите «+», чтобы добавить выезд из страны.</div>`;
+ let cy='';for(const t of list){const y=t.dep.slice(0,4);if(tripYear==='all'&&y!==cy){html+=`<div class="ygroup">${y}</div>`;cy=y}html+=tripCard(t)}
+ return html+`<button class="fab" data-a="tripNew">+</button>`}
+let draft=null;
+function tripForm(t){const isNew=!t;t=t||{id:uid(),dep:todayS(),ret:'',country:'',city:'',schengen:false,transport:'plane',purpose:'',note:'',planned:false,retTransport:''};
+ draft={kind:'trip',obj:{...t},isNew,files:[]};const linked=isNew?[]:S.docs.filter(d=>d.tripId===t.id);
+ openSheet(isNew?'Новая поездка':'Поездка',`
+ <div class="grid2"><label class="f"><span>Выезд из страны</span><input type="date" id="f_dep" value="${t.dep}"></label><label class="f"><span>Возвращение</span><input type="date" id="f_ret" value="${t.ret||''}"></label></div>
+ <label class="chk"><input type="checkbox" id="f_open" ${!t.ret&&!isNew?'checked':''}> Ещё не вернулась(-ся) — считать до сегодня</label>
+ <div class="grid2"><label class="f"><span>Страна</span><input type="text" id="f_country" list="dlC" value="${esc(t.country)}" placeholder="Например, Греция"></label><label class="f"><span>Город</span><input type="text" id="f_city" value="${esc(t.city)}"></label></div>
+ <label class="chk"><input type="checkbox" id="f_sch" ${t.schengen?'checked':''}> Страна Шенгенской зоны (учитывать в 90/180)</label>
+ <div class="grid2"><label class="f"><span>Транспорт</span><select id="f_tr">${Object.entries(TRANSPORT).map(([k,v])=>`<option value="${k}" ${t.transport===k?'selected':''}>${v[0]} ${v[1]}</option>`).join('')}</select></label>
+ <label class="f"><span>Цель</span><select id="f_pur">${['','Отдых','Работа / командировка','Семья','Лечение','Учёба','Документы / консульство','Транзит','Другое'].map(x=>`<option ${t.purpose===x?'selected':''}>${x}</option>`).join('')}</select></label></div>
+ <label class="f"><span>Заметка (рейс, номер билета, где штамп)</span><textarea id="f_note">${esc(t.note)}</textarea></label>
+ <label class="chk"><input type="checkbox" id="f_plan" ${t.planned?'checked':''}> Запланированная поездка (не входит в фактический подсчёт)</label>
+ <div class="card" style="margin-top:6px"><h2>${ico('cam')}Билеты и подтверждения</h2>
+ ${linked.length?`<div class="mini" style="margin-bottom:8px">${linked.map(d=>`<div class="th" data-a="docOpen" data-id="${d.id}">${d.files[0]?`<img data-th="${d.files[0].id}" alt="">`:'<div class="pdf">—</div>'}</div>`).join('')}</div>`:''}
+ <div class="mini" id="f_new"></div>
+ <label class="btn block" style="margin-top:8px">${ico('cam')}Сфотографировать / выбрать<input type="file" id="f_files" accept="image/*,application/pdf" multiple hidden></label>
+ <div class="tiny muted" style="margin-top:6px">Новые фото сохранятся как документы типа «Билет» на дату выезда. Подробнее подписать их можно в разделе «Документы».</div></div>
+ <div id="f_check"></div>
+ <button class="btn pri block" data-a="tripSave">Сохранить</button>
+ ${!isNew?`<div class="row" style="margin-top:10px"><button class="btn block" data-a="planFromTrip">Проверить лимиты</button><button class="btn danger block" data-a="tripDel">Удалить</button></div>`:''}${dlC()}`);
+ $('#f_country').addEventListener('change',e=>{if(SCHENGEN.includes(e.target.value.trim()))$('#f_sch').checked=true});
+ $('#f_open').addEventListener('change',e=>{if(e.target.checked)$('#f_ret').value=''});
+ $('#f_files').addEventListener('change',e=>addDraftFiles(e.target.files,'#f_new'));}
+async function addDraftFiles(files,box){toast('Обработка фото…');for(const f of files){const p=await processFile(f);draft.files.push(p)}drawDraftFiles(box)}
+function drawDraftFiles(box){const el=$(box);if(!el)return;el.innerHTML=draft.files.map((p,i)=>`<div class="th">${p.thumb?`<img src="${p.thumb}" alt="">`:'<div class="pdf">PDF</div>'}<button class="x" data-a="dfDel" data-id="${i}" data-box="${box}">×</button></div>`).join('')}
+function readTrip(){const o=draft.obj;o.dep=$('#f_dep').value;o.ret=$('#f_open').checked?'':$('#f_ret').value;o.country=$('#f_country').value.trim();o.city=$('#f_city').value.trim();o.schengen=$('#f_sch').checked;o.transport=$('#f_tr').value;o.purpose=$('#f_pur').value;o.note=$('#f_note').value.trim();o.planned=$('#f_plan').checked;return o}
+async function tripSave(){const o=readTrip();if(!o.dep)return toast('Укажите дату выезда');if(o.ret&&o.ret<o.dep)return toast('Возвращение раньше выезда');if(o.planned&&!o.ret)return toast('Для плана укажите дату возвращения');
+ if(!o.ret&&!o.planned&&o.dep>todayS())return toast('Будущую поездку отметьте как запланированную');
+ const i=S.trips.findIndex(t=>t.id===o.id);if(i>=0)S.trips[i]=o;else S.trips.push(o);
+ for(const p of draft.files){const meta=await storeFile(p);S.docs.push({id:uid(),type:'Билет',date:o.dep,title:`Билет: ${o.country||'поездка'}`,tripId:o.id,note:'',files:[meta]})}
+ save();closeSheet();render();toast('Поездка сохранена')}
+
+/* ---------- Календарь ---------- */
+function vCal(){const T=TD();if(calY==null){const d=new Date();calY=d.getFullYear();calM=d.getMonth()}
+ const m=mapNow(true);const first=dn(`${calY}-${pad(calM+1)}-01`);const last=(calM===11?dn(`${calY+1}-01-01`):dn(`${calY}-${pad(calM+2)}-01`))-1;
+ const wd=(new Date(first*864e5).getUTCDay()+6)%7;const docDays=new Set(S.docs.map(d=>d.date));const A=trackStart();
+ let cells='';for(let i=0;i<wd;i++)cells+='<div class="d e"></div>';
+ for(let d=first;d<=last;d++){const e=m.get(d);let c=e?(e.p?'plan':e.s):'home';if(d>T&&!e)c='out';if(d<A&&!e)c='out';cells+=`<div class="d ${c} ${d===T?'today':''}" data-a="day" data-id="${d}">${d-first+1}${docDays.has(ds(d))?'<i class="dot"></i>':''}</div>`}
+ const mm=mapNow(false);const c=countRange(mm,Math.max(first,A),Math.min(last,T));const yc=countRange(mm,Math.max(dn(calY+'-01-01'),A),Math.min(dn(calY+'-12-31'),T));
+ return`<div class="card"><div class="row" style="margin-bottom:10px"><button class="btn sm" data-a="calNav" data-id="-1">‹</button><b class="sp" style="text-align:center;font-size:1.05em">${MONTHS[calM]} ${calY}</b><button class="btn sm" data-a="calNav" data-id="1">›</button></div>
+ <div class="cal">${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>`<div class="wd">${x}</div>`).join('')}${cells}</div>
+ <div class="legend"><span><i style="background:color-mix(in srgb,var(--home) 30%,var(--card))"></i>в стране</span><span><i style="background:color-mix(in srgb,var(--abroad) 40%,var(--card))"></i>за границей</span><span><i style="background:color-mix(in srgb,var(--travel) 45%,var(--card))"></i>в дороге</span><span><i style="background:color-mix(in srgb,var(--plan) 30%,var(--card))"></i>план</span><span><i style="background:var(--accent);border-radius:50%;width:8px;height:8px"></i>документ</span></div>
+ <div class="row" style="margin-top:10px"><button class="btn sm" data-a="calToday">Сегодня</button></div></div>
+ <div class="card"><h2>${MONTHS[calM]}</h2><div class="grid3"><div class="stat"><b class="c-home">${c.present}</b><span>в стране</span></div><div class="stat"><b class="c-abroad">${c.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${c.travel}</b><span>в дороге</span></div></div></div>
+ <div class="card"><h2>${calY} год (по сегодня)</h2><div class="grid3"><div class="stat"><b class="c-home">${yc.present}</b><span>в стране</span></div><div class="stat"><b class="c-abroad">${yc.abroad}</b><span>за границей</span></div><div class="stat"><b class="c-travel">${yc.travel}</b><span>в дороге</span></div></div></div>`}
+function daySheet(d){const m=mapNow(true);const e=m.get(d);const s=ds(d);const docs=S.docs.filter(x=>x.date===s);
+ const st=!e?'В стране':e.p?'Запланированная поездка':e.s==='travel'?'День в дороге (выезд/въезд)':'За границей';
+ openSheet(fdLong(s),`<div class="card"><b>${st}</b>${e?`<div class="small muted">${esc(e.t.country||'')} · ${fd(e.t.dep)} — ${e.t.ret?fd(e.t.ret):'по сегодня'}</div><button class="btn sm" style="margin-top:8px" data-a="tripEdit" data-id="${e.t.id}">Открыть поездку</button>`:''}
+ ${e&&e.s==='travel'?`<div class="tiny muted" style="margin-top:6px">По настройке этот день считается: ${S.settings.travelAs==='abroad'?'днём отсутствия':'днём в стране'}.</div>`:''}</div>
+ <div class="card"><h2>Документы за день</h2>${docs.length?`<div class="thumbs">${docs.map(docThumb).join('')}</div>`:'<div class="small muted">Нет документов.</div>'}</div>
+ <div class="row"><button class="btn pri block" data-a="docNewDate" data-id="${s}">${ico('cam')}Документ</button><button class="btn block" data-a="tripNewDate" data-id="${s}">${ico('trips')}Поездка с даты</button></div>`)}
+
+/* ---------- Документы ---------- */
+const docThumb=d=>`<div class="th" data-a="docOpen" data-id="${d.id}">${d.files&&d.files[0]?(d.files[0].mime.startsWith('image/')?`<img data-th="${d.files[0].id}" alt="">`:'<div class="pdf">PDF</div>'):'<div class="pdf">📝</div>'}<div class="cap"><b>${fd(d.date)}</b><br>${esc(d.title||d.type)}</div></div>`;
+function vDocs(){const T=TD(),A=trackStart();const cov=coverage(A,T);const miss=cov.filter(x=>x.present>0&&x.docs===0);
+ let list=[...S.docs].sort(byDate).reverse();const years=[...new Set(list.map(d=>(d.date||'').slice(0,4)).filter(Boolean))];
+ if(docFilter.type)list=list.filter(d=>d.type===docFilter.type);if(docFilter.year)list=list.filter(d=>(d.date||'').startsWith(docFilter.year));
+ if(docFilter.q){const q=docFilter.q.toLowerCase();list=list.filter(d=>(d.title+' '+d.note+' '+d.type).toLowerCase().includes(q))}
+ return`<div class="card"><h2>${ico('check')}Подтверждение присутствия</h2><div class="small">Месяцев с подтверждениями: <b>${cov.length-miss.length} из ${cov.length}</b></div>
+ <div class="bar"><i class="${miss.length?'warn':'ok'}" style="width:${cov.length?(cov.length-miss.length)/cov.length*100:0}%"></i></div>
+ ${miss.length?`<div class="small muted" style="margin-top:6px">Без документов: ${miss.slice(-12).map(x=>`<a href="#" data-a="docNewDate" data-id="${x.key}-15" style="color:var(--abroad)">${MSH[x.mo-1]} ${x.y}</a>`).join(', ')}${miss.length>12?' и ещё '+(miss.length-12):''}</div>`:'<div class="small c-home">Каждый месяц подтверждён — отлично!</div>'}</div>
+ <div class="row" style="margin-bottom:10px"><input type="search" id="dq" placeholder="Поиск по документам" value="${esc(docFilter.q)}"></div>
+ <div class="grid2" style="margin-bottom:12px"><select id="dtype"><option value="">Все типы</option>${DOCTYPES.map(t=>`<option ${docFilter.type===t?'selected':''}>${t}</option>`).join('')}</select><select id="dyear"><option value="">Все годы</option>${years.map(y=>`<option ${docFilter.year===y?'selected':''}>${y}</option>`).join('')}</select></div>
+ ${list.length?`<div class="thumbs">${list.map(docThumb).join('')}</div>`:'<div class="empty">Документов пока нет.<br>Фотографируйте билеты, посадочные, штампы, чеки и счета.</div>'}
+ <button class="fab" data-a="docNew">+</button>`}
+function docForm(d,preset={}){const isNew=!d;d=d||{id:uid(),type:preset.type||'Чек / квитанция',date:preset.date||todayS(),title:'',tripId:preset.tripId||'',note:'',files:[]};
+ draft={kind:'doc',obj:{...d,files:[...d.files]},isNew,files:[],removed:[]};const trips=[...S.trips].sort(byDep).reverse();
+ openSheet(isNew?'Новый документ':'Документ',`
+ <div class="mini" id="d_old">${d.files.map((f,i)=>`<div class="th" data-a="fileView" data-id="${f.id}">${f.mime.startsWith('image/')?`<img data-th="${f.id}" alt="">`:'<div class="pdf">PDF</div>'}<button class="x" data-a="dfOld" data-id="${i}">×</button></div>`).join('')}</div>
+ <div class="mini" id="d_new" style="margin-top:6px"></div>
+ <label class="btn block" style="margin:8px 0 12px">${ico('cam')}Сфотографировать / выбрать файлы<input type="file" id="d_files" accept="image/*,application/pdf" multiple hidden></label>
+ <div class="grid2"><label class="f"><span>Тип</span><select id="d_type">${DOCTYPES.map(t=>`<option ${d.type===t?'selected':''}>${t}</option>`).join('')}</select></label><label class="f"><span>Дата документа</span><input type="date" id="d_date" value="${d.date}"></label></div>
+ <label class="f"><span>Название</span><input type="text" id="d_title" value="${esc(d.title)}" placeholder="Например: чек Kaufland, Варна"></label>
+ <label class="f"><span>Связать с поездкой</span><select id="d_trip"><option value="">— не связан —</option>${trips.map(t=>`<option value="${t.id}" ${d.tripId===t.id?'selected':''}>${fd(t.dep)} ${esc(t.country)}</option>`).join('')}</select></label>
+ <label class="f"><span>Заметка</span><textarea id="d_note">${esc(d.note)}</textarea></label>
+ <button class="btn pri block" data-a="docSave">Сохранить</button>${!isNew?'<button class="btn danger block" style="margin-top:10px" data-a="docDel">Удалить документ</button>':''}`);
+ $('#d_files').addEventListener('change',e=>addDraftFiles(e.target.files,'#d_new'))}
+async function docSave(){const o=draft.obj;o.type=$('#d_type').value;o.date=$('#d_date').value;o.title=$('#d_title').value.trim();o.tripId=$('#d_trip').value;o.note=$('#d_note').value.trim();
+ if(!o.date)return toast('Укажите дату');for(const id of draft.removed)await removeFile(id);for(const p of draft.files)o.files.push(await storeFile(p));
+ if(!o.files.length&&!o.title&&!o.note)return toast('Добавьте фото или описание');
+ const i=S.docs.findIndex(x=>x.id===o.id);if(i>=0)S.docs[i]=o;else S.docs.push(o);save();closeSheet();render();toast('Документ сохранён')}
+function docView(id){const d=S.docs.find(x=>x.id===id);if(!d)return;const t=S.trips.find(x=>x.id===d.tripId);
+ openSheet(d.title||d.type,`<div class="thumbs" style="margin-bottom:12px">${d.files.map(f=>`<div class="th" data-a="fileView" data-id="${f.id}">${f.mime.startsWith('image/')?`<img data-th="${f.id}" alt="">`:'<div class="pdf">PDF</div>'}</div>`).join('')}</div>
+ <div class="card small"><div><b>${esc(d.type)}</b> · ${fdLong(d.date)}</div>${t?`<div class="muted">Поездка: ${esc(t.country)} ${fd(t.dep)} — ${fd(t.ret)}</div>`:''}${d.note?`<div style="margin-top:6px">${esc(d.note)}</div>`:''}</div>
+ <div class="row"><button class="btn pri block" data-a="docEdit" data-id="${d.id}">Изменить</button><button class="btn block" data-a="docShare" data-id="${d.id}">${ico('share')}Поделиться</button></div>`)}
+let viewing=null;
+async function fileView(id){const f=await DB.get('files',id);if(!f)return toast('Файл не найден');const u=URL.createObjectURL(f.blob);
+ if(!f.mime.startsWith('image/')){window.open(u,'_blank');return}viewing={f,u};$('#vImg').src=u;$('#viewer').classList.add('on')}
+
+/* ---------- Расходы ---------- */
+function vMoney(){const B=S.settings.cur;const all=S.expenses;const years=[...new Set(all.map(x=>x.date.slice(0,4)))].sort().reverse();if(!years.includes(moneyYear)&&moneyYear!=='all')years.unshift(moneyYear);
+ const list=(moneyYear==='all'?all:all.filter(x=>x.date.startsWith(moneyYear))).slice().sort(byDate).reverse();
+ const total=list.reduce((s,x)=>s+toBase(x),0);const byCat={};list.forEach(x=>byCat[x.cat]=(byCat[x.cat]||0)+toBase(x));const cats=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);const mx=cats.length?cats[0][1]:1;
+ let bars='';if(moneyYear!=='all'){const mm=Array(12).fill(0);list.forEach(x=>mm[+x.date.slice(5,7)-1]+=toBase(x));const top=Math.max(...mm,1);bars=`<div class="card"><h2>По месяцам ${moneyYear}</h2><div class="vbars">${mm.map((v,i)=>`<div><span>${v?Math.round(v):''}</span><i style="height:${v/top*100}%"></i>${MSH[i]}</div>`).join('')}</div></div>`}
+ else{const yy={};all.forEach(x=>{const y=x.date.slice(0,4);yy[y]=(yy[y]||0)+toBase(x)});const ks=Object.keys(yy).sort();const top=Math.max(...Object.values(yy),1);bars=ks.length?`<div class="card"><h2>По годам</h2><div class="vbars">${ks.map(k=>`<div><span>${Math.round(yy[k])}</span><i style="height:${yy[k]/top*100}%"></i>${k}</div>`).join('')}</div></div>`:''}
+ const noRate=list.filter(x=>x.cur!==B&&!(x.cur==='BGN'&&B==='EUR')&&!(x.cur==='EUR'&&B==='BGN')&&!(+x.rate)).length;
+ const months=new Set(list.map(x=>x.date.slice(0,7))).size;
+ let html=`<div class="chips"><button class="chip ${moneyYear==='all'?'on':''}" data-a="mYear" data-id="all">Все годы</button>${years.map(y=>`<button class="chip ${moneyYear===y?'on':''}" data-a="mYear" data-id="${y}">${y}</button>`).join('')}</div>
+ <div class="card"><div class="grid3" style="font-size:.82em"><div class="stat"><b class="c-acc">${fm(total)}</b><span>итого</span></div><div class="stat"><b>${list.length}</b><span>операций</span></div><div class="stat"><b>${fm(months?total/months:0)}</b><span>в месяц акт.</span></div></div>
+ ${noRate?`<div class="warnbox">У ${noRate} операций в другой валюте не указан курс — они не вошли в сумму.</div>`:''}</div>
+ ${cats.length?`<div class="card"><h2>По статьям</h2>${cats.map(([c,v])=>`<div class="hbar"><span class="nm">${esc(catName(c))}</span><span class="tr"><i style="width:${v/mx*100}%"></i></span><span class="vl">${fm(v)}</span></div>`).join('')}<div class="small muted" style="margin-top:8px">Крупнейшая статья: ${esc(catName(cats[0][0]))} — ${total?Math.round(cats[0][1]/total*100):0}% расходов.</div></div>`:''}${bars}`;
+ if(!list.length)html+='<div class="empty">Расходов пока нет.<br>Записывайте пошлины, страховки, нотариуса, переводы — и видите полную стоимость ВНЖ.</div>';
+ let cm='';for(const x of list){const k=x.date.slice(0,7);if(k!==cm){html+=`<div class="ygroup">${MONTHS[+k.slice(5)-1]} ${k.slice(0,4)}</div>`;cm=k}
+  html+=`<div class="item" data-a="expEdit" data-id="${x.id}"><div class="ic">${x.files&&x.files.length?'🧾':'💶'}</div><div class="tx"><div class="t1">${esc(catName(x.cat))}</div><div class="t2">${fd(x.date)}${x.note?' · '+esc(x.note):''}</div></div><div style="text-align:right"><b>${fm(+x.amount,x.cur)}</b>${x.cur!==B?`<div class="tiny muted">≈ ${fm(toBase(x))}</div>`:''}</div></div>`}
+ return html+'<button class="fab" data-a="expNew">+</button>'}
+function expForm(x){const isNew=!x;const B=S.settings.cur;x=x||{id:uid(),date:todayS(),cat:'fee',amount:'',cur:B,rate:'',note:'',files:[]};draft={kind:'exp',obj:{...x,files:[...(x.files||[])]},isNew,files:[],removed:[]};
+ openSheet(isNew?'Новый расход':'Расход',`<div class="grid2"><label class="f"><span>Дата</span><input type="date" id="e_date" value="${x.date}"></label><label class="f"><span>Статья</span><select id="e_cat">${S.settings.cats.map(c=>`<option value="${c.id}" ${x.cat===c.id?'selected':''}>${esc(c.n)}</option>`).join('')}</select></label></div>
+ <div class="grid2"><label class="f"><span>Сумма</span><input type="number" inputmode="decimal" step="0.01" id="e_amt" value="${x.amount}"></label><label class="f"><span>Валюта</span><select id="e_cur">${Object.keys(CUR).map(c=>`<option ${x.cur===c?'selected':''}>${c}</option>`).join('')}</select></label></div>
+ <label class="f" id="e_rateW"><span id="e_rateL"></span><input type="number" inputmode="decimal" step="0.000001" id="e_rate" value="${x.rate||''}"></label>
+ <label class="f"><span>Комментарий</span><input type="text" id="e_note" value="${esc(x.note)}" placeholder="Например: продление, Варна"></label>
+ <div class="mini" id="e_old">${(x.files||[]).map((f,i)=>`<div class="th" data-a="fileView" data-id="${f.id}">${f.mime.startsWith('image/')?`<img data-th="${f.id}" alt="">`:'<div class="pdf">PDF</div>'}<button class="x" data-a="dfOld" data-id="${i}">×</button></div>`).join('')}</div><div class="mini" id="e_new"></div>
+ <label class="btn block" style="margin:8px 0 12px">${ico('cam')}Фото чека<input type="file" id="e_files" accept="image/*,application/pdf" multiple hidden></label>
+ <button class="btn pri block" data-a="expSave">Сохранить</button>${!isNew?'<button class="btn danger block" style="margin-top:10px" data-a="expDel">Удалить</button>':''}`);
+ const upd=()=>{const c=$('#e_cur').value;const fixed=(c==='BGN'&&B==='EUR')||(c==='EUR'&&B==='BGN');$('#e_rateW').style.display=c===B||fixed?'none':'block';$('#e_rateL').textContent=`Курс: сколько ${B} за 1 ${c}`;if(!$('#e_rate').value&&S.settings.rates[c])$('#e_rate').value=S.settings.rates[c]};
+ $('#e_cur').addEventListener('change',upd);upd();$('#e_files').addEventListener('change',e=>addDraftFiles(e.target.files,'#e_new'))}
+async function expSave(){const o=draft.obj;o.date=$('#e_date').value;o.cat=$('#e_cat').value;o.amount=parseFloat(String($('#e_amt').value).replace(',','.'))||0;o.cur=$('#e_cur').value;o.rate=parseFloat($('#e_rate').value)||'';o.note=$('#e_note').value.trim();
+ if(!o.amount)return toast('Укажите сумму');if(o.rate)S.settings.rates[o.cur]=o.rate;for(const id of draft.removed)await removeFile(id);for(const p of draft.files)o.files.push(await storeFile(p));
+ const i=S.expenses.findIndex(x=>x.id===o.id);if(i>=0)S.expenses[i]=o;else S.expenses.push(o);moneyYear=o.date.slice(0,4);save();closeSheet();render();toast('Расход сохранён')}
+
+/* ---------- Ещё ---------- */
+function vMore(){const it=(k,i,t,s)=>`<div class="item" data-a="sub" data-id="${k}"><div class="ic c-acc">${ico(i)}</div><div class="tx"><div class="t1">${t}</div><div class="t2">${s}</div></div><span class="muted">›</span></div>`;
+ return`<div class="menu">${it('profile','user','Профиль и ВНЖ','даты карты, паспорта, страховки, адрес')}${it('rules','rules','Правила подсчёта','лимиты отсутствия, Шенген 90/180, 183 дня')}${it('planner','plan','Планировщик поездки','проверить даты до покупки билетов')}${it('deadlines','clock','Сроки и напоминания','продление, ПМЖ, экспорт в Календарь')}${it('checklist','check','Чек-лист продления','документы, которые нужно собрать')}${it('export','exp','Отчёты: Word, PDF, Excel','выгрузка дней, поездок, документов, расходов')}${it('backup','save','Резервные копии','сохранить и восстановить все данные с фото')}${it('settings','gear','Настройки','тема, шрифт, цвета, валюта, PIN-код')}${it('guide','book','Инструкция','подробно о каждой функции')}${it('ref','law','Справочник мигранта','правила ВНЖ и ПМЖ, полезные сроки')}${it('about','info','О приложении и права','авторство и условия использования')}</div>
+ <div class="copy">${APP} · версия ${VER}<br>© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
+function vProfile(){const p=S.profile;const f=(id,l,type='text',ph='')=>`<label class="f"><span>${l}</span><input type="${type}" id="p_${id}" value="${esc(p[id])}" placeholder="${ph}"></label>`;
+ return`<div class="card"><h2>Личные данные</h2>${f('name','ФИО (для отчётов)','text','Как в паспорте')}${f('citizenship','Гражданство')}${f('address','Адрес регистрации')}</div>
+ <div class="card"><h2>ВНЖ</h2>${f('country','Страна ВНЖ')}${f('permit','Вид статуса')}${f('basis','Основание','text','пенсия, работа, недвижимость, кочевник…')}
+ <div class="grid2">${f('permitStart','Дата первого ВНЖ','date')}${f('trackFrom','Учёт дней с','date')}</div><div class="grid2">${f('cardFrom','Карта выдана','date')}${f('cardTo','Карта действует до','date')}</div>
+ <div class="grid2">${f('renewFrom','Продление: не раньше чем за (дн.)','number')}${f('renewTo','и не позже чем за (дн.)','number')}</div>${f('pmzhYears','Лет ВНЖ до права на ПМЖ','number')}</div>
+ <div class="card"><h2>Документы</h2><div class="grid2">${f('passportTo','Паспорт действует до','date')}${f('insuranceTo','Страховка до','date')}</div></div>
+ <button class="btn pri block" data-a="profSave">Сохранить профиль</button>`}
+function vRules(){const tn={consec:'Максимум дней отсутствия подряд',period:'Максимум дней отсутствия за период',zone:'Шенген: дней в зоне за скользящее окно',minyear:'Минимум дней в стране за календарный год'};
+ return`<div class="note">Правила проверяются автоматически на «Обзоре», в планировщике и в отчётах. Лимиты можно менять под вашу страну и тип статуса.</div>
+ <div class="card"><h2>Дни выезда и въезда</h2><label class="chk"><input type="radio" name="tra" value="home" ${S.settings.travelAs==='home'?'checked':''} data-a="travelAs"> Считать днями в стране (обычная практика)</label><label class="chk"><input type="radio" name="tra" value="abroad" ${S.settings.travelAs==='abroad'?'checked':''} data-a="travelAs"> Считать днями отсутствия (строгий подсчёт)</label><div class="tiny muted">Дни в дороге в любом случае показываются отдельно. В Шенгене 90/180 дни въезда и выезда всегда считаются днями пребывания в зоне.</div></div>
+ ${S.rules.map(r=>`<div class="card"><div class="row"><b class="sp">${esc(r.name)}</b><label class="chk" style="padding:0"><input type="checkbox" data-a="ruleOn" data-id="${r.id}" ${r.on?'checked':''}></label></div><div class="small muted">${tn[r.type]}. ${esc(r.note||'')}</div>
+ <div class="grid2" style="margin-top:8px"><label class="f"><span>Лимит, дней</span><input type="number" data-rf="limit" data-id="${r.id}" value="${r.limit}"></label>${r.type==='period'||r.type==='zone'?`<label class="f"><span>Период, дней</span><input type="number" data-rf="period" data-id="${r.id}" value="${r.period}"></label>`:''}</div>
+ ${r.type==='period'?`<label class="f"><span>Отсчёт периода</span><select data-rf="anchor" data-id="${r.id}"><option value="start" ${r.anchor==='start'?'selected':''}>от даты первого ВНЖ (по 5-летним циклам)</option><option value="rolling" ${r.anchor!=='start'?'selected':''}>скользящий — последние N дней</option></select></label>`:''}
+ ${r.custom?`<button class="btn sm danger" data-a="ruleDel" data-id="${r.id}">Удалить правило</button>`:''}</div>`).join('')}
+ <div class="card"><h2>Добавить своё правило</h2><select id="nr_type"><option value="consec">${tn.consec}</option><option value="period">${tn.period}</option><option value="zone">${tn.zone}</option><option value="minyear">${tn.minyear}</option></select><input type="text" id="nr_name" placeholder="Название, например: ВНЖ Сербии" style="margin-top:8px"><button class="btn block" style="margin-top:8px" data-a="ruleAdd">Добавить</button></div>
+ <button class="btn block" data-a="rulesReset">Вернуть правила по умолчанию</button>`}
+function vPlanner(){return`<div class="note">Введите даты будущей поездки — приложение проверит все включённые правила (с учётом уже совершённых и запланированных поездок) и подскажет крайнюю безопасную дату возвращения.</div>
+ <div class="card"><div class="grid2"><label class="f"><span>Выезд</span><input type="date" id="pl_dep" value="${todayS()}"></label><label class="f"><span>Возвращение</span><input type="date" id="pl_ret"></label></div>
+ <label class="f"><span>Страна</span><input type="text" id="pl_c" list="dlC"></label><label class="chk"><input type="checkbox" id="pl_s"> Страна Шенгена</label>
+ <button class="btn pri block" data-a="planCheck">Проверить</button></div><div id="pl_out"></div>${dlC()}`}
+function planCheck(src){const dep=src?src.dep:$('#pl_dep').value,ret=src?src.ret:$('#pl_ret').value;if(!dep)return toast('Укажите дату выезда');
+ const draftT={id:src?src.id:'__plan',dep,ret:ret||'',country:src?src.country:$('#pl_c').value,schengen:src?src.schengen:$('#pl_s').checked,planned:true};
+ const others=S.trips.filter(t=>t.id!==draftT.id);let html='';
+ if(ret){if(ret<dep)return toast('Возвращение раньше выезда');const m=statusMap([...others,draftT],true);const R=dn(ret);const rs=evalAll(m,R,{cur:true,curEnd:S.settings.travelAs==='abroad'?R:R-1,zFrom:dn(dep)});
+  const bad=rs.filter(x=>x.status==='over'&&x.r.type!=='minyear');const rsY=evalAll(m,dn(ret.slice(0,4)+'-12-31'),{fullYear:true}).filter(x=>x.r.type==='minyear');
+  html+=`<div class="card"><h2>${bad.length?'<span class="c-abroad">⚠ Есть нарушения</span>':'<span class="c-home">✓ Лимиты соблюдены</span>'}</h2><div class="small muted">Поездка ${fd(dep)} — ${fd(ret)}: ${dd(Math.max(0,R-dn(dep)-1))} за границей + ${dn(dep)===R?1:2} в дороге.</div>${[...rs.filter(x=>x.r.type!=='minyear'),...rsY].map(ruleRow).join('')}</div>`}
+ const lr=latestReturn(draftT,others);html+=`<div class="card"><h2>Крайняя дата возвращения</h2>${lr==null?'<div class="c-abroad">Уже при выезде в эту дату лимиты будут превышены.</div>':`<div class="big" style="font-size:1.4em;font-weight:700">${fdLong(ds(lr))}</div><div class="small muted">Это последний день, когда можно вернуться без превышения включённых лимитов (${dd(lr-dn(dep)+1)} поездки).</div>`}</div>`;
+ if(!src)html+=`<button class="btn block" data-a="planSave">Сохранить как запланированную поездку</button>`;
+ if(src){openSheet('Проверка лимитов',html);return}$('#pl_out').innerHTML=html}
+function vDeadlines(){const L=deadlineList();return`<div class="card">${L.length?L.map(dlRow).join(''):'<div class="small muted">Заполните даты в профиле или добавьте свои сроки.</div>'}</div>
+ <div class="card"><h2>Мои сроки</h2>${S.deadlines.map(x=>`<div class="row" style="margin-bottom:6px"><span class="sp small">${fd(x.date)} · ${esc(x.name)}</span><button class="btn sm danger" data-a="dlDel" data-id="${x.id}">×</button></div>`).join('')}
+ <input type="text" id="dl_n" placeholder="Например: запись в миграцию, выписка из банка"><div class="grid2" style="margin-top:8px"><input type="date" id="dl_d"><button class="btn" data-a="dlAdd">Добавить</button></div></div>
+ <div class="card"><h2>Напоминания в календаре iPhone</h2><p class="small muted">Выгрузите все сроки в файл календаря: у каждого события будет напоминание за 30 и за 7 дней. Откройте файл — iPhone предложит добавить события в «Календарь».</p><button class="btn pri block" data-a="ics">${ico('cal')}Добавить сроки в Календарь</button></div>`}
+function vChecklist(){const d=S.checklist.filter(x=>x.on).length;return`<div class="card"><div class="small">Собрано: <b>${d} из ${S.checklist.length}</b></div><div class="bar"><i class="${d===S.checklist.length?'ok':''}" style="width:${S.checklist.length?d/S.checklist.length*100:0}%"></i></div>
+ ${S.checklist.map(x=>`<div class="row"><label class="chk sp"><input type="checkbox" data-a="clOn" data-id="${x.id}" ${x.on?'checked':''}><span style="${x.on?'text-decoration:line-through;color:var(--muted)':''}">${esc(x.t)}</span></label><button class="btn sm" data-a="clDel" data-id="${x.id}">×</button></div>`).join('')}</div>
+ <div class="card"><input type="text" id="cl_t" placeholder="Добавить пункт"><button class="btn block" style="margin-top:8px" data-a="clAdd">Добавить</button></div>
+ <div class="row"><button class="btn block" data-a="clReset">Снять все отметки</button><button class="btn block" data-a="clDefault">Список по умолчанию</button></div>
+ <div class="tiny muted" style="margin-top:10px">Список ориентировочный: точный перечень зависит от основания ВНЖ и отделения миграции — уточняйте перед подачей.</div>`}
+function vExport(){const A=trackStart(),T=TD();return`<div class="card"><h2>Период отчёта</h2><div class="grid2"><label class="f"><span>С</span><input type="date" id="x_a" value="${ds(A)}"></label><label class="f"><span>По</span><input type="date" id="x_b" value="${ds(T)}"></label></div>
+ <div class="chips"><button class="chip" data-a="xPreset" data-id="year">Этот год</button><button class="chip" data-a="xPreset" data-id="last">Прошлый год</button><button class="chip" data-a="xPreset" data-id="12">12 месяцев</button><button class="chip" data-a="xPreset" data-id="5y">5 лет</button><button class="chip" data-a="xPreset" data-id="all">Весь учёт</button></div>
+ <label class="chk"><input type="checkbox" id="x_ph" checked> Включить фото документов (Word и PDF)</label><label class="chk"><input type="checkbox" id="x_ex" checked> Включить расходы</label><label class="chk"><input type="checkbox" id="x_ru" checked> Включить проверку правил</label></div>
+ <button class="btn pri block" data-a="xWord" style="margin-bottom:8px">📄 Отчёт в Word (.docx)</button>
+ <button class="btn pri block" data-a="xPdf" style="margin-bottom:8px">🧾 Отчёт в PDF</button>
+ <button class="btn pri block" data-a="xXls" style="margin-bottom:8px">📊 Таблица Excel (.xlsx)</button>
+ <div class="note">Excel содержит листы: «Сводка», «Поездки», «По дням» (каждый день периода со статусом), «По месяцам», «Документы», «Расходы» и «Статьи расходов».<br><br>PDF: в окне печати нажмите «Поделиться» (или разведите двумя пальцами превью) → «Сохранить в Файлы» или отправьте в мессенджер.</div>`}
+function vBackup(){const lb=S.meta.lastBackup;return`<div class="card"><h2>${ico('save')}Сохранить копию</h2><p class="small">Один файл со всеми поездками, документами (вместе с фото), расходами и настройками. Храните его в «Файлах» / iCloud Drive, в «Избранном» Telegram или на компьютере.</p><div class="small muted">Последняя копия: ${lb?fdLong(lb):'ещё не создавалась'}</div><button class="btn pri block" style="margin-top:10px" data-a="bkSave">Создать резервную копию</button></div>
+ <div class="card"><h2>Восстановить</h2><p class="small">Выберите ранее сохранённый файл копии (.json).</p><label class="chk"><input type="radio" name="bkm" value="merge" checked> Объединить с текущими данными</label><label class="chk"><input type="radio" name="bkm" value="replace"> Заменить все текущие данные</label><label class="btn block">Выбрать файл копии<input type="file" id="bk_file" accept=".json,application/json" hidden></label></div>
+ <div class="card"><h2>Перенос на другое устройство</h2><p class="small muted">Создайте копию на старом телефоне → отправьте файл себе (AirDrop, Telegram, почта) → на новом устройстве установите приложение и восстановите копию здесь.</p></div>
+ <div class="card"><h2 class="c-abroad">Удалить все данные</h2><p class="small muted">Сначала сохраните копию — удаление необратимо.</p><button class="btn danger block" data-a="wipe">Удалить всё</button></div>`}
+function vSettings(){const s=S.settings;return`<div class="card"><h2>Тема оформления</h2><div class="themes">${Object.entries(THEMES).map(([k,[n,c]])=>`<button class="${s.theme===k?'on':''}" data-a="theme" data-id="${k}"><i style="background:${c}"></i>${n}</button>`).join('')}</div></div>
+ <div class="card"><h2>Текст</h2><label class="f"><span>Размер шрифта: <b id="fsv">${s.fs}</b> px</span><input type="range" min="14" max="24" step="1" id="s_fs" value="${s.fs}"></label>
+ <label class="f"><span>Шрифт</span><select id="s_font"><option value="system" ${s.font==='system'?'selected':''}>Системный</option><option value="serif" ${s.font==='serif'?'selected':''}>С засечками</option><option value="round" ${s.font==='round'?'selected':''}>Округлый</option><option value="mono" ${s.font==='mono'?'selected':''}>Моноширинный</option></select></label>
+ <div class="row" style="margin-bottom:10px"><span class="sp">Цвет текста</span><input type="color" id="s_tc" value="${s.textColor||'#1e2227'}"><button class="btn sm" data-a="tcReset">Сброс</button></div>
+ <div class="row" style="margin-bottom:6px"><span class="sp">Акцентный цвет</span><input type="color" id="s_ac" value="${s.accent||'#3d6b8a'}"><button class="btn sm" data-a="acReset">Сброс</button></div>
+ <label class="chk"><input type="checkbox" id="s_hc" ${s.contrast?'checked':''}> Повышенная контрастность</label></div>
+ <div class="card"><h2>Валюта и статьи расходов</h2><label class="f"><span>Основная валюта</span><select id="s_cur">${Object.keys(CUR).map(c=>`<option ${c===s.cur?'selected':''}>${c}</option>`).join('')}</select></label>
+ ${s.cats.map(c=>`<div class="row" style="margin-bottom:6px"><input type="text" data-cat="${c.id}" value="${esc(c.n)}"><button class="btn sm" data-a="catDel" data-id="${c.id}">×</button></div>`).join('')}<button class="btn block" data-a="catAdd">+ Статья расходов</button></div>
+ <div class="card"><h2>${ico('lock')}Защита PIN-кодом</h2><p class="small muted">PIN спрашивается при открытии приложения. Если забыть PIN, войти можно будет только удалив данные — держите резервную копию.</p>${s.pinHash?'<button class="btn block danger" data-a="pinOff">Отключить PIN</button>':'<div class="grid2"><input type="password" inputmode="numeric" maxlength="6" id="s_pin" placeholder="4–6 цифр"><button class="btn" data-a="pinOn">Включить</button></div>'}</div>
+ <div class="card"><button class="btn block" data-a="onboardAgain">Показать приветствие заново</button></div>`}
+function vAbout(){const y=new Date().getFullYear();return`<div class="card" style="text-align:center"><img src="icons/icon-192.png" alt="" style="width:84px;height:84px;border-radius:20px"><h2 style="justify-content:center;margin-top:10px">${APP}</h2><div class="small muted">Учёт дней пребывания, поездок и документов для ВНЖ · версия ${VER}</div></div>
+ <div class="card"><h2>Правообладатель</h2><p class="small"><b>© ${y} ${OWNER}.</b> Все права защищены.</p>
+ <p class="small">Приложение «${APP}», его исходный код, дизайн, структура, тексты инструкции и справочника являются объектами авторского права и принадлежат ${OWNER}.</p>
+ <p class="small">Запрещается без письменного разрешения правообладателя: копировать, изменять, декомпилировать, переводить, распространять, продавать, сдавать в аренду, публиковать приложение или его части, а также создавать на его основе производные продукты. Разрешено личное некоммерческое использование приложения его законным пользователем.</p>
+ <p class="small">Нарушение авторских прав влечёт ответственность в соответствии с законодательством об авторском праве и смежных правах.</p></div>
+ <div class="card"><h2>Конфиденциальность</h2><p class="small">Приложение работает без регистрации и без интернета. Ваши данные и фото хранятся только на вашем устройстве и никуда не передаются. Выгрузки и резервные копии создаются только по вашей команде.</p></div>
+ <div class="card"><h2>Ограничение ответственности</h2><p class="small">Приложение — инструмент учёта. Правила миграционного законодательства меняются и могут применяться по-разному в разных отделениях, поэтому окончательные решения сверяйте с миграционной службой или юристом.</p></div>`}
+
+/* ---------- Инструкция и справочник ---------- */
+const G=(t,b,open)=>`<details class="g" ${open?'open':''}><summary>${t}</summary><div class="gb">${b}</div></details>`;
+function vGuide(){return G('1. Установка на телефон',`<p><b>iPhone / iPad:</b></p><ol><li>Откройте приложение в браузере <b>Safari</b>.</li><li>Нажмите кнопку «Поделиться» (квадрат со стрелкой вверх).</li><li>Прокрутите и выберите «На экран „Домой“» → «Добавить».</li><li>На экране появится иконка «Дни ВНЖ». Запускайте приложение только с неё — так оно работает как обычное приложение и без интернета.</li></ol><p><b>Android:</b> откройте в Chrome → меню ⋮ → «Установить приложение» или «Добавить на главный экран».</p><div class="note">Данные хранятся внутри установленного приложения. Если открыть его в браузере отдельно — там будет пустая копия. Всегда пользуйтесь иконкой.</div>`,true)
++G('2. Первый запуск и профиль',`<p>При первом запуске укажите страну ВНЖ, дату первого ВНЖ, срок действия карты и дату начала учёта. Позже всё можно дополнить в «Ещё → Профиль и ВНЖ»: ФИО (попадёт в отчёты), основание, даты паспорта и страховки, окно подачи на продление (по умолчанию за 60–14 дней до окончания карты).</p><p><b>Дата первого ВНЖ</b> важна: от неё считаются 5-летние периоды для ПМЖ и дата, когда возникает право подать на ПМЖ.</p>`)
++G('3. Как считаются дни',`<ul><li><b>В стране</b> — все дни, когда вы не в поездке.</li><li><b>В дороге</b> — день выезда и день возвращения каждой поездки.</li><li><b>За границей</b> — полные дни между выездом и возвращением.</li></ul><p>Пример: выезд 10 мая, возвращение 15 мая → 2 дня в дороге (10 и 15) и 4 дня за границей (11–14).</p><p>Как учитывать дни в дороге, выбирается в «Правилах подсчёта»: <b>как дни в стране</b> (обычная практика — вы физически были в стране часть дня) или <b>как отсутствие</b> (строгий режим, если ваша миграционная служба считает так). Для Шенгена 90/180 дни въезда и выезда всегда идут в счёт пребывания в зоне — так считает официальный калькулятор ЕС.</p><p>Если вы сейчас за границей и дату возвращения ещё не знаете — отметьте «Ещё не вернулась(-ся)»: дни будут считаться по сегодняшний, а на «Обзоре» появится крайняя безопасная дата возвращения.</p>`)
++G('4. Поездки',`<ol><li>Вкладка «Поездки» → «+».</li><li>Даты выезда и возвращения, страна (из подсказок), транспорт, цель, заметка (номер рейса, где стоит штамп).</li><li>«Страна Шенгена» ставится автоматически для стран зоны — эти дни учитываются в правиле 90/180.</li><li>Сразу прикрепите фото билетов и посадочных — они сохранятся как документы, связанные с поездкой.</li></ol><p>Карточка поездки показывает дни за границей, в дороге и количество подтверждений. Метка <span class="badge warn">нет подтверждений</span> подскажет, к каким поездкам ещё нет билетов.</p><p><b>Запланированные поездки</b> (галочка «Запланированная») не входят в фактические дни, но учитываются в планировщике и видны в календаре пунктиром.</p>`)
++G('5. Календарь',`<p>Каждый день окрашен: зелёный — в стране, красный — за границей, оранжевый — в дороге, синий пунктир — план. Точка — есть документ за этот день. Нажмите на день, чтобы увидеть детали, добавить документ на эту дату или начать поездку с неё. Под календарём — итоги месяца и года.</p>`)
++G('6. Документы и фото — доказательства присутствия',`<p>Миграционная служба может запросить подтверждение, что вы действительно жили в стране. Лучшие доказательства:</p><ul><li>билеты, посадочные талоны, штампы в паспорте — подтверждают даты выездов;</li><li>чеки из магазинов и аптек, оплаты картой, выписки из банка — подтверждают присутствие по датам;</li><li>счета за электричество, воду, интернет, договор аренды;</li><li>визиты к врачу, справки, документы из общины.</li></ul><p>Нажмите «+» → сфотографируйте документ или выберите фото/PDF → укажите тип, дату, название. Фото автоматически сжимаются, чтобы не занимать много места.</p><p>Блок <b>«Подтверждение присутствия»</b> показывает месяцы, где вы были в стране, но нет ни одного документа — нажмите на месяц, чтобы сразу добавить документ. Цель — минимум 1–2 документа каждый месяц.</p>`)
++G('7. Правила и лимиты',`<p>На «Обзоре» для каждого правила — шкала: зелёная — в норме, оранжевая — использовано 80% лимита и больше, красная — превышено.</p><ul><li><b>Отсутствие подряд</b> — самая длинная поездка и текущая (если вы за границей).</li><li><b>Отсутствие за 5 лет</b> — сумма дней отсутствия в текущем 5-летнем цикле от даты первого ВНЖ (или скользящее окно).</li><li><b>Шенген 90/180</b> — дни в других странах Шенгена за последние 180 дней.</li><li><b>183 дня</b> — дни в стране за календарный год (налоговое резидентство).</li></ul><p>Лимиты и периоды можно изменить и добавить свои правила — например, для ВНЖ другой страны.</p>`)
++G('8. Планировщик поездки',`<p>«Обзор» → «Планировщик» или «Ещё → Планировщик». Введите даты будущей поездки до покупки билетов — приложение покажет, не нарушит ли она правила, и рассчитает <b>крайнюю дату возвращения</b>. Результат можно сохранить как запланированную поездку. У сохранённой поездки есть кнопка «Проверить лимиты».</p>`)
++G('9. Сроки, напоминания, чек-лист',`<p>«Сроки» — обратный отсчёт до окончания карты, окна подачи на продление, 5 лет ВНЖ, окончания паспорта и страховки, плюс ваши собственные даты. Кнопка «Добавить сроки в Календарь» создаёт файл календаря — откройте его, и iPhone добавит события с напоминаниями за 30 и 7 дней.</p><p>«Чек-лист продления» — отмечайте собранные документы, добавляйте свои пункты; перед следующим продлением снимите отметки.</p>`)
++G('10. Расходы на ВНЖ и аналитика',`<p>Вкладка «Расходы» → «+»: дата, статья (госпошлины, карта, страховка, нотариус и переводы, аренда, адвокат, банк, дорога…), сумма и валюта, фото чека. Если валюта отличается от основной, укажите курс — он запомнится. Курс лева к евро фиксированный и подставляется сам.</p><p>Аналитика: итог за год или за всё время, средний расход в месяц, распределение по статьям и график по месяцам или годам. Так видна реальная стоимость каждого года ВНЖ. Статьи расходов меняются в «Настройках».</p>`)
++G('11. Отчёты Word, PDF, Excel',`<ol><li>«Ещё → Отчёты».</li><li>Выберите период (кнопки «Этот год», «5 лет», «Весь учёт» и т.д.).</li><li>Отметьте, включать ли фото документов, расходы и проверку правил.</li><li><b>Word</b> — готовый документ с таблицами и фотографиями: можно распечатать, подписать, приложить к заявлению.</li><li><b>PDF</b> — откроется окно печати: нажмите «Поделиться» → «Сохранить в Файлы» или отправьте в Telegram/WhatsApp.</li><li><b>Excel</b> — подробная таблица: каждый день периода со статусом, поездки, месяцы, документы, расходы.</li></ol><p>Файл открывается в меню «Поделиться» — сохраните в «Файлы», отправьте в мессенджер, по почте или AirDrop.</p>`)
++G('12. Резервные копии — обязательно!',`<p>Все данные хранятся только на телефоне. Если удалить иконку приложения, очистить данные Safari или сменить телефон — данные пропадут. Поэтому:</p><ul><li>раз в 1–2 недели нажимайте «Резервные копии → Создать» и сохраняйте файл в «Файлы» / iCloud Drive или в «Избранное» Telegram;</li><li>на «Обзоре» появится напоминание, если копия давно не делалась;</li><li>восстановление: «Резервные копии → Выбрать файл копии» — можно объединить с текущими данными или заменить их.</li></ul>`)
++G('13. Настройки и защита',`<p>Темы оформления (светлые и тёмные, «Авто» — по системе), размер и вид шрифта, цвет текста и акцентный цвет, повышенная контрастность, основная валюта, статьи расходов. PIN-код защищает приложение от посторонних глаз при открытии.</p>`)
++G('14. Частые вопросы',`<p><b>Нужен ли интернет?</b> Нет, после установки всё работает офлайн.</p><p><b>Где хранятся фото?</b> Внутри приложения на устройстве, в сжатом виде. Оригиналы в «Фото» остаются нетронутыми.</p><p><b>Можно ли пользоваться на iPhone и iPad одновременно?</b> Данные не синхронизируются автоматически; переносите их резервной копией с «Объединить».</p><p><b>Пересекаются две поездки?</b> Проверьте даты: день считается один раз.</p>`)
++`<div class="copy">© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
+function vRef(){return`<div class="warnbox">Справочник — краткая памятка по Болгарии (актуально на 2026 г.). Требования меняются и применяются по-разному в разных отделениях «Миграции» — перед подачей уточняйте.</div>`
++G('ВНЖ (продължително пребиваване)',`<ul><li>Выдаётся обычно на 1 год и продлевается ежегодно. Сначала нужна виза D, затем подача в Дирекцию «Миграция» в Болгарии.</li><li>Продление — фактически новая подача с полным пакетом документов. Подают, как правило, не раньше чем за 60 и не позже чем за 14 дней до окончания карты; некоторые отделения принимают строго за 2 недели.</li><li>Начинайте собирать документы за 2 месяца: нотариальные заверения, выписка, страховка требуют времени.</li></ul>`,true)
++G('Сколько можно отсутствовать',`<ul><li><b>Сохранение ВНЖ:</b> не более 6 месяцев подряд вне страны.</li><li><b>ПМЖ — долгосрочный статус ЕС:</b> суммарно не более 10 месяцев отсутствия за 5 лет.</li><li><b>Национальный ПМЖ:</b> лимит мягче — до 30 месяцев за 5 лет.</li><li>Любые разрывы в легальном пребывании и штрафы за нарушение режима осложняют получение ПМЖ.</li></ul>`)
++G('Путь к ПМЖ',`<ul><li>Право возникает после 5 лет непрерывного ВНЖ.</li><li>Подавать лучше минимум за 3–4 месяца до окончания текущей карты: рассмотрение занимает 2–4 месяца.</li><li>Одновременно вести дело о продлении ВНЖ и о ПМЖ нельзя — заранее рассчитайте сроки.</li></ul>`)
++G('Поездки по Шенгену с ВНЖ',`<p>Болгарский ВНЖ позволяет ездить по другим странам Шенгена без визы, но не более 90 дней в любые 180 дней. Дни в Болгарии в этот лимит не входят. Это правило «Шенген 90/180» в приложении.</p>`)
++G('Проверка адреса',`<p>Полиция может прийти по адресу регистрации без предупреждения. Отсутствие дома может стать проблемой при продлении — держите документы, подтверждающие проживание, и сообщайте соседям/собственнику, как с вами связаться.</p>`)
++G('Финансовые требования',`<p>Суммы на счёте привязаны к минимальной зарплате или минимальной пенсии в Болгарии и пересматриваются. Обычно нужна выписка за 3 месяца с движением средств. Держите сумму с запасом — отделения могут требовать больше минимума.</p>`)
++G('Налоговое резидентство',`<p>Нахождение в стране более 183 дней в году — один из критериев налогового резидентства. Включите правило «183 дня», если это для вас важно, и консультируйтесь с бухгалтером.</p>`)
++`<div class="copy">© ${new Date().getFullYear()} ${OWNER}. Все права защищены.</div>`}
+
+/* ---------- ZIP / XLSX / DOCX ---------- */
+const CRC=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&255]^(c>>>8);return(c^0xFFFFFFFF)>>>0}
+function zip(files,type){const enc=new TextEncoder();const parts=[],cd=[];let off=0;
+ for(const f of files){const nm=enc.encode(f.name);const d=typeof f.data==='string'?enc.encode(f.data):f.data;const c=crc32(d);
+  const h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,0x21,true);h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nm.length,true);
+  parts.push(new Uint8Array(h.buffer),nm,d);
+  const e=new DataView(new ArrayBuffer(46));e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x0800,true);e.setUint16(14,0x21,true);e.setUint32(16,c,true);e.setUint32(20,d.length,true);e.setUint32(24,d.length,true);e.setUint16(28,nm.length,true);e.setUint32(42,off,true);
+  cd.push(new Uint8Array(e.buffer),nm);off+=30+nm.length+d.length}
+ const size=cd.reduce((s,a)=>s+a.length,0);const end=new DataView(new ArrayBuffer(22));end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,size,true);end.setUint32(16,off,true);
+ return new Blob([...parts,...cd,new Uint8Array(end.buffer)],{type})}
+const xe=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'');
+function colName(i){let s='';i++;while(i){const m=(i-1)%26;s=String.fromCharCode(65+m)+s;i=Math.floor((i-1)/26)}return s}
+function sheetXML(rows,widths,freeze=true){let x='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+ if(freeze)x+='<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
+ if(widths)x+='<cols>'+widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join('')+'</cols>';x+='<sheetData>';
+ rows.forEach((r,ri)=>{x+=`<row r="${ri+1}">`;(r||[]).forEach((v,ci)=>{const ref=colName(ci)+(ri+1);let sv=v,s=freeze&&ri===0?1:0;if(v&&typeof v==='object'){sv=v.v;s=v.s??s}const sa=s?` s="${s}"`:'';
+  if(typeof sv==='number'&&isFinite(sv))x+=`<c r="${ref}"${sa}><v>${sv}</v></c>`;else if(sv!==''&&sv!=null)x+=`<c r="${ref}" t="inlineStr"${sa}><is><t xml:space="preserve">${xe(sv)}</t></is></c>`});x+='</row>'});
+ return x+'</sheetData></worksheet>'}
+function xlsx(sheets){const n=sheets.length;const files=[
+ {name:'[Content_Types].xml',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>`},
+ {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+ {name:'xl/workbook.xml',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheets.map((s,i)=>`<sheet name="${xe(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>`},
+ {name:'xl/_rels/workbook.xml.rels',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${n+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`},
+ {name:'xl/styles.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="164" formatCode="#,##0.00"/></numFmts><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="14"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE3ECF2"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="5"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'},
+ ...sheets.map((s,i)=>({name:`xl/worksheets/sheet${i+1}.xml`,data:sheetXML(s.rows,s.widths,s.freeze!==false)}))];
+ return zip(files,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
+const W={p(t,o={}){const al=o.al?`<w:jc w:val="${o.al}"/>`:'';const sp=o.sp!=null?`<w:spacing w:after="${o.sp}"/>`:'';return`<w:p><w:pPr>${sp}${al}</w:pPr>${W.r(t,o)}</w:p>`},
+ r(t,o={}){return String(t??'').split('\n').map((ln,i)=>`<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>${o.b?'<w:b/>':''}${o.c?`<w:color w:val="${o.c}"/>`:''}<w:sz w:val="${(o.sz||10.5)*2}"/></w:rPr>${i?'<w:br/>':''}<w:t xml:space="preserve">${xe(ln)}</w:t></w:r>`).join('')},
+ h(t,l=1){return W.p(t,{b:true,sz:l===1?18:13,c:l===1?'1F3A4D':'2E5A73',sp:120})},
+ tbl(rows,widths){const tw=widths.reduce((a,b)=>a+b,0);return`<w:tbl><w:tblPr><w:tblW w:w="${tw}" w:type="dxa"/><w:tblBorders>${['top','left','bottom','right','insideH','insideV'].map(b=>`<w:${b} w:val="single" w:sz="4" w:space="0" w:color="A8B4BC"/>`).join('')}</w:tblBorders><w:tblCellMar><w:left w:w="70" w:type="dxa"/><w:right w:w="70" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${widths.map(w=>`<w:gridCol w:w="${w}"/>`).join('')}</w:tblGrid>${rows.map((r,ri)=>`<w:tr>${r.map((c,ci)=>`<w:tc><w:tcPr><w:tcW w:w="${widths[ci]}" w:type="dxa"/>${ri===0?'<w:shd w:val="clear" w:color="auto" w:fill="E3ECF2"/>':''}</w:tcPr><w:p><w:pPr><w:spacing w:after="0"/></w:pPr>${W.r(c,{b:ri===0,sz:9})}</w:p></w:tc>`).join('')}</w:tr>`).join('')}</w:tbl>${W.p('',{sp:80})}`},
+ img(rid,i,w,h,cap){const max=2900000;const k=Math.min(1,max/w);const cx=Math.round(w*k),cy=Math.round(h*k);const lim=4300000;const k2=cy>lim?lim/cy:1;const X=Math.round(cx*k2),Y=Math.round(cy*k2);
+  return`<w:p><w:pPr><w:spacing w:after="40"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${X}" cy="${Y}"/><wp:docPr id="${i}" name="Фото ${i}"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="${i}" name="img${i}.jpg"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${X}" cy="${Y}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>${W.p(cap,{sz:9,c:'555555',sp:200})}`}};
+function docx(body,images){const files=[
+ {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'},
+ {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'},
+ {name:'word/_rels/document.xml.rels',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${images.map(m=>`<Relationship Id="${m.rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/${m.rid}.jpg"/>`).join('')}</Relationships>`},
+ {name:'word/document.xml',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1000" w:right="900" w:bottom="1000" w:left="1100" w:header="500" w:footer="500" w:gutter="0"/></w:sectPr></w:body></w:document>`},
+ ...images.map(m=>({name:`word/media/${m.rid}.jpg`,data:m.data}))];
+ return zip(files,'application/vnd.openxmlformats-officedocument.wordprocessingml.document')}
+
+/* ---------- Данные отчёта ---------- */
+function reportData(a,b){const m=mapNow(false);const T=TD();const end=Math.min(b,T);const tot=countRange(m,a,end);const years={};
+ for(let y=+ds(a).slice(0,4);y<=+ds(end).slice(0,4);y++){years[y]=countRange(m,Math.max(a,dn(y+'-01-01')),Math.min(end,dn(y+'-12-31')))}
+ const trips=S.trips.filter(t=>!t.planned&&dn(t.dep)<=b&&(t.ret?dn(t.ret):T)>=a).sort(byDep);
+ const docs=S.docs.filter(x=>x.date&&dn(x.date)>=a&&dn(x.date)<=b).sort(byDate);const exps=S.expenses.filter(x=>dn(x.date)>=a&&dn(x.date)<=b).sort(byDate);
+ return{a,b,end,m,tot,years,trips,docs,exps,months:coverage(a,end),rules:evalAll(m,end,{})}}
+function readX(){const a=$('#x_a').value,b=$('#x_b').value;if(!a||!b||b<a){toast('Проверьте период');return null}return{a:dn(a),b:dn(b),ph:$('#x_ph').checked,ex:$('#x_ex').checked,ru:$('#x_ru').checked}}
+const TRN=t=>(TRANSPORT[t]||TRANSPORT.other)[1];
+const stName=x=>({ok:'в норме',warn:'близко к лимиту',over:'превышено',prog:'в процессе'}[x.status]);
+const fileStamp=()=>todayS().replace(/-/g,'');
+async function deliver(blob,name){const file=new File([blob],name,{type:blob.type});
+ try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return}}catch(e){if(e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},5000);toast('Файл сохранён: '+name)}
+
+async function exportXlsx(){const o=readX();if(!o)return;const R=reportData(o.a,o.b);const p=S.profile;const B=S.settings.cur;const H=v=>({v,s:2});
+ const sum=[[{v:'Отчёт о пребывании в стране',s:3}],[],['ФИО',p.name||''],['Страна ВНЖ',p.country],['Статус',p.permit],['Основание',p.basis||''],['Первый ВНЖ',fd(p.permitStart)],['Карта действует до',fd(p.cardTo)],['Период отчёта',`${fdn(o.a)} — ${fdn(R.end)}`],['Сформирован',fd(todayS())],[],
+  [H('Итого'),H('Дней')],['Всего дней в периоде',R.tot.days],['В стране (с учётом настройки дней в дороге)',R.tot.present],['За границей (полные дни)',R.tot.abroad],['В дороге (дни выезда и въезда)',R.tot.travel],['Дней отсутствия',R.tot.absent],['Поездок',R.trips.length],['Документов-подтверждений',R.docs.length],[],
+  [H('Год'),H('Всего'),H('В стране'),H('За границей'),H('В дороге'),H('Отсутствие')],...Object.entries(R.years).map(([y,c])=>[y,c.days,c.present,c.abroad,c.travel,c.absent])];
+ if(o.ru){sum.push([],[H('Правило'),H('Значение'),H('Лимит'),H('Статус'),H('Пояснение')]);R.rules.forEach(x=>sum.push([x.r.name,x.value,x.limit,stName(x),x.text]))}
+ sum.push([],[`Дни выезда/въезда считаются: ${S.settings.travelAs==='abroad'?'днями отсутствия':'днями в стране'}`],[`${APP} · © ${OWNER}`]);
+ const trips=[['№','Выезд','Возвращение','Страна','Город','Шенген','Транспорт','Цель','Дней за границей','Дней в дороге','Дней отсутствия','Документов','Заметка'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep),t.ret?fd(t.ret):'не вернулись',t.country,t.city,t.schengen?'да':'',TRN(t.transport),t.purpose,f.full,f.travel,f.abs,f.docs,t.note]})];
+ const days=[['Дата','День недели','Статус','Отсутствие','Страна (если в поездке)','Документов']];const WD=['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];const dc={};S.docs.forEach(d=>dc[d.date]=(dc[d.date]||0)+1);
+ for(let d=o.a;d<=R.end;d++){const e=R.m.get(d);const s=ds(d);days.push([fd(s),WD[new Date(d*864e5).getUTCDay()],e?(e.s==='travel'?'в дороге':'за границей'):'в стране',absent(e)?'да':'',e?e.t.country:'',dc[s]||''])}
+ const months=[['Месяц','Дней в стране','За границей','В дороге','Отсутствие','Документов'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.abroad,x.travel,x.absent,x.docs])];
+ const docs=[['Дата','Тип','Название','Поездка','Файлов','Заметка'],...R.docs.map(d=>{const t=S.trips.find(x=>x.id===d.tripId);return[fd(d.date),d.type,d.title,t?`${t.country} ${fd(t.dep)}`:'',d.files.length,d.note]})];
+ const sheets=[{name:'Сводка',rows:sum,widths:[44,14,14,16,14,50],freeze:false},{name:'Поездки',rows:trips,widths:[5,12,14,16,14,9,13,18,10,10,10,11,40]},{name:'По дням',rows:days,widths:[12,8,14,12,22,11]},{name:'По месяцам',rows:months,widths:[18,14,13,11,12,12]},{name:'Документы',rows:docs,widths:[12,20,34,22,8,40]}];
+ if(o.ex){const ex=[['Дата','Статья','Сумма','Валюта','Курс',`Сумма, ${B}`,'Комментарий'],...R.exps.map(x=>[fd(x.date),catName(x.cat),{v:+x.amount,s:4},x.cur,x.cur===B?'':(+x.rate||''),{v:Math.round(toBase(x)*100)/100,s:4},x.note])];
+  const tot=R.exps.reduce((s,x)=>s+toBase(x),0);ex.push([],[H('Итого'),'','','','',{v:Math.round(tot*100)/100,s:4}]);
+  const bc={};R.exps.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));const cs=[['Статья',`Сумма, ${B}`,'Доля, %'],...Object.entries(bc).sort((a,b)=>b[1]-a[1]).map(([c,v])=>[catName(c),{v:Math.round(v*100)/100,s:4},tot?Math.round(v/tot*1000)/10:0])];
+  sheets.push({name:'Расходы',rows:ex,widths:[12,24,12,8,10,14,40]},{name:'Статьи расходов',rows:cs,widths:[28,16,10]})}
+ await deliver(xlsx(sheets),`Дни_ВНЖ_${fileStamp()}.xlsx`)}
+
+async function exportDocx(){const o=readX();if(!o)return;toast('Готовлю документ…');const R=reportData(o.a,o.b);const p=S.profile;const B=S.settings.cur;let b='';const images=[];
+ b+=W.p('ОТЧЁТ О ПРЕБЫВАНИИ В СТРАНЕ',{b:true,sz:18,al:'center',c:'1F3A4D',sp:60});b+=W.p(`Период: ${fdn(o.a)} — ${fdn(R.end)}`,{al:'center',sz:11,sp:240});
+ b+=W.tbl([['Сведения',''],['ФИО',p.name||'—'],['Гражданство',p.citizenship||'—'],['Страна ВНЖ',p.country||'—'],['Статус / основание',[p.permit,p.basis].filter(Boolean).join(', ')||'—'],['Первый ВНЖ',fd(p.permitStart)],['Текущая карта',`${fd(p.cardFrom)} — ${fd(p.cardTo)}`],['Адрес',p.address||'—']],[3000,6900]);
+ b+=W.h('1. Итоги по дням',2);b+=W.tbl([['Показатель','Дней'],['Всего дней в периоде',R.tot.days],['В стране',R.tot.present],['За границей (полные дни)',R.tot.abroad],['В дороге (дни выезда и въезда)',R.tot.travel],['Итого дней отсутствия',R.tot.absent]],[7400,2500]);
+ b+=W.tbl([['Год','Всего','В стране','За границей','В дороге','Отсутствие'],...Object.entries(R.years).map(([y,c])=>[y,c.days,c.present,c.abroad,c.travel,c.absent])],[1600,1660,1660,1660,1660,1660]);
+ b+=W.p(`Дни выезда и въезда учтены как ${S.settings.travelAs==='abroad'?'дни отсутствия':'дни присутствия в стране'}.`,{sz:9,c:'555555'});
+ if(o.ru&&R.rules.length){b+=W.h('2. Соблюдение требований',2);b+=W.tbl([['Требование','Значение','Лимит','Статус'],...R.rules.map(x=>[x.r.name,x.value,x.limit,stName(x)])],[5200,1500,1500,1700])}
+ b+=W.h('3. Поездки за пределы страны',2);b+=R.trips.length?W.tbl([['№','Выезд','Возвращение','Направление','Транспорт','За границей','В дороге','Подтв.'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep),t.ret?fd(t.ret):'—',[t.country,t.city].filter(Boolean).join(', '),TRN(t.transport),f.full,f.travel,f.docs]})],[500,1300,1400,2300,1300,1100,1000,1000]):W.p('Поездок в периоде нет.');
+ b+=W.h('4. Присутствие по месяцам',2);b+=W.tbl([['Месяц','В стране','За границей','В дороге','Документов'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.abroad,x.travel,x.docs])],[3100,1700,1700,1700,1700]);
+ b+=W.h('5. Документы, подтверждающие присутствие',2);b+=R.docs.length?W.tbl([['Дата','Тип','Название','Примечание'],...R.docs.map(d=>[fd(d.date),d.type,d.title||'',d.note||''])],[1300,2300,3300,3000]):W.p('Документов в периоде нет.');
+ if(o.ex&&R.exps.length){const tot=R.exps.reduce((s,x)=>s+toBase(x),0);const bc={};R.exps.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));
+  b+=W.h('6. Расходы на оформление',2);b+=W.tbl([['Статья',`Сумма, ${B}`,'Доля'],...Object.entries(bc).sort((a,c)=>c[1]-a[1]).map(([c,v])=>[catName(c),nf.format(Math.round(v*100)/100),(tot?Math.round(v/tot*100):0)+'%']),['Итого',nf.format(Math.round(tot*100)/100),'100%']],[5500,2600,1800]);
+  b+=W.tbl([['Дата','Статья','Сумма','Комментарий'],...R.exps.map(x=>[fd(x.date),catName(x.cat),fm(+x.amount,x.cur),x.note||''])],[1300,3000,2000,3600])}
+ if(o.ph){const withImg=R.docs.filter(d=>d.files.some(f=>f.mime.startsWith('image/')));if(withImg.length){b+=W.h('Приложение: копии документов',2);let i=1;
+  for(const d of withImg)for(const f of d.files){if(!f.mime.startsWith('image/'))continue;const rec=await DB.get('files',f.id);if(!rec)continue;const data=new Uint8Array(await rec.blob.arrayBuffer());const rid='rIdImg'+i;images.push({rid,data});b+=W.img(rid,i,f.w||1000,f.h||1300,`${fd(d.date)} · ${d.type}${d.title?' · '+d.title:''}`);i++}}}
+ b+=W.p(`Сформировано ${fd(todayS())} в приложении «${APP}».`,{sz:8,c:'888888',al:'right'});
+ await deliver(docx(b,images),`Отчёт_ВНЖ_${fileStamp()}.docx`)}
+
+async function exportPdf(){const o=readX();if(!o)return;const R=reportData(o.a,o.b);const p=S.profile;const B=S.settings.cur;const tb=(rows)=>`<table>${rows.map((r,i)=>`<tr>${r.map(c=>i?`<td>${esc(c)}</td>`:`<th>${esc(c)}</th>`).join('')}</tr>`).join('')}</table>`;
+ let h=`<h1>Отчёт о пребывании в стране</h1><div class="meta">Период: ${fdn(o.a)} — ${fdn(R.end)} · сформирован ${fd(todayS())}</div>`;
+ h+=tb([['Сведения',''],['ФИО',p.name||'—'],['Гражданство',p.citizenship||'—'],['Страна ВНЖ',p.country],['Статус / основание',[p.permit,p.basis].filter(Boolean).join(', ')],['Первый ВНЖ',fd(p.permitStart)],['Текущая карта',`${fd(p.cardFrom)} — ${fd(p.cardTo)}`],['Адрес',p.address||'—']]);
+ h+=`<h2>1. Итоги по дням</h2>`+tb([['Всего дней','В стране','За границей','В дороге','Отсутствие'],[R.tot.days,R.tot.present,R.tot.abroad,R.tot.travel,R.tot.absent]])+tb([['Год','Всего','В стране','За границей','В дороге','Отсутствие'],...Object.entries(R.years).map(([y,c])=>[y,c.days,c.present,c.abroad,c.travel,c.absent])]);
+ if(o.ru&&R.rules.length)h+=`<h2>2. Соблюдение требований</h2>`+tb([['Требование','Значение','Лимит','Статус'],...R.rules.map(x=>[x.r.name,x.value,x.limit,stName(x)])]);
+ h+=`<h2>3. Поездки</h2>`+(R.trips.length?tb([['№','Выезд','Возвращение','Направление','Транспорт','За гран.','В дороге','Подтв.'],...R.trips.map((t,i)=>{const f=tripInfo(t);return[i+1,fd(t.dep),t.ret?fd(t.ret):'—',[t.country,t.city].filter(Boolean).join(', '),TRN(t.transport),f.full,f.travel,f.docs]})]):'<p>Поездок нет.</p>');
+ h+=`<h2>4. По месяцам</h2>`+tb([['Месяц','В стране','За границей','В дороге','Документов'],...R.months.map(x=>[`${MONTHS[x.mo-1]} ${x.y}`,x.present,x.abroad,x.travel,x.docs])]);
+ h+=`<h2>5. Документы</h2>`+(R.docs.length?tb([['Дата','Тип','Название','Примечание'],...R.docs.map(d=>[fd(d.date),d.type,d.title,d.note])]):'<p>Документов нет.</p>');
+ if(o.ex&&R.exps.length){const tot=R.exps.reduce((s,x)=>s+toBase(x),0);const bc={};R.exps.forEach(x=>bc[x.cat]=(bc[x.cat]||0)+toBase(x));h+=`<h2>6. Расходы</h2>`+tb([['Статья','Сумма','Доля'],...Object.entries(bc).sort((a,c)=>c[1]-a[1]).map(([c,v])=>[catName(c),fm(v),(tot?Math.round(v/tot*100):0)+'%']),['Итого',fm(tot),'100%']])+tb([['Дата','Статья','Сумма','Комментарий'],...R.exps.map(x=>[fd(x.date),catName(x.cat),fm(+x.amount,x.cur),x.note])])}
+ const urls=[];if(o.ph){const ph=[];for(const d of R.docs)for(const f of d.files){if(!f.mime.startsWith('image/'))continue;const rec=await DB.get('files',f.id);if(!rec)continue;const u=URL.createObjectURL(rec.blob);urls.push(u);ph.push(`<div class="ph"><img src="${u}"><br>${fd(d.date)} · ${esc(d.type)} ${esc(d.title||'')}</div>`)}if(ph.length)h+=`<h2 style="page-break-before:always">Приложение: копии документов</h2>`+ph.join('')}
+ h+=`<p class="meta" style="margin-top:16px">Сформировано в приложении «${APP}».</p>`;
+ const pr=$('#print');pr.innerHTML=h;await Promise.all($$('img',pr).map(i=>i.complete?1:new Promise(r=>{i.onload=i.onerror=r})));
+ document.body.classList.add('printing');const done=()=>{document.body.classList.remove('printing');pr.innerHTML='';urls.forEach(u=>URL.revokeObjectURL(u))};
+ window.addEventListener('afterprint',done,{once:true});setTimeout(()=>{window.print();setTimeout(()=>{if(document.body.classList.contains('printing'))done()},60000)},150)}
+
+function exportIcs(){const L=deadlineList().filter(x=>x.left>=0);if(!L.length)return toast('Нет будущих сроков');const st=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+ const f=n=>ds(n).replace(/-/g,'');const esc2=s=>String(s).replace(/[,;\\]/g,m=>'\\'+m);
+ let s='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//DniVNZH//RU\r\nCALSCALE:GREGORIAN\r\n';
+ L.forEach((x,i)=>{s+=`BEGIN:VEVENT\r\nUID:dni-${i}-${f(x.d)}@dni-vnzh\r\nDTSTAMP:${st}\r\nDTSTART;VALUE=DATE:${f(x.d)}\r\nDTEND;VALUE=DATE:${f(x.d+1)}\r\nSUMMARY:${esc2('ВНЖ: '+x.name)}\r\nDESCRIPTION:${esc2(x.sub||'')}\r\nBEGIN:VALARM\r\nTRIGGER:-P30D\r\nACTION:DISPLAY\r\nDESCRIPTION:${esc2(x.name)}\r\nEND:VALARM\r\nBEGIN:VALARM\r\nTRIGGER:-P7D\r\nACTION:DISPLAY\r\nDESCRIPTION:${esc2(x.name)}\r\nEND:VALARM\r\nEND:VEVENT\r\n`});
+ s+='END:VCALENDAR\r\n';deliver(new Blob([s],{type:'text/calendar'}),'Сроки_ВНЖ.ics')}
+
+/* ---------- Резервные копии ---------- */
+async function backupSave(){toast('Собираю копию…');const keys=await DB.keys('files');const files={};
+ for(const k of keys){const v=await DB.get('files',k);if(typeof v==='string')files[k]=v;else if(v&&v.blob)files[k]={...v,blob:await blobToDataURL(v.blob)}}
+ S.meta.lastBackup=todayS();await saveNow();const data=JSON.stringify({app:'dni-vnzh',v:1,date:new Date().toISOString(),state:S,files});
+ await deliver(new Blob([data],{type:'application/json'}),`Дни_ВНЖ_копия_${fileStamp()}.json`);render()}
+async function backupLoad(file){let j;try{j=JSON.parse(await file.text())}catch(e){return toast('Файл повреждён или это не копия')}
+ if(j.app!=='dni-vnzh'||!j.state)return toast('Это не резервная копия «Дни ВНЖ»');const mode=($('input[name=bkm]:checked')||{}).value||'merge';
+ if(!confirm(mode==='replace'?'Заменить ВСЕ текущие данные данными из копии?':'Объединить данные из копии с текущими?'))return;
+ if(mode==='replace'){await DB.clear('files');S=Object.assign(defState(),j.state);}
+ else{const st=j.state;const mg=(k)=>{const ids=new Set(S[k].map(x=>x.id));for(const x of st[k]||[])if(!ids.has(x.id))S[k].push(x)};['trips','docs','expenses','deadlines'].forEach(mg);
+  if(!S.profile.permitStart&&st.profile)S.profile=Object.assign(S.profile,Object.fromEntries(Object.entries(st.profile).filter(([k,v])=>v&&!S.profile[k])))}
+ for(const[k,v]of Object.entries(j.files||{})){if(typeof v==='string')await DB.put('files',k,v);else await DB.put('files',k,{...v,blob:dataURLToBlob(v.blob)})}
+ S.settings.onboarded=true;await saveNow();applySettings();render();toast('Данные восстановлены')}
+
+/* ---------- Настройки, PIN ---------- */
+function applySettings(){const s=S.settings,r=document.documentElement;let th=s.theme;if(th==='auto')th=matchMedia('(prefers-color-scheme: dark)').matches?'graphite':'pearl';r.dataset.theme=th;
+ r.style.setProperty('--fs',s.fs+'px');r.style.setProperty('--font',FONTS[s.font]||FONTS.system);s.accent?r.style.setProperty('--accent',s.accent):r.style.removeProperty('--accent');s.textColor?r.style.setProperty('--text',s.textColor):r.style.removeProperty('--text');r.classList.toggle('hc',!!s.contrast);
+ const bg=getComputedStyle(r).getPropertyValue('--bg').trim();$('meta[name=theme-color]').setAttribute('content',bg||'#f5f4f1')}
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{if(S.settings.theme==='auto')applySettings()});
+async function hash(s){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('dni:'+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){let h=5381;for(const c of 'dni:'+s)h=(h*33^c.charCodeAt(0))>>>0;return 'f'+h}}
+function showLock(){let v='';const L=$('#lock');const draw=()=>{L.innerHTML=`<div style="font-weight:700;font-size:1.2em">${APP}</div><div class="muted small">Введите PIN-код</div><div class="dots">${[0,1,2,3].map(i=>`<i class="${i<v.length?'f':''}"></i>`).join('')}</div><div class="pad">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button data-k="${k}">${k}</button>`).join('')}</div><button class="btn sm" id="lkOk">Войти</button><a href="#" id="lkForgot" class="small muted">Забыли PIN?</a>`};
+ draw();L.classList.add('on');const tryIt=async()=>{if(await hash(v)===S.settings.pinHash){L.classList.remove('on');L.innerHTML=''}else{v='';draw();toast('Неверный PIN')}};
+ L.onclick=async e=>{const k=e.target.dataset.k;if(e.target.id==='lkOk')return tryIt();if(e.target.id==='lkForgot'){e.preventDefault();if(confirm('PIN восстановить нельзя. Удалить все данные приложения и начать заново? (Потом можно восстановить резервную копию.)')&&confirm('Точно удалить все данные?')){await DB.clear('files');S=defState();await saveNow();location.reload()}return}
+  if(k==null)return;if(k==='⌫')v=v.slice(0,-1);else if(v.length<6)v+=k;draw();if(v.length>=4&&await hash(v)===S.settings.pinHash){L.classList.remove('on');L.innerHTML=''}}}
+
+/* ---------- Обработчики ---------- */
+const ACT={
+ tab:id=>go(id),sub:id=>go(route.tab==='more'||!route.tab?'more':route.tab,id),back:()=>go(route.tab),close:closeSheet,
+ tripNew:()=>tripForm(null),tripEdit:id=>{tripForm(S.trips.find(t=>t.id===id))},tripSave,
+ tripDel:async()=>{if(!confirm('Удалить поездку? Связанные документы останутся, но будут отвязаны.'))return;const id=draft.obj.id;S.trips=S.trips.filter(t=>t.id!==id);S.docs.forEach(d=>{if(d.tripId===id)d.tripId=''});save();closeSheet();render()},
+ tripYear:id=>{tripYear=id;render()},planFromTrip:()=>{const o=readTrip();if(!o.dep)return;planCheck(o)},
+ tripNewDate:id=>{tripForm(null);$('#f_dep').value=ds(+id)},
+ calNav:id=>{calM+=+id;if(calM<0){calM=11;calY--}if(calM>11){calM=0;calY++}render()},calToday:()=>{calY=null;render()},day:id=>daySheet(+id),
+ docNew:()=>docForm(null),docNewDate:id=>docForm(null,{date:id.length===10?id:ds(+id)}),docOpen:id=>docView(id),docEdit:id=>docForm(S.docs.find(d=>d.id===id)),docSave,
+ docDel:async()=>{if(!confirm('Удалить документ вместе с фото?'))return;const o=draft.obj;for(const f of o.files)await removeFile(f.id);S.docs=S.docs.filter(d=>d.id!==o.id);save();closeSheet();render()},
+ docShare:async id=>{const d=S.docs.find(x=>x.id===id);const fs=[];for(const f of d.files){const r=await DB.get('files',f.id);if(r)fs.push(new File([r.blob],r.name||'doc.jpg',{type:r.mime}))}
+  try{if(navigator.canShare&&navigator.canShare({files:fs})){await navigator.share({files:fs,title:d.title||d.type});return}}catch(e){if(e.name==='AbortError')return}for(const f of fs)await deliver(f,f.name)},
+ fileView:id=>fileView(id),dfDel:(id,el)=>{draft.files.splice(+id,1);drawDraftFiles(el.dataset.box)},
+ dfOld:(id,el)=>{const f=draft.obj.files[+id];draft.removed.push(f.id);draft.obj.files.splice(+id,1);el.closest('.th').remove();$$('[data-a=dfOld]',$('#sheet')).forEach((b,i)=>b.dataset.id=i)},
+ vClose:()=>{$('#viewer').classList.remove('on');if(viewing)URL.revokeObjectURL(viewing.u);viewing=null},
+ vShare:async()=>{if(!viewing)return;await deliver(new File([viewing.f.blob],viewing.f.name||'doc.jpg',{type:viewing.f.mime}),viewing.f.name||'doc.jpg')},
+ expNew:()=>expForm(null),expEdit:id=>expForm(S.expenses.find(x=>x.id===id)),expSave,
+ expDel:async()=>{if(!confirm('Удалить расход?'))return;const o=draft.obj;for(const f of o.files||[])await removeFile(f.id);S.expenses=S.expenses.filter(x=>x.id!==o.id);save();closeSheet();render()},
+ mYear:id=>{moneyYear=id;render()},
+ welcomeSave:()=>{const p=S.profile;p.country=$('#w_country').value.trim()||p.country;p.permitStart=$('#w_start').value;p.cardTo=$('#w_to').value;p.trackFrom=$('#w_track').value;S.settings.cur=$('#w_cur').value;S.settings.onboarded=true;save();render();toast('Готово! Добавьте первую поездку или документ')},
+ profSave:()=>{$$('[id^=p_]').forEach(i=>{const k=i.id.slice(2);S.profile[k]=i.type==='number'?(+i.value||0):i.value.trim()});save();toast('Профиль сохранён');go('more')},
+ travelAs:(id,el)=>{S.settings.travelAs=el.value;save();toast('Сохранено')},ruleOn:(id,el)=>{S.rules.find(r=>r.id===id).on=el.checked;save()},
+ ruleAdd:()=>{const t=$('#nr_type').value;const n=$('#nr_name').value.trim()||'Моё правило';S.rules.push({id:uid(),on:true,custom:true,name:n,type:t,limit:t==='zone'?90:t==='minyear'?183:180,period:t==='zone'?180:t==='period'?365:0,anchor:'rolling',note:''});save();render()},
+ ruleDel:id=>{S.rules=S.rules.filter(r=>r.id!==id);save();render()},rulesReset:()=>{if(confirm('Вернуть стандартные правила? Свои правила будут удалены.')){S.rules=defRules();save();render()}},
+ planCheck:()=>planCheck(),planSave:()=>{const dep=$('#pl_dep').value,ret=$('#pl_ret').value;if(!dep||!ret)return toast('Укажите обе даты');S.trips.push({id:uid(),dep,ret,country:$('#pl_c').value.trim(),city:'',schengen:$('#pl_s').checked,transport:'plane',purpose:'',note:'',planned:true});save();toast('Поездка запланирована');go('trips')},
+ dlAdd:()=>{const n=$('#dl_n').value.trim(),d=$('#dl_d').value;if(!n||!d)return toast('Название и дата');S.deadlines.push({id:uid(),name:n,date:d});save();render()},dlDel:id=>{S.deadlines=S.deadlines.filter(x=>x.id!==id);save();render()},ics:exportIcs,
+ clOn:(id,el)=>{S.checklist.find(x=>x.id===id).on=el.checked;save();render()},clDel:id=>{S.checklist=S.checklist.filter(x=>x.id!==id);save();render()},
+ clAdd:()=>{const t=$('#cl_t').value.trim();if(!t)return;S.checklist.push({id:uid(),t,on:false});save();render()},clReset:()=>{S.checklist.forEach(x=>x.on=false);save();render()},clDefault:()=>{if(confirm('Заменить список стандартным?')){S.checklist=defChecklist();save();render()}},
+ xPreset:id=>{const T=TD(),y=new Date().getFullYear();let a=trackStart(),b=T;if(id==='year')a=dn(y+'-01-01');if(id==='last'){a=dn((y-1)+'-01-01');b=dn((y-1)+'-12-31')}if(id==='12')a=T-364;if(id==='5y')a=S.profile.permitStart?dn(S.profile.permitStart):T-1825;$('#x_a').value=ds(a);$('#x_b').value=ds(b)},
+ xXls:()=>exportXlsx().catch(e=>toast('Ошибка: '+e.message)),xWord:()=>exportDocx().catch(e=>toast('Ошибка: '+e.message)),xPdf:()=>exportPdf().catch(e=>toast('Ошибка: '+e.message)),
+ bkSave:()=>backupSave().catch(e=>toast('Ошибка: '+e.message)),
+ wipe:async()=>{if(confirm('Удалить ВСЕ данные и фото без возможности восстановления?')&&confirm('Вы сохранили резервную копию? Удаляем?')){await DB.clear('files');S=defState();await saveNow();applySettings();go('home')}},
+ theme:id=>{S.settings.theme=id;applySettings();save();render()},tcReset:()=>{S.settings.textColor='';applySettings();save();render()},acReset:()=>{S.settings.accent='';applySettings();save();render()},
+ catAdd:()=>{S.settings.cats.push({id:uid(),n:'Новая статья'});save();render()},catDel:id=>{if(S.expenses.some(x=>x.cat===id))return toast('Эта статья используется в расходах');S.settings.cats=S.settings.cats.filter(c=>c.id!==id);save();render()},
+ pinOn:async()=>{const v=$('#s_pin').value.trim();if(!/^\d{4,6}$/.test(v))return toast('PIN — от 4 до 6 цифр');S.settings.pinHash=await hash(v);save();render();toast('PIN включён')},
+ pinOff:()=>{if(confirm('Отключить PIN?')){S.settings.pinHash='';save();render()}},onboardAgain:()=>{S.settings.onboarded=false;save();go('home')}};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const a=el.dataset.a;if(!ACT[a])return;
+ if(el.tagName==='INPUT'&&(el.type==='checkbox'||el.type==='radio')){ACT[a](el.dataset.id,el);return}
+ if(el.tagName==='A')e.preventDefault();if(a==='docOpen'&&$('#sheetWrap').classList.contains('on')&&draft&&draft.kind==='trip'){closeSheet()}
+ ACT[a](el.dataset.id,el)});
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.id==='dq'){docFilter.q=t.value;clearTimeout(ACT._q);ACT._q=setTimeout(()=>{render();const q=$('#dq');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length)}},350)}
+ if(t.id==='s_fs'){S.settings.fs=+t.value;$('#fsv').textContent=t.value;applySettings();save()}
+ if(t.id==='s_tc'){S.settings.textColor=t.value;applySettings();save()}if(t.id==='s_ac'){S.settings.accent=t.value;applySettings();save()}
+ if(t.dataset.cat){const c=S.settings.cats.find(x=>x.id===t.dataset.cat);if(c){c.n=t.value;save()}}});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.id==='dtype'){docFilter.type=t.value;render()}if(t.id==='dyear'){docFilter.year=t.value;render()}
+ if(t.id==='s_font'){S.settings.font=t.value;applySettings();save()}if(t.id==='s_hc'){S.settings.contrast=t.checked;applySettings();save()}if(t.id==='s_cur'){S.settings.cur=t.value;save()}
+ if(t.dataset.rf){const r=S.rules.find(x=>x.id===t.dataset.id);r[t.dataset.rf]=t.tagName==='SELECT'?t.value:(+t.value||0);save()}
+ if(t.id==='bk_file'&&t.files[0])backupLoad(t.files[0]).catch(er=>toast('Ошибка: '+er.message))});
+
+/* ---------- Запуск ---------- */
+(async()=>{try{await DB.open();const st=await DB.get('kv','state');if(st){const d=defState();S=Object.assign(d,st);S.profile=Object.assign(d.profile,st.profile);S.settings=Object.assign(d.settings,st.settings);S.meta=Object.assign(d.meta,st.meta)}}catch(e){toast('Хранилище недоступно: '+e.message)}
+ applySettings();render();if(S.settings.pinHash)showLock();
+ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+ if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+ setInterval(()=>{if(route.tab==='home'&&!route.sub&&!$('#sheetWrap').classList.contains('on'))render()},3600000)})();
+</script>
+</body>
+</html>
