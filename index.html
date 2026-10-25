@@ -11,9 +11,9 @@
 <meta name="theme-color" content="#f5f4f1">
 <meta name="author" content="Елена Кирсанова">
 <meta name="copyright" content="© Елена Кирсанова. Все права защищены.">
-<link rel="manifest" href="manifest.webmanifest">
-<link id="appleIcon" rel="apple-touch-icon" href="icons/icon-180.png">
-<link id="favIcon" rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest?v=22">
+<link id="appleIcon" rel="apple-touch-icon" href="icons/icon-180.png?v=22">
+<link id="favIcon" rel="icon" type="image/png" href="icons/icon-192.png?v=22">
 <script>try{var k=localStorage.getItem('dni-icon');if(k){document.getElementById('appleIcon').href='icons/icon-'+k+'-180.png';document.getElementById('favIcon').href='icons/icon-'+k+'-192.png'}}catch(e){}</script>
 <title>Мой ВНЖ — дни, поездки и документы семьи</title>
 <style>
@@ -205,7 +205,7 @@ nav#tabs button{position:relative}.tbadge{position:absolute;top:3px;left:calc(50
 <script>
 'use strict';
 /* © Елена Кирсанова. Все права защищены. Копирование, изменение и распространение кода без письменного разрешения правообладателя запрещены. */
-const APP='Мой ВНЖ',VER='2.1',OWNER='Елена Кирсанова';
+const APP='Мой ВНЖ',VER='2.2',OWNER='Елена Кирсанова';
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -798,7 +798,7 @@ function vSettings(){const s=S.settings;return`<div class="card"><h2>Тема о
  <p class="small muted">Предупреждения показываются вверху «Обзора» (по всей семье) и цифрой на вкладке: до лимита «6 месяцев подряд», «90/180», «за 5 лет», крайняя дата возвращения, запланированные поездки с нарушением, окончание карт, прав, паспорта, окно продления.</p>
  ${'Notification' in window?(s.notify&&Notification.permission==='granted'?'<div class="row"><span class="sp small c-home">✓ Уведомления на телефоне включены</span><button class="btn sm" data-a="notifyOff">Выключить</button></div>':'<button class="btn pri block" data-a="notifyOn">🔔 Включить уведомления на телефоне</button>'):'<div class="small muted">Этот браузер не поддерживает уведомления. На iPhone они работают для приложения, установленного на экран «Домой» (iOS 16.4 и новее).</div>'}
  <div class="tiny muted" style="margin-top:8px">На iPhone уведомление и цифра на иконке обновляются, когда вы открываете приложение. Чтобы напоминание пришло точно в нужный день, даже если приложение не открывать, добавьте сроки и крайние даты возвращения в Календарь: «Сроки → Добавить в Календарь».</div></div>
- <div class="card"><h2>Иконка на экране «Домой»</h2><div class="icons">${[['a','Паспорт'],['b','Штамп'],['c','Календарь'],['d','Монограмма']].map(([k,n])=>`<button class="${(localGet('dni-icon')||'a')===k?'on':''}" data-a="icon" data-id="${k}"><img src="icons/icon-${k}-192.png" alt=""><span>${n}</span></button>`).join('')}</div>
+ <div class="card"><h2>Иконка на экране «Домой»</h2><div class="icons">${[['d','Монограмма'],['a','Паспорт'],['b','Штамп'],['c','Календарь']].map(([k,n])=>`<button class="${(localGet('dni-icon')||'d')===k?'on':''}" data-a="icon" data-id="${k}"><img src="icons/icon-${k}-192.png" alt=""><span>${n}</span></button>`).join('')}</div>
  <div class="warnbox">Как поменять иконку на iPhone: 1) сохраните резервную копию; 2) выберите иконку здесь; 3) удалите старую иконку с экрана «Домой» (вместе с ней iPhone удаляет данные приложения); 4) откройте приложение в Safari → «Поделиться» → «На экран „Домой“» — там же можно изменить название; 5) восстановите резервную копию.</div></div>
  <div class="card"><button class="btn block" data-a="onboardAgain">Показать приветствие заново</button></div>`}
 function vAbout(){const y=new Date().getFullYear();return`<div class="card" style="text-align:center"><img src="icons/icon-192.png" alt="" style="width:84px;height:84px;border-radius:20px"><h2 style="justify-content:center;margin-top:10px">${APP}</h2><div class="small muted">Учёт дней пребывания, поездок и документов для ВНЖ · версия ${VER}</div></div>
